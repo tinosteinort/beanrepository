@@ -25,7 +25,7 @@ public class ExampleTest {
         mailService.sendMail("You", "Hi!");
     }
 
-    @Test public void singeInstance() {
+    @Test public void instanceHandling() {
 
         final String[] values = new String[] { "a", "b", "c" } ;
 
@@ -39,7 +39,7 @@ public class ExampleTest {
     }
 
     /**
-     * For a singleton to onPostConstruct Method must be called only once.
+     * For a Singleton the onPostConstruct Method must be called only once.
      */
     @Test public void singletonOnlyOnePostConstruct() {
 
@@ -54,7 +54,7 @@ public class ExampleTest {
     }
 
     /**
-     * For a singleton to onPostConstruct Method must be called only once.
+     * For a Prototype the onPostConstruct Method must be called every time, the Prototype is needed.
      */
     @Test public void prototypeWithMultiplePostConstruct() {
 
