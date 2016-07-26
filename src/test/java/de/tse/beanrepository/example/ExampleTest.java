@@ -1,9 +1,7 @@
 package de.tse.beanrepository.example;
 
 import de.tse.beanrepository.BeanRepository;
-import de.tse.beanrepository.example.services.MailService;
-import de.tse.beanrepository.example.services.PrintService;
-import de.tse.beanrepository.example.services.ServiceWithPostConstruct;
+import de.tse.beanrepository.example.services.*;
 import org.junit.Test;
 
 /**
@@ -66,5 +64,21 @@ public class ExampleTest {
         repo.get(ServiceWithPostConstruct.class);
         repo.get(ServiceWithPostConstruct.class);
         // see System.out: three outputs has to appear for this test
+    }
+
+    /**
+     * ServiceA depends on ServiceB and ServiceB depends on ServiceA.
+     *  This cyclic Reference should lead to an Error on start up, not
+     *  until a Bean is requested by repo.get(...)
+     */
+    @Test(expected = StackOverflowError.class)
+    public void cyclicReferenceCheckOnBeanRepositoryInitialisation() {
+
+        final BeanRepository repo = new BeanRepository.BeanRepositoryBuilder()
+                .singleton(ServiceA.class, ServiceA::new)
+                .singleton(ServiceB.class, ServiceB::new)
+                .build();
+
+        throw new RuntimeException("Should never reach");
     }
 }

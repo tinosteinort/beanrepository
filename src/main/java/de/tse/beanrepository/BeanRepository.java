@@ -18,7 +18,7 @@ public class BeanRepository {
         if (provider == null) {
             throw new RuntimeException("No Bean registered for Class " + cls.getName());
         }
-        return provider.getBean(this);
+        return provider.getBean(this, false);
     }
 
     public static class BeanRepositoryBuilder {
@@ -51,7 +51,11 @@ public class BeanRepository {
         }
 
         public BeanRepository build() {
-            return new BeanRepository(beanCreators);
+            final BeanRepository repository = new BeanRepository(beanCreators);
+            for (BeanProvider beanProvider : repository.beanCreators.values()) {
+                beanProvider.getBean(repository, true);
+            }
+            return repository;
         }
     }
 }

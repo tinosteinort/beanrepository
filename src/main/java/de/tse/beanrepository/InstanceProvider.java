@@ -11,7 +11,7 @@ class InstanceProvider implements BeanProvider {
         this.instance = instance;
     }
 
-    @Override public <T> T getBean(final BeanRepository repository) {
+    @Override public <T> T getBean(final BeanRepository repository, final boolean dryRun) {
         return (T) instance;
     }
 }

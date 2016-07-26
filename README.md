@@ -19,13 +19,18 @@ See [ExampleTest.java](src/test/java/de/tse/beanrepository/example/ExampleTest.j
 * Singleton Support
 * Prototype Support
 * Instance Support
+* Early Detection of cyclic References -> on Creation of BeanRepository
 
 # Limitations #
 
-* No resolving of cyclic References -> leads to StackOverflow
+* No resolving of cyclic References -> leads to StackOverflow on start up
 * Only Constructor Injection possible
     * Every Bean needs a Default Constructor or a Constructor with
        the BeanRepository as Parameter
     * Every Bean has to store its Dependencies in its own Constructor
+* No initialisation Code allowed in Constructor
+    * Constructor may be called multiple times while Creation of BeanFactory
+    * use [PostConstructible](src/main/java/de/tse/beanrepository/PostConstructible.java)
+       for initialisation Code
 * A Bean is only accessible by the Class: `repository.get(Class<T> cls)`
 * Creation of Singleton Beans is not threadsafe
