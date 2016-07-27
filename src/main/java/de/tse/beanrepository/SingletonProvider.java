@@ -13,8 +13,12 @@ class SingletonProvider implements BeanProvider {
 
     @Override public <T> T getBean(final BeanRepository repository, final boolean dryRun) {
         if (instance == null) {
-            instance = creator.apply(repository);
-            new PostConstructor(repository).postConstruct(instance, dryRun);
+            final Object beanInstance = creator.apply(repository);
+            new PostConstructor(repository).postConstruct(beanInstance, dryRun);
+            if (!dryRun) {
+                instance = beanInstance;
+            }
+            return (T) beanInstance;
         }
         return (T) instance;
     }
