@@ -24,6 +24,7 @@ See [ExampleTest.java](src/test/java/de/tse/beanrepository/example/ExampleTest.j
 # Limitations #
 
 * No resolving of cyclic References -> leads to StackOverflow on start up
+* Only eager Creation of Beans
 * Only Constructor Injection possible
     * Every Bean needs a Default Constructor or a Constructor with
        the BeanRepository as Parameter
