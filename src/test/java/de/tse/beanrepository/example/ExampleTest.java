@@ -100,12 +100,25 @@ public class ExampleTest {
     @Test public void getAllBeansOfTypeWithinOnPostConstruct() {
 
         final BeanRepository repo = new BeanRepository.BeanRepositoryBuilder()
+                .singleton(CollectorServiceOnPostConstruct.class, CollectorServiceOnPostConstruct::new)
                 .singleton(MyInterfaceImpl1.class, MyInterfaceImpl1::new)
                 .singleton(MyInterfaceImpl2.class, MyInterfaceImpl2::new)
-                .singleton(CollectorServiceOnPostConstruct.class, CollectorServiceOnPostConstruct::new)
                 .build();
 
         final CollectorServiceOnPostConstruct collector = repo.get(CollectorServiceOnPostConstruct.class);
+        Assert.assertNotNull(collector);
+        Assert.assertEquals(2, collector.getImplementations().size());
+    }
+
+    @Test public void getAllBeansOfTypeWithinConstructor() {
+
+        final BeanRepository repo = new BeanRepository.BeanRepositoryBuilder()
+                .singleton(CollectorServiceOnConstructor.class, CollectorServiceOnConstructor::new)
+                .singleton(MyInterfaceImpl1.class, MyInterfaceImpl1::new)
+                .singleton(MyInterfaceImpl2.class, MyInterfaceImpl2::new)
+                .build();
+
+        final CollectorServiceOnConstructor collector = repo.get(CollectorServiceOnConstructor.class);
         Assert.assertNotNull(collector);
         Assert.assertEquals(2, collector.getImplementations().size());
     }

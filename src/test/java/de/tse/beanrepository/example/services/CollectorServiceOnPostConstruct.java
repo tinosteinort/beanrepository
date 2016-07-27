@@ -6,7 +6,7 @@ import de.tse.beanrepository.PostConstructible;
 import java.util.HashSet;
 import java.util.Set;
 
-public class CollectorServiceOnPostConstruct implements PostConstructible{
+public class CollectorServiceOnPostConstruct implements PostConstructible {
 
     private final Set<MyInterface> implementations = new HashSet<>();
 

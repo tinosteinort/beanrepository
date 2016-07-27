@@ -27,8 +27,7 @@ public class BeanRepository {
         final Set<T> result = new HashSet<T>();
         for (BeanProvider provider : beanCreators.values()) {
             final Object bean = provider.getBean(this, true);
-            final Class<?> beanClass = bean.getClass();
-            if (cls.isAssignableFrom(beanClass)) {
+            if (cls.isAssignableFrom(bean.getClass())) {
                 result.add((T) bean);
             }
         }
