@@ -2,7 +2,10 @@ package de.tse.beanrepository.example;
 
 import de.tse.beanrepository.BeanRepository;
 import de.tse.beanrepository.example.services.*;
+import org.junit.Assert;
 import org.junit.Test;
+
+import java.util.Set;
 
 /**
  * No valid Tests, but it shows the Functionality of the BeanRepository.
@@ -80,5 +83,30 @@ public class ExampleTest {
                 .build();
 
         throw new RuntimeException("Should never reach");
+    }
+
+    @Test public void getAllBeansOfType() {
+
+        final BeanRepository repo = new BeanRepository.BeanRepositoryBuilder()
+                .singleton(MyInterfaceImpl1.class, MyInterfaceImpl1::new)
+                .singleton(MyInterfaceImpl2.class, MyInterfaceImpl2::new)
+                .build();
+
+        final Set<MyInterface> beansOfType = repo.getBeansOfType(MyInterface.class);
+        Assert.assertNotNull(beansOfType);
+        Assert.assertEquals(2, beansOfType.size());
+    }
+
+    @Test public void getAllBeansOfTypeWithinOnPostConstruct() {
+
+        final BeanRepository repo = new BeanRepository.BeanRepositoryBuilder()
+                .singleton(MyInterfaceImpl1.class, MyInterfaceImpl1::new)
+                .singleton(MyInterfaceImpl2.class, MyInterfaceImpl2::new)
+                .singleton(CollectorServiceOnPostConstruct.class, CollectorServiceOnPostConstruct::new)
+                .build();
+
+        final CollectorServiceOnPostConstruct collector = repo.get(CollectorServiceOnPostConstruct.class);
+        Assert.assertNotNull(collector);
+        Assert.assertEquals(2, collector.getImplementations().size());
     }
 }

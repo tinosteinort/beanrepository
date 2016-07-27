@@ -1,7 +1,9 @@
 package de.tse.beanrepository;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -19,6 +21,18 @@ public class BeanRepository {
             throw new RuntimeException("No Bean registered for Class " + cls.getName());
         }
         return provider.getBean(this, false);
+    }
+
+    public <T> Set<T> getBeansOfType(final Class<T> cls) {
+        final Set<T> result = new HashSet<T>();
+        for (BeanProvider provider : beanCreators.values()) {
+            final Object bean = provider.getBean(this, true);
+            final Class<?> beanClass = bean.getClass();
+            if (cls.isAssignableFrom(beanClass)) {
+                result.add((T) bean);
+            }
+        }
+        return result;
     }
 
     public static class BeanRepositoryBuilder {
