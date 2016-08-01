@@ -27,8 +27,9 @@ See [ExampleTest.java](src/test/java/de/tse/beanrepository/example/ExampleTest.j
 * Only eager Creation of Beans
 * Only Constructor Injection possible
     * Every Bean needs a Default Constructor or a Constructor with
-       the BeanRepository as Parameter
+       the BeanAccessor as Parameter
     * Every Bean has to store its Dependencies in its own Constructor
+       or in its onPostConstruct() Method
 * No initialisation Code allowed in Constructor
     * Constructor may be called multiple times while Creation of BeanFactory
     * use [PostConstructible](src/main/java/de/tse/beanrepository/PostConstructible.java)

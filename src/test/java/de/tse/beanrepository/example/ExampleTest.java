@@ -22,7 +22,7 @@ public class ExampleTest {
                 .singleton(PrintService.class, PrintService::new)
                 .build();
 
-        final MailService mailService = repo.get(MailService.class);
+        final MailService mailService = repo.getBean(MailService.class);
         mailService.sendMail("You", "Hi!");
     }
 
@@ -34,7 +34,7 @@ public class ExampleTest {
                 .instance(values)
                 .build();
 
-        for (String value : repo.get(String[].class)) {
+        for (String value : repo.getBean(String[].class)) {
             System.out.println(value);
         }
     }
@@ -48,9 +48,9 @@ public class ExampleTest {
                 .singleton(ServiceWithPostConstruct.class, ServiceWithPostConstruct::new)
                 .build();
 
-        repo.get(ServiceWithPostConstruct.class);
-        repo.get(ServiceWithPostConstruct.class);
-        repo.get(ServiceWithPostConstruct.class);
+        repo.getBean(ServiceWithPostConstruct.class);
+        repo.getBean(ServiceWithPostConstruct.class);
+        repo.getBean(ServiceWithPostConstruct.class);
         // see System.out: only one output has to appear for this test
     }
 
@@ -63,16 +63,16 @@ public class ExampleTest {
                 .prototype(ServiceWithPostConstruct.class, ServiceWithPostConstruct::new)
                 .build();
 
-        repo.get(ServiceWithPostConstruct.class);
-        repo.get(ServiceWithPostConstruct.class);
-        repo.get(ServiceWithPostConstruct.class);
+        repo.getBean(ServiceWithPostConstruct.class);
+        repo.getBean(ServiceWithPostConstruct.class);
+        repo.getBean(ServiceWithPostConstruct.class);
         // see System.out: three outputs has to appear for this test
     }
 
     /**
      * ServiceA depends on ServiceB and ServiceB depends on ServiceA.
      *  This cyclic Reference should lead to an Error on start up, not
-     *  until a Bean is requested by repo.get(...)
+     *  until a Bean is requested by repo.getBean(...)
      */
     @Test(expected = StackOverflowError.class)
     public void cyclicReferenceCheckOnBeanRepositoryInitialisation() {
@@ -97,7 +97,11 @@ public class ExampleTest {
         Assert.assertEquals(2, beansOfType.size());
     }
 
-    @Test public void getAllBeansOfTypeWithinOnPostConstruct() {
+    /**
+     * To collect beans of a specific Type, the onPostConstruct Method has to be used. It is not
+     *  possible to collect those beans from the Constructor.
+     */
+    @Test public void collectBeansOfSpecificType() {
 
         final BeanRepository repo = new BeanRepository.BeanRepositoryBuilder()
                 .singleton(CollectorServiceOnPostConstruct.class, CollectorServiceOnPostConstruct::new)
@@ -105,20 +109,7 @@ public class ExampleTest {
                 .singleton(MyInterfaceImpl2.class, MyInterfaceImpl2::new)
                 .build();
 
-        final CollectorServiceOnPostConstruct collector = repo.get(CollectorServiceOnPostConstruct.class);
-        Assert.assertNotNull(collector);
-        Assert.assertEquals(2, collector.getImplementations().size());
-    }
-
-    @Test public void getAllBeansOfTypeWithinConstructor() {
-
-        final BeanRepository repo = new BeanRepository.BeanRepositoryBuilder()
-                .singleton(CollectorServiceOnConstructor.class, CollectorServiceOnConstructor::new)
-                .singleton(MyInterfaceImpl1.class, MyInterfaceImpl1::new)
-                .singleton(MyInterfaceImpl2.class, MyInterfaceImpl2::new)
-                .build();
-
-        final CollectorServiceOnConstructor collector = repo.get(CollectorServiceOnConstructor.class);
+        final CollectorServiceOnPostConstruct collector = repo.getBean(CollectorServiceOnPostConstruct.class);
         Assert.assertNotNull(collector);
         Assert.assertEquals(2, collector.getImplementations().size());
     }

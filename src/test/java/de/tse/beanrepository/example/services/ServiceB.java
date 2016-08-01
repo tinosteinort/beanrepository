@@ -1,13 +1,13 @@
 package de.tse.beanrepository.example.services;
 
-import de.tse.beanrepository.BeanRepository;
+import de.tse.beanrepository.BeanAccessor;
 
 public class ServiceB {
 
     private final ServiceA serviceA;
 
-    public ServiceB(final BeanRepository repo) {
-        this.serviceA = repo.get(ServiceA.class);
+    public ServiceB(final BeanAccessor beans) {
+        this.serviceA = beans.getBean(ServiceA.class);
     }
 
     public void print(final String value) {
