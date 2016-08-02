@@ -49,28 +49,39 @@ public class BeanRepository {
         private final Map<Class<?>, BeanProvider> beanCreators = new HashMap<>();
 
         public <T> BeanRepositoryBuilder singleton(final Class<T> cls, final Function<BeanAccessor, T> creator) {
+            validateBeanId(cls);
             beanCreators.put(cls, new SingletonProvider(creator));
             return this;
         }
 
         public <T> BeanRepositoryBuilder singleton(final Class<T> cls, final Supplier<T> creator) {
+            validateBeanId(cls);
             beanCreators.put(cls, new SingletonProvider(repository -> creator.get()));
             return this;
         }
 
         public <T> BeanRepositoryBuilder prototype(final Class<T> cls, final Function<BeanAccessor, T> creator) {
+            validateBeanId(cls);
             beanCreators.put(cls, new PrototypeProvider(creator));
             return this;
         }
 
         public <T> BeanRepositoryBuilder prototype(final Class<T> cls, final Supplier<T> creator) {
+            validateBeanId(cls);
             beanCreators.put(cls, new PrototypeProvider(repository -> creator.get()));
             return this;
         }
 
         public <T> BeanRepositoryBuilder instance(final T instance) {
+            validateBeanId(instance.getClass());
             beanCreators.put(instance.getClass(), new InstanceProvider(instance));
             return this;
+        }
+
+        private void validateBeanId(final Class<?> cls) {
+            if (beanCreators.containsKey(cls)) {
+                throw new IllegalArgumentException("There is already a bean of Type: " + cls);
+            }
         }
 
         public BeanRepository build() {

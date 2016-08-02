@@ -121,4 +121,27 @@ public class ExampleTest {
                 .singleton(ServiceWithForbiddenCast.class, ServiceWithForbiddenCast::new)
                 .build();
     }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void registerBeansWithSameClassMultipleTimes() {
+
+        final BeanRepository repo = new BeanRepository.BeanRepositoryBuilder()
+                .singleton(MyInterface.class, MyInterfaceImpl1::new)
+                .singleton(MyInterface.class, MyInterfaceImpl2::new)
+                .build();
+    }
+
+    @Test public void registerBeansWithDifferentClassMultipleTimes() {
+
+        final BeanRepository repo = new BeanRepository.BeanRepositoryBuilder()
+                .singleton(MyInterfaceImpl1.class, MyInterfaceImpl1::new)
+                .singleton(MyInterfaceImpl2.class, MyInterfaceImpl2::new)
+                .build();
+
+        Assert.assertNotNull(repo.getBeansOfType(MyInterface.class));
+        Assert.assertEquals(2, repo.getBeansOfType(MyInterface.class).size());
+        Assert.assertNotNull(repo.getBean(MyInterfaceImpl1.class));
+        Assert.assertNotNull(repo.getBean(MyInterfaceImpl2.class));
+        Assert.assertNotEquals(repo.getBean(MyInterfaceImpl1.class), repo.getBean(MyInterfaceImpl2.class));
+    }
 }
