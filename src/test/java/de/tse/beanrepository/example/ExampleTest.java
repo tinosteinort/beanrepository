@@ -113,4 +113,12 @@ public class ExampleTest {
         Assert.assertNotNull(collector);
         Assert.assertEquals(2, collector.getImplementations().size());
     }
+
+    @Test(expected = ClassCastException.class)
+    public void denyCastToBeanRepository() {
+
+        final BeanRepository repo = new BeanRepository.BeanRepositoryBuilder()
+                .singleton(ServiceWithForbiddenCast.class, ServiceWithForbiddenCast::new)
+                .build();
+    }
 }

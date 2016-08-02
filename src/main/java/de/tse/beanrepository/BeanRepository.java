@@ -9,11 +9,12 @@ import java.util.function.Supplier;
 
 public class BeanRepository {
 
-    private final Map<Class<?>, BeanProvider> beanCreators;
+    private final Map<Class<?>, BeanProvider> beanCreators = new HashMap<>();
     private final BeanAccessor accessor = new BeanRepositoryShelter(this);
+    private final PostConstructor postConstructor = new PostConstructor(this);
 
     private BeanRepository(final Map<Class<?>, BeanProvider> beanCreators) {
-        this.beanCreators = beanCreators;
+        this.beanCreators.putAll(beanCreators);
     }
 
     public <T> T getBean(final Class<T> cls) {
@@ -22,10 +23,6 @@ public class BeanRepository {
             throw new RuntimeException("No Bean registered for Class " + cls.getName());
         }
         return provider.getBean(this, false);
-    }
-
-    BeanAccessor accessor() {
-        return accessor;
     }
 
     public <T> Set<T> getBeansOfType(final Class<T> cls) {
@@ -39,6 +36,14 @@ public class BeanRepository {
         return result;
     }
 
+    BeanAccessor accessor() {
+        return accessor;
+    }
+
+    void postConstruct(final Object bean, final boolean dryRun) {
+        postConstructor.postConstruct(bean, dryRun);
+    }
+
     public static class BeanRepositoryBuilder {
 
         private final Map<Class<?>, BeanProvider> beanCreators = new HashMap<>();
@@ -49,7 +54,7 @@ public class BeanRepository {
         }
 
         public <T> BeanRepositoryBuilder singleton(final Class<T> cls, final Supplier<T> creator) {
-            beanCreators.put(cls, new SingletonProvider((Function<BeanAccessor, T>) repository -> creator.get()));
+            beanCreators.put(cls, new SingletonProvider(repository -> creator.get()));
             return this;
         }
 
@@ -59,7 +64,7 @@ public class BeanRepository {
         }
 
         public <T> BeanRepositoryBuilder prototype(final Class<T> cls, final Supplier<T> creator) {
-            beanCreators.put(cls, new PrototypeProvider((Function<BeanAccessor, T>) repository -> creator.get()));
+            beanCreators.put(cls, new PrototypeProvider(repository -> creator.get()));
             return this;
         }
 
