@@ -7,7 +7,9 @@ class InstanceProvider implements BeanProvider {
     private final Object instance;
 
     InstanceProvider(final Object instance) {
-        Objects.requireNonNull(instance, "Non null instance required");
+        if (instance == null) {
+            throw new IllegalArgumentException("Instance must not be null");
+        }
         this.instance = instance;
     }
 
