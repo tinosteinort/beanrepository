@@ -30,7 +30,7 @@ public class BeanRepository {
         for (BeanProvider provider : beanCreators.values()) {
             final Object bean = provider.getBean(this, true);
             if (cls.isAssignableFrom(bean.getClass())) {
-                result.add((T) bean);
+                result.add((T) provider.getBean(this, false));
             }
         }
         return result;
