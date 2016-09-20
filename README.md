@@ -40,3 +40,4 @@ See [ExampleTest.java](src/test/java/de/tse/beanrepository/example/ExampleTest.j
     * `repository.getBean(Class<T> cls)`
     * `repository.getBeansOfType(Class<T> cls)`
 * No Modularity
+* No Request or Session Scope
