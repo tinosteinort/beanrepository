@@ -95,14 +95,6 @@ public class BeanRepository {
             }
         }
 
-        public BeanRepository build() {
-            final BeanRepository repository = new BeanRepository(name, beanCreators);
-            for (BeanProvider beanProvider : repository.beanCreators.values()) {
-                beanProvider.getBean(repository, true);
-            }
-            return repository;
-        }
-
         public BeanRepository build(final BeanRepository ...otherRepositories) {
 
             final Map<Class<?>, BeanProvider> compositeCreators = new HashMap<>();
