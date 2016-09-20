@@ -39,5 +39,4 @@ See [ExampleTest.java](src/test/java/de/tse/beanrepository/example/ExampleTest.j
 * A Bean is only accessible by the Class in this two ways:
     * `repository.getBean(Class<T> cls)`
     * `repository.getBeansOfType(Class<T> cls)`
-* No Modularity
 * No Request or Session Scope

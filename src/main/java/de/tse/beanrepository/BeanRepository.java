@@ -91,5 +91,35 @@ public class BeanRepository {
             }
             return repository;
         }
+
+        public BeanRepository build(final BeanRepository ...otherRepositories) {
+
+            final Map<Class<?>, BeanProvider> compositeCreators = new HashMap<>();
+            for (BeanRepository other : otherRepositories) {
+                transferBeans(other.beanCreators, compositeCreators);
+            }
+            transferBeans(beanCreators, compositeCreators);
+
+            final BeanRepository repository = new BeanRepository(compositeCreators);
+            executeDryRun(repository);
+
+            return repository;
+        }
+
+        private BeanRepository executeDryRun(final BeanRepository repository) {
+            for (BeanProvider beanProvider : repository.beanCreators.values()) {
+                beanProvider.getBean(repository, true);
+            }
+            return repository;
+        }
+
+        private void transferBeans(final Map<Class<?>, BeanProvider> source, final Map<Class<?>, BeanProvider> target) {
+            for (Map.Entry<Class<?>, BeanProvider> entry : source.entrySet()) {
+                if (target.containsKey(entry.getKey())) {
+                    throw new IllegalArgumentException("There is already a bean of Type: " + entry.getKey());
+                }
+                target.put(entry.getKey(), entry.getValue());
+            }
+        }
     }
 }
