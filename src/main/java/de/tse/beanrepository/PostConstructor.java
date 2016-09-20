@@ -8,11 +8,7 @@ class PostConstructor {
         this.repository = repository;
     }
 
-    public void postConstruct(final Object bean, final boolean dryRun) {
-        if (dryRun) {
-            return;
-        }
-
+    public void postConstruct(final Object bean) {
         if (bean instanceof PostConstructible) {
             ((PostConstructible) bean).onPostConstruct(repository);
         }

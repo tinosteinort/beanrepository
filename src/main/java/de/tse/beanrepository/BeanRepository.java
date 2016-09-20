@@ -40,8 +40,8 @@ public class BeanRepository {
         return accessor;
     }
 
-    void postConstruct(final Object bean, final boolean dryRun) {
-        postConstructor.postConstruct(bean, dryRun);
+    void postConstruct(final Object bean) {
+        postConstructor.postConstruct(bean);
     }
 
     public static class BeanRepositoryBuilder {

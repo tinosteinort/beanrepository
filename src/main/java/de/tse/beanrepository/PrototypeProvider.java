@@ -12,7 +12,9 @@ class PrototypeProvider implements BeanProvider {
 
     @Override public <T> T getBean(final BeanRepository repository, final boolean dryRun) {
         final Object instance = creator.apply(repository.accessor());
-        repository.postConstruct(instance, dryRun);
+        if (!dryRun) {
+            repository.postConstruct(instance);
+        }
         return (T) instance;
     }
 }
