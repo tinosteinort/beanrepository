@@ -1,19 +1,18 @@
 package de.tse.beanrepository;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class BeanRepository {
 
+    private final String name;
     private final Map<Class<?>, BeanProvider> beanCreators = new HashMap<>();
     private final BeanAccessor accessor = new BeanRepositoryShelter(this);
     private final PostConstructor postConstructor = new PostConstructor(this);
 
-    private BeanRepository(final Map<Class<?>, BeanProvider> beanCreators) {
+    private BeanRepository(final String name, final Map<Class<?>, BeanProvider> beanCreators) {
+        this.name = Objects.toString(name, "<anonymous>");
         this.beanCreators.putAll(beanCreators);
     }
 
@@ -44,9 +43,21 @@ public class BeanRepository {
         postConstructor.postConstruct(bean);
     }
 
+    @Override public String toString() {
+        return "[" + BeanRepository.class.getSimpleName() + ": " + name + "]";
+    }
+
     public static class BeanRepositoryBuilder {
 
+        private final String name;
         private final Map<Class<?>, BeanProvider> beanCreators = new HashMap<>();
+
+        public BeanRepositoryBuilder(final String name) {
+            this.name = name;
+        }
+        public BeanRepositoryBuilder() {
+            this(null);
+        }
 
         public <T> BeanRepositoryBuilder singleton(final Class<T> cls, final Function<BeanAccessor, T> creator) {
             validateBeanId(cls);
@@ -85,7 +96,7 @@ public class BeanRepository {
         }
 
         public BeanRepository build() {
-            final BeanRepository repository = new BeanRepository(beanCreators);
+            final BeanRepository repository = new BeanRepository(name, beanCreators);
             for (BeanProvider beanProvider : repository.beanCreators.values()) {
                 beanProvider.getBean(repository, true);
             }
@@ -100,7 +111,7 @@ public class BeanRepository {
             }
             transferBeans(beanCreators, compositeCreators);
 
-            final BeanRepository repository = new BeanRepository(compositeCreators);
+            final BeanRepository repository = new BeanRepository(name, compositeCreators);
             executeDryRun(repository);
 
             return repository;

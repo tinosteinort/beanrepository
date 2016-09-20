@@ -147,15 +147,15 @@ public class ExampleTest {
 
     @Test public void collectBeansOverModuleBounds() {
 
-        final BeanRepository repo1 = new BeanRepository.BeanRepositoryBuilder()
+        final BeanRepository repo1 = new BeanRepository.BeanRepositoryBuilder("LogicModule")
                 .singleton(MyInterfaceImpl1.class, MyInterfaceImpl1::new)
                 .build();
 
-        final BeanRepository repo2 = new BeanRepository.BeanRepositoryBuilder()
+        final BeanRepository repo2 = new BeanRepository.BeanRepositoryBuilder("DataModule")
                 .singleton(MyInterfaceImpl2.class, MyInterfaceImpl2::new)
                 .build();
 
-        final BeanRepository repo = new BeanRepository.BeanRepositoryBuilder()
+        final BeanRepository repo = new BeanRepository.BeanRepositoryBuilder("CompositeModule")
                 .build(repo1, repo2);
 
         final Set<MyInterface> beans = repo.getBeansOfType(MyInterface.class);
@@ -164,11 +164,11 @@ public class ExampleTest {
 
     @Test public void dependencyToOtherModule() {
 
-        final BeanRepository repo1 = new BeanRepository.BeanRepositoryBuilder()
+        final BeanRepository repo1 = new BeanRepository.BeanRepositoryBuilder("BaseModule")
                 .singleton(PrintService.class, PrintService::new)
                 .build();
 
-        final BeanRepository repo = new BeanRepository.BeanRepositoryBuilder()
+        final BeanRepository repo = new BeanRepository.BeanRepositoryBuilder("AdvancedModule")
                 .singleton(MailService.class, MailService::new)
                 .build(repo1);
 
