@@ -6,11 +6,13 @@ import java.util.function.Function;
 
 class SingletonProvider implements BeanProvider {
 
+    private final String repositoryId;
     private final Function<BeanAccessor, ?> creator;
     private volatile Object instance;
     private final Lock lock = new ReentrantLock();
 
-    SingletonProvider(final Function<BeanAccessor, ?> creator) {
+    SingletonProvider(final String repositoryId, final Function<BeanAccessor, ?> creator) {
+        this.repositoryId = repositoryId;
         this.creator = creator;
     }
 
@@ -38,5 +40,9 @@ class SingletonProvider implements BeanProvider {
         finally {
             lock.unlock();
         }
+    }
+
+    @Override public String getRepositoryId() {
+        return repositoryId;
     }
 }

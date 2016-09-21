@@ -12,7 +12,7 @@ public class BeanRepository {
     private final PostConstructor postConstructor = new PostConstructor(this);
 
     private BeanRepository(final String name, final Map<Class<?>, BeanProvider> beanCreators) {
-        this.name = Objects.toString(name, "<anonymous>");
+        this.name = name;
         this.beanCreators.putAll(beanCreators);
     }
 
@@ -25,11 +25,11 @@ public class BeanRepository {
     }
 
     public <T> Set<T> getBeansOfType(final Class<T> cls) {
-        final Set<T> result = new HashSet<T>();
+        final Set<T> result = new HashSet<>();
         for (BeanProvider provider : beanCreators.values()) {
             final Object bean = provider.getBean(this, true);
             if (cls.isAssignableFrom(bean.getClass())) {
-                result.add((T) provider.getBean(this, false));
+                result.add(provider.getBean(this, false));
             }
         }
         return result;
@@ -49,11 +49,13 @@ public class BeanRepository {
 
     public static class BeanRepositoryBuilder {
 
+        private static final String ANONYMOUS = "<anonymous>";
+
         private final String name;
         private final Map<Class<?>, BeanProvider> beanCreators = new HashMap<>();
 
         public BeanRepositoryBuilder(final String name) {
-            this.name = name;
+            this.name = Objects.toString(name, ANONYMOUS);
         }
         public BeanRepositoryBuilder() {
             this(null);
@@ -61,31 +63,31 @@ public class BeanRepository {
 
         public <T> BeanRepositoryBuilder singleton(final Class<T> cls, final Function<BeanAccessor, T> creator) {
             validateBeanId(cls);
-            beanCreators.put(cls, new SingletonProvider(creator));
+            beanCreators.put(cls, new SingletonProvider(name, creator));
             return this;
         }
 
         public <T> BeanRepositoryBuilder singleton(final Class<T> cls, final Supplier<T> creator) {
             validateBeanId(cls);
-            beanCreators.put(cls, new SingletonProvider(repository -> creator.get()));
+            beanCreators.put(cls, new SingletonProvider(name, repository -> creator.get()));
             return this;
         }
 
         public <T> BeanRepositoryBuilder prototype(final Class<T> cls, final Function<BeanAccessor, T> creator) {
             validateBeanId(cls);
-            beanCreators.put(cls, new PrototypeProvider(creator));
+            beanCreators.put(cls, new PrototypeProvider(name, creator));
             return this;
         }
 
         public <T> BeanRepositoryBuilder prototype(final Class<T> cls, final Supplier<T> creator) {
             validateBeanId(cls);
-            beanCreators.put(cls, new PrototypeProvider(repository -> creator.get()));
+            beanCreators.put(cls, new PrototypeProvider(name, repository -> creator.get()));
             return this;
         }
 
         public <T> BeanRepositoryBuilder instance(final T instance) {
             validateBeanId(instance.getClass());
-            beanCreators.put(instance.getClass(), new InstanceProvider(instance));
+            beanCreators.put(instance.getClass(), new InstanceProvider(name, instance));
             return this;
         }
 
@@ -115,8 +117,13 @@ public class BeanRepository {
 
         private void transferBeans(final Map<Class<?>, BeanProvider> source, final Map<Class<?>, BeanProvider> target) {
             for (Map.Entry<Class<?>, BeanProvider> entry : source.entrySet()) {
-                if (target.containsKey(entry.getKey())) {
-                    throw new IllegalArgumentException("There is already a bean of Type: " + entry.getKey());
+                final BeanProvider existing = target.get(entry.getKey());
+                if (existing != null) {
+                    throw new IllegalArgumentException(String.format("Error while integrate Modules. " +
+                                    "Bean [%s@%s] already exist in Repository %s."
+                            , entry.getKey().getName(), entry.getValue().getRepositoryId()
+                            , existing.getRepositoryId())
+                    );
                 }
                 target.put(entry.getKey(), entry.getValue());
             }

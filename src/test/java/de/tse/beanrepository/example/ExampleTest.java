@@ -187,4 +187,19 @@ public class ExampleTest {
                 .singleton(MailService.class, MailService::new)
                 .build(); // requires PrintService -> not available -> Error
     }
+
+    @Test(expected = RuntimeException.class)
+    public void sameBeanInDifferentModulesNotAllowed() {
+
+        final BeanRepository module1 = new BeanRepository.BeanRepositoryBuilder("Module1")
+                .singleton(PrintService.class, PrintService::new)
+                .build();
+
+        final BeanRepository module2 = new BeanRepository.BeanRepositoryBuilder("Module2")
+                .singleton(PrintService.class, PrintService::new)
+                .build();
+
+        final BeanRepository repo = new BeanRepository.BeanRepositoryBuilder("ApplicationBeans")
+                .build(module1, module2);
+    }
 }

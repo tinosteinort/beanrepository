@@ -4,9 +4,11 @@ import java.util.function.Function;
 
 class PrototypeProvider implements BeanProvider {
 
+    private final String repositoryId;
     private final Function<BeanAccessor, ?> creator;
 
-    PrototypeProvider(final Function<BeanAccessor, ?> creator) {
+    PrototypeProvider(final String repositoryId, final Function<BeanAccessor, ?> creator) {
+        this.repositoryId = repositoryId;
         this.creator = creator;
     }
 
@@ -16,5 +18,9 @@ class PrototypeProvider implements BeanProvider {
             repository.postConstruct(instance);
         }
         return (T) instance;
+    }
+
+    @Override public String getRepositoryId() {
+        return repositoryId;
     }
 }

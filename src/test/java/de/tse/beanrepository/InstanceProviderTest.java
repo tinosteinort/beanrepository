@@ -8,13 +8,13 @@ public class InstanceProviderTest {
     @Test(expected = IllegalArgumentException.class)
     public void denyNullInstance() {
 
-        new InstanceProvider(null);
+        new InstanceProvider(null, null);
     }
 
     @Test public void instanceNotNull() {
 
         final Object object = new Object();
-        final InstanceProvider provider = new InstanceProvider(object);
+        final InstanceProvider provider = new InstanceProvider(null, object);
 
         Assert.assertNotNull(provider.getBean(null, false));
     }
@@ -22,7 +22,7 @@ public class InstanceProviderTest {
     @Test public void instanceSameObject() {
 
         final Object object = new Object();
-        final InstanceProvider provider = new InstanceProvider(object);
+        final InstanceProvider provider = new InstanceProvider(null, object);
 
         Assert.assertTrue(object == provider.getBean(null, false));
     }

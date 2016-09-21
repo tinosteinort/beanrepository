@@ -15,7 +15,7 @@ public class PrototypeProviderTest {
 
         final Function<BeanAccessor, MyPrototypeService> creator = repository -> new MyPrototypeService();
 
-        final PrototypeProvider provider = new PrototypeProvider(creator);
+        final PrototypeProvider provider = new PrototypeProvider(null, creator);
 
 
         MyPrototypeService bean1 = provider.getBean(repo, false);
@@ -36,7 +36,7 @@ public class PrototypeProviderTest {
         final Function<BeanAccessor, MyPrototypeServiceWithPostConstruct> creator =
                 repository -> new MyPrototypeServiceWithPostConstruct();
 
-        final PrototypeProvider provider = new PrototypeProvider(creator);
+        final PrototypeProvider provider = new PrototypeProvider(null, creator);
 
         MyPrototypeServiceWithPostConstruct bean = provider.getBean(repo, false);
         Assert.assertEquals(1, bean.postConstructCounter);
@@ -53,7 +53,7 @@ public class PrototypeProviderTest {
         final Function<BeanAccessor, MyPrototypeServiceWithPostConstruct> creator =
                 repository -> new MyPrototypeServiceWithPostConstruct();
 
-        final PrototypeProvider provider = new PrototypeProvider(creator);
+        final PrototypeProvider provider = new PrototypeProvider(null, creator);
 
         MyPrototypeServiceWithPostConstruct bean = provider.getBean(repo, true);
         Assert.assertEquals(0, bean.postConstructCounter);

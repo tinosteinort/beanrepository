@@ -15,7 +15,7 @@ public class SingletonProviderTest {
 
         final Function<BeanAccessor, MySingletonService> creator = repoository -> new MySingletonService();
 
-        final SingletonProvider provider = new SingletonProvider(creator);
+        final SingletonProvider provider = new SingletonProvider(null, creator);
 
         MySingletonService bean1 = provider.getBean(repo, false);
         Assert.assertNotNull(bean1);
@@ -35,7 +35,7 @@ public class SingletonProviderTest {
         final Function<BeanAccessor, MySingletonServiceWithPostConstruct> creator =
                 repository -> new MySingletonServiceWithPostConstruct();
 
-        final SingletonProvider provider = new SingletonProvider(creator);
+        final SingletonProvider provider = new SingletonProvider(null, creator);
 
 
         MySingletonServiceWithPostConstruct bean = provider.getBean(repo, false);
@@ -53,7 +53,7 @@ public class SingletonProviderTest {
         final Function<BeanAccessor, MySingletonServiceWithPostConstruct> creator =
                 repository -> new MySingletonServiceWithPostConstruct();
 
-        final SingletonProvider provider = new SingletonProvider(creator);
+        final SingletonProvider provider = new SingletonProvider(null, creator);
 
 
         MySingletonServiceWithPostConstruct bean = provider.getBean(repo, false);
