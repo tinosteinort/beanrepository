@@ -95,6 +95,10 @@ public class BeanRepository {
             }
         }
 
+        public BeanRepository build(final Collection<BeanRepository> otherRepositories) {
+            return build(otherRepositories.toArray(new BeanRepository[otherRepositories.size()]));
+        }
+
         public BeanRepository build(final BeanRepository ...otherRepositories) {
 
             final Map<Class<?>, BeanProvider> compositeCreators = new HashMap<>();
@@ -109,13 +113,6 @@ public class BeanRepository {
             return repository;
         }
 
-        private BeanRepository executeDryRun(final BeanRepository repository) {
-            for (BeanProvider beanProvider : repository.beanCreators.values()) {
-                beanProvider.getBean(repository, true);
-            }
-            return repository;
-        }
-
         private void transferBeans(final Map<Class<?>, BeanProvider> source, final Map<Class<?>, BeanProvider> target) {
             for (Map.Entry<Class<?>, BeanProvider> entry : source.entrySet()) {
                 if (target.containsKey(entry.getKey())) {
@@ -123,6 +120,13 @@ public class BeanRepository {
                 }
                 target.put(entry.getKey(), entry.getValue());
             }
+        }
+
+        private BeanRepository executeDryRun(final BeanRepository repository) {
+            for (BeanProvider beanProvider : repository.beanCreators.values()) {
+                beanProvider.getBean(repository, true);
+            }
+            return repository;
         }
     }
 }
