@@ -1,5 +1,6 @@
 package de.tse.beanrepository.example;
 
+import de.tse.beanrepository.BeanAccessor;
 import de.tse.beanrepository.BeanRepository;
 import de.tse.beanrepository.example.services.*;
 import org.junit.Assert;
@@ -201,5 +202,46 @@ public class ExampleTest {
 
         final BeanRepository repo = new BeanRepository.BeanRepositoryBuilder("ApplicationBeans")
                 .build(module1, module2);
+    }
+
+    @Test public void prototypeWithParameter() {
+
+        final BeanRepository repo = new BeanRepository.BeanRepositoryBuilder()
+                .build();
+
+        final String param = "parameterGeneratedAtRuntime";
+
+        final ServiceWithParameter service = repo.getBean(() -> new ServiceWithParameter(param));
+        service.print("123");
+    }
+
+    @Test public void prototypeWithBeanDependencyAndParameter() {
+
+        final BeanRepository repo = new BeanRepository.BeanRepositoryBuilder()
+                .singleton(PrintService.class, PrintService::new)
+                .build();
+
+        final String param = "parameterGeneratedAtRuntime";
+
+        final ServiceWithBeanDependenciesAndParameter service =
+                repo.getBean((BeanAccessor beans) -> new ServiceWithBeanDependenciesAndParameter(beans, param));
+
+        service.print("PrintService is used to print Text");
+    }
+
+    @Test public void prototypeWithParameterAndPostConstructible() {
+
+        final BeanRepository repo = new BeanRepository.BeanRepositoryBuilder()
+                .singleton(MyInterfaceImpl1.class, MyInterfaceImpl1::new)
+                .singleton(MyInterfaceImpl2.class, MyInterfaceImpl2::new)
+                .build();
+
+        final String param = "PostConstructiblePrototype";
+
+        final ServiceWithParameterPostConstructible service =
+                repo.getBean(() -> new ServiceWithParameterPostConstructible(param));
+
+        service.doSomething();
+        Assert.assertEquals(2, service.getManyBeans().size()); // proofs that onPostConstruct(...) is executed for Prototype Beans with Parameter
     }
 }

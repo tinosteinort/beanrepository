@@ -24,6 +24,16 @@ public class BeanRepository {
         return provider.getBean(this, false);
     }
 
+    public <T> T getBean(final Supplier<T> creator) {
+        final PrototypeProvider provider = new PrototypeProvider(name, repository -> creator.get());
+        return provider.getBean(this, false);
+    }
+
+    public <T> T getBean(final Function<BeanAccessor, T> creator) {
+        final PrototypeProvider provider = new PrototypeProvider(name, creator);
+        return provider.getBean(this, false);
+    }
+
     public <T> Set<T> getBeansOfType(final Class<T> cls) {
         final Set<T> result = new HashSet<>();
         for (BeanProvider provider : beanCreators.values()) {
