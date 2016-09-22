@@ -62,7 +62,7 @@ This Part lists examples, of how the BeanRepository has to be used.
 
 Every Bean that has a Dependency, needs the [BeanAccessor](src/main/java/de/tse/beanrepository/BeanAccessor.java)
  as Parameter, so that the Bean can obtains its own Dependencies.
-```
+```java
     public class PrintService { // no Dependencies -> no BeanAccessor needed
 
         public void print(final String value) {
@@ -91,7 +91,7 @@ In the Constructor it is not allowed to to call `getBeansOfType(Class<T> cls)`, 
  [PostConstructible](src/main/java/de/tse/beanrepository/PostConstructible.java) Interface. This Method is called
  once for each Singleton Bean, and every Time if a Prototype Bean is requested. For Instance Beans this Method is not
  called.
-```
+```java
     public interface MyInterface {
 
         void doSomething(String value);
@@ -125,7 +125,7 @@ In the Constructor it is not allowed to to call `getBeansOfType(Class<T> cls)`, 
 
 To create a `BeanRepository`, the `BeanRepositoryBuilder` has to be used. The Scope of the Bean is defined
  by the Method, called on the `BeanRepositoryBuilder`.
-```
+```java
     final BeanRepository repo = new BeanRepository.BeanRepositoryBuilder()
             .singleton(MailService.class, MailService::new)
             .singleton(PrintService.class, PrintService::new)
@@ -143,7 +143,7 @@ To see how to create a Singleton with the `BeanRepository`, see the Example abov
 ## Instance Scope ##
 
 It is possible to register Instances in the `BeanRepository`. The Bean can be accessed by its Type.
-```
+```java
     final String[] values = new String[] { "a", "b", "c" } ;
 
     final BeanRepository repo = new BeanRepository.BeanRepositoryBuilder()
@@ -159,7 +159,7 @@ It is possible to register Instances in the `BeanRepository`. The Bean can be ac
 
 A Prototype Bean is created every Time it is requested. In this case `service1` and `service2` are
  different Beans.
-```
+```java
     final BeanRepository repo = new BeanRepository.BeanRepositoryBuilder()
             .prototype(PrintService.class, PrintService::new)
             .build();
@@ -171,7 +171,7 @@ A Prototype Bean is created every Time it is requested. In this case `service1` 
 ## Prototype Beans with Parameter ##
 
 It is possible that some Prototype Beans needs Parameter which are available only at Runtime:
-```
+```java
     public class ServiceWithParameter {
 
         private final String id;
@@ -187,7 +187,7 @@ It is possible that some Prototype Beans needs Parameter which are available onl
 ```
 A Prototype Bean with Parameter can not registered in the `BeanRepository`, but it is accessible
  by the `BeanRepository`:
-```
+```java
     final BeanRepository repo = new BeanRepository.BeanRepositoryBuilder()
             .build();
 
@@ -197,7 +197,7 @@ A Prototype Bean with Parameter can not registered in the `BeanRepository`, but 
     service.print("123");
 ```
 It is also possible, to get other Beans from within a Prototype Bean with Parameter. Example:
-```
+```java
     public class ServiceWithBeanDependenciesAndParameter {
 
         private final PrintService printService;
@@ -214,7 +214,7 @@ It is also possible, to get other Beans from within a Prototype Bean with Parame
     }
 ```
 Accessing a Prototype Bean with Dependencies and Parameter:
-```
+```java
     final BeanRepository repo = new BeanRepository.BeanRepositoryBuilder()
             .singleton(PrintService.class, PrintService::new)
             .build();
@@ -237,7 +237,7 @@ Important: Every `BeanRepository` has to be valid on its own.
 
 So a Tree can be build out of BeanRepositories. If two BeanRepositories has no Correlation, the Beans
  of the Repositories has no Correlation, too.
-```
+```java
     final BeanRepository logicRepo = new BeanRepository.BeanRepositoryBuilder("LogicModule")
             .singleton(MyInterfaceImpl1.class, MyInterfaceImpl1::new)
             .build();
