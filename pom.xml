@@ -5,11 +5,40 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>de.tse</groupId>
+    <groupId>de.tse.beanrepository</groupId>
     <artifactId>beanrepository</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
+    <name>${project.artifactId}-${project.version}</name>
+
+    <description>A Bean Obtaining Framework, kind of Dependency Injection. Without Reflection and Annotation</description>
+
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <scm>
+        <connection>scm:git:git@github.com:tinosteinort/beanrepository.git</connection>
+        <developerConnection>scm:git:git@github.com:tinosteinort/beanrepository.git</developerConnection>
+        <url>https://github.com/tinosteinort/beanrepository</url>
+    </scm>
+
+    <developers>
+        <developer>
+            <id>tinosteinort</id>
+            <name>Tino Steinort</name>
+            <email>tinosteinort@live.de</email>
+            <organizationUrl>https://github.com/tinosteinort</organizationUrl>
+        </developer>
+    </developers>
 
     <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <version.maven-compiler-plugin>3.5.1</version.maven-compiler-plugin>
         <version.junit>4.12</version.junit>
     </properties>
