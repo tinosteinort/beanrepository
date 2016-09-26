@@ -28,6 +28,17 @@
         <url>https://github.com/tinosteinort/beanrepository</url>
     </scm>
 
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
+
     <developers>
         <developer>
             <id>tinosteinort</id>
@@ -42,6 +53,7 @@
         <version.maven-compiler-plugin>3.5.1</version.maven-compiler-plugin>
         <version.maven-source-plugin>2.2.1</version.maven-source-plugin>
         <version.maven-javadoc-plugin>2.9.1</version.maven-javadoc-plugin>
+        <version.maven-gpg-plugin>1.5</version.maven-gpg-plugin>
         <version.junit>4.12</version.junit>
     </properties>
 
@@ -78,6 +90,10 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+            </plugin>
         </plugins>
 
         <pluginManagement>
@@ -113,6 +129,20 @@
                             <id>attach-javadocs</id>
                             <goals>
                                 <goal>jar</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-gpg-plugin</artifactId>
+                    <version>${version.maven-gpg-plugin}</version>
+                    <executions>
+                        <execution>
+                            <id>sign-artifacts</id>
+                            <phase>verify</phase>
+                            <goals>
+                                <goal>sign</goal>
                             </goals>
                         </execution>
                     </executions>
