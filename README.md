@@ -12,7 +12,7 @@ So, this was the PERFECT time to create my own (very) limited Dependency
 Since then, I work on this Project, even if the origin Projects needs no
  more Features.
 
-See [ExampleTest.java](src/test/java/de/tse/beanrepository/example/ExampleTest.java)
+See [ExampleTest](src/test/java/com/github/tinosteinort/beanrepository/example/ExampleTest.java)
  for Examples.
 
 
@@ -30,12 +30,13 @@ With this Framework, every Bean has to get its own Dependencies from a Repositor
 * No use of Reflection or Annotation Magic
 * Support for Singletons and Instances
 * Fail Fast: Detection of cyclic References on start up
+* Execute Code after Initialisation of the Bean
 
 
 ## Additional Features ##
 
 * Support for Prototypes (even with Parameters)
-* Detect Beans of a specific Type
+* Detect Beans of a specific Type: `Set<T> getBeansOfType(final Class<T> cls)`
 * Modularity
 
 
@@ -60,7 +61,8 @@ This Part lists examples, of how the BeanRepository has to be used.
 
 ## Get needed Beans in Constructor ##
 
-Every Bean that has a Dependency, needs the [BeanAccessor](src/main/java/de/tse/beanrepository/BeanAccessor.java)
+Every Bean that has a Dependency, needs the
+ [BeanAccessor](src/main/java/com/github/tinosteinort/beanrepository/BeanAccessor.java)
  as Parameter, so that the Bean can obtains its own Dependencies.
 ```java
     public class PrintService { // no Dependencies -> no BeanAccessor needed
@@ -86,8 +88,8 @@ Every Bean that has a Dependency, needs the [BeanAccessor](src/main/java/de/tse/
 
 ## Initialisation in onPostConstruct() to get needed Beans ##
 
-In the Constructor it is not allowed to to call `getBeansOfType(Class<T> cls)`, because at this Time, not every
- Bean is registered. To get all Beans of a Type, use the `onPostConstruct()` Method out of the
+In the Constructor it is not allowed (and not possible) to to call `getBeansOfType(Class<T> cls)`, because at this
+ Time, not every Bean may be registered. To get all Beans of a Type, use the `onPostConstruct()` Method out of the
  [PostConstructible](src/main/java/de/tse/beanrepository/PostConstructible.java) Interface. This Method is called
  once for each Singleton Bean, and every Time if a Prototype Bean is requested. For Instance Beans this Method is not
  called.
@@ -138,7 +140,7 @@ To create a `BeanRepository`, the `BeanRepositoryBuilder` has to be used. The Sc
 ## Singleton Scope ##
 
 To see how to create a Singleton with the `BeanRepository`, see the Example above. It is guaranteed, that
- only one (and same) Instance of a Singleton Bean is in use.
+ only one (and the same) Instance of the Class is provided by the `BeanRepository`.
 
 ## Instance Scope ##
 
