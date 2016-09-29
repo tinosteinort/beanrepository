@@ -55,6 +55,18 @@ With this Framework, every Bean has to get its own Dependencies from a Repositor
 * A Bean can only be accessed by a Class
 
 
+## Other Frameworks ##
+
+After some more research: there are plenty of Dependency Injection Frameworks:
+* [JayWire](https://github.com/vanillasource/jaywire)
+* [net.nanojl:injector](https://nanojl.net/injector/)
+* [Feather](https://github.com/zsoltherpai/feather)
+* [Silk](https://github.com/jbee/silk)
+* and many more...
+
+But there is no Reason for a Developer, to don't write an own Dependency Framework. Just for Fun :-)
+
+
 # User Guide #
 
 This Part lists examples, of how the BeanRepository has to be used.
