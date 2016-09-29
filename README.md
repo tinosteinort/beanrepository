@@ -59,6 +59,17 @@ With this Framework, every Bean has to get its own Dependencies from a Repositor
 
 This Part lists examples, of how the BeanRepository has to be used.
 
+## Maven ##
+
+Include the following Artifact to use the `BeanRepository`:
+```xml
+<dependency>
+    <groupId>com.github.tinosteinort</groupId>
+    <artifactId>beanrepository</artifactId>
+    <version>1.0</version>
+</dependency>
+```
+
 ## Get needed Beans in Constructor ##
 
 Every Bean that has a Dependency, needs the
