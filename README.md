@@ -78,7 +78,7 @@ Include the following Artifact to use the `BeanRepository`:
 <dependency>
     <groupId>com.github.tinosteinort</groupId>
     <artifactId>beanrepository</artifactId>
-    <version>1.0</version>
+    <version>1.1</version>
 </dependency>
 ```
 
