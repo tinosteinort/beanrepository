@@ -290,5 +290,10 @@ If working with Modules, dont call `getBean()` before all Modules are wired toge
 ## v1.1 ##
 Fixes:
 * `onPostConstruct` was called multiple Times on referenced Beans
+
+Enhancements
+* Add other `getBean(...)` Methods to `BeanAccessor`. This allows to generate `prototype` Beans in
+   a Constructor
+
 ## v1.0 ##
 Initial Version

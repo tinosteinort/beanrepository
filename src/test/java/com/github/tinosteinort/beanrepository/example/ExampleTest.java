@@ -260,4 +260,15 @@ public class ExampleTest {
         final ServiceWithoutPostConstruct service = repo.getBean(ServiceWithoutPostConstruct.class);
         Assert.assertEquals(1, ServiceWithPostConstructCounter.getPostConstructCount());
     }
+
+    @Test public void singletonBeanWithPrototypeBeanInConstructor() {
+
+        final BeanRepository repo = new BeanRepository.BeanRepositoryBuilder()
+                .singleton(MailService.class, MailService::new)
+                .prototype(PrintService.class, PrintService::new) // Should be initialised only once
+                .build();
+
+        final MailService mailService = repo.getBean(MailService.class);
+        mailService.sendMail("You", "Hi!");
+    }
 }
