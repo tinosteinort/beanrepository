@@ -15,6 +15,7 @@ public class BeanRepository {
     private final Map<Class<?>, BeanProvider> beanCreators = new HashMap<>();
     private final BeanAccessor accessor = new BeanRepositoryShelter(this);
     private final PostConstructor postConstructor = new PostConstructor(this);
+    private final DryRunAware dryRun = new DryRunAware();
 
     private BeanRepository(final String name, final Map<Class<?>, BeanProvider> beanCreators) {
         this.name = name;
@@ -36,7 +37,7 @@ public class BeanRepository {
         if (provider == null) {
             throw new RuntimeException("No Bean registered for Class " + cls.getName());
         }
-        return provider.getBean(this, false);
+        return provider.getBean(this, dryRun.isDryRun());
     }
 
     /**
@@ -54,7 +55,7 @@ public class BeanRepository {
      */
     public <T> T getBean(final Supplier<T> creator) {
         final PrototypeProvider provider = new PrototypeProvider(name, repository -> creator.get());
-        return provider.getBean(this, false);
+        return provider.getBean(this, dryRun.isDryRun());
     }
 
     /**
@@ -72,7 +73,7 @@ public class BeanRepository {
      */
     public <T> T getBean(final Function<BeanAccessor, T> creator) {
         final PrototypeProvider provider = new PrototypeProvider(name, creator);
-        return provider.getBean(this, false);
+        return provider.getBean(this, dryRun.isDryRun());
     }
 
     /**
@@ -90,7 +91,7 @@ public class BeanRepository {
         for (BeanProvider provider : beanCreators.values()) {
             final Object bean = provider.getBean(this, true);
             if (cls.isAssignableFrom(bean.getClass())) {
-                result.add(provider.getBean(this, false));
+                result.add(provider.getBean(this, dryRun.isDryRun()));
             }
         }
         return result;
@@ -102,6 +103,14 @@ public class BeanRepository {
 
     void postConstruct(final Object bean) {
         postConstructor.postConstruct(bean);
+    }
+
+    private void executeDryRun() {
+        dryRun.execute(() -> {
+            for (BeanProvider beanProvider : beanCreators.values()) {
+                beanProvider.getBean(this, dryRun.isDryRun());
+            }
+        });
     }
 
     @Override public String toString() {
@@ -257,7 +266,7 @@ public class BeanRepository {
             transferBeans(beanCreators, compositeCreators);
 
             final BeanRepository repository = new BeanRepository(name, compositeCreators);
-            executeDryRun(repository);
+            repository.executeDryRun();
 
             return repository;
         }
@@ -274,13 +283,6 @@ public class BeanRepository {
                 }
                 target.put(entry.getKey(), entry.getValue());
             }
-        }
-
-        private BeanRepository executeDryRun(final BeanRepository repository) {
-            for (BeanProvider beanProvider : repository.beanCreators.values()) {
-                beanProvider.getBean(repository, true);
-            }
-            return repository;
         }
     }
 }

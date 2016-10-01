@@ -244,4 +244,20 @@ public class ExampleTest {
         service.doSomething();
         Assert.assertEquals(2, service.getManyBeans().size()); // proofs that onPostConstruct(...) is executed for Prototype Beans with Parameter
     }
+
+    /**
+     * onPostConstructible() has to be executed only once
+     */
+    @Test public void singletonWithPrototypePostConstructibleDependency() {
+
+        final BeanRepository repo = new BeanRepository.BeanRepositoryBuilder()
+                // onPostConstruct() of this Bean was called twice before -> wrong
+                .prototype(ServiceWithPostConstructCounter.class, ServiceWithPostConstructCounter::new)
+                .singleton(ServiceWithoutPostConstruct.class, ServiceWithoutPostConstruct::new)
+                .build();
+
+        Assert.assertEquals(0, ServiceWithPostConstructCounter.getPostConstructCount());
+        final ServiceWithoutPostConstruct service = repo.getBean(ServiceWithoutPostConstruct.class);
+        Assert.assertEquals(1, ServiceWithPostConstructCounter.getPostConstructCount());
+    }
 }

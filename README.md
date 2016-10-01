@@ -253,7 +253,7 @@ Accessing a Prototype Bean with Dependencies and Parameter:
     service.print("Dependency is used to print Text");
 ```
 
-# Modularisation #
+## Modularisation ##
 
 It is possible to create multiple BeanRepositories which can be wired together. One `BeanRepository` equates
  to one Module. Every `BeanRepository` can get a name for better Recognition in Case of an Error.
@@ -284,3 +284,11 @@ So a Tree can be build out of BeanRepositories. If two BeanRepositories has no C
 If working with Modules, dont call `getBean()` before all Modules are wired together
  (e.g. at `#MARKER#`). This may lead to missing Beans, because `onPostConstruct()` is executed,
  before all Beans are available. This may lead to an unexpected State.
+
+# Version History #
+
+## v1.1 ##
+Fixes:
+* `onPostConstruct` was called multiple Times on referenced Beans
+## v1.0 ##
+Initial Version
