@@ -78,7 +78,7 @@ Include the following Artifact to use the `BeanRepository`:
 <dependency>
     <groupId>com.github.tinosteinort</groupId>
     <artifactId>beanrepository</artifactId>
-    <version>1.1</version>
+    <version>1.2.0</version>
 </dependency>
 ```
 
@@ -286,6 +286,10 @@ If working with Modules, dont call `getBean()` before all Modules are wired toge
  before all Beans are available. This may lead to an unexpected State.
 
 # Version History #
+
+## v1.2.0 ##
+Enhancements
+* Add `Provider` Interface, and Methods to get Providers for registered Beans
 
 ## v1.1 ##
 Fixes:
