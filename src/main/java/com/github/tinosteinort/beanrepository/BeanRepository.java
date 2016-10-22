@@ -33,11 +33,16 @@ public class BeanRepository {
      * @return a constructed and full initialised Bean.
      */
     public <T> T getBean(final Class<T> cls) {
+        final BeanProvider provider = beanProviderFor(cls);
+        return provider.getBean(this, dryRun.isDryRun());
+    }
+
+    private BeanProvider beanProviderFor(final Class<?> cls) {
         final BeanProvider provider = beanCreators.get(cls);
         if (provider == null) {
             throw new RuntimeException("No Bean registered for Class " + cls.getName());
         }
-        return provider.getBean(this, dryRun.isDryRun());
+        return provider;
     }
 
     /**
@@ -92,6 +97,56 @@ public class BeanRepository {
             final Object bean = provider.getBean(this, true);
             if (cls.isAssignableFrom(bean.getClass())) {
                 result.add(provider.getBean(this, dryRun.isDryRun()));
+            }
+        }
+        return result;
+    }
+
+    /**
+     * With a {@link Provider} it is possible to get an Accessor to a Bean, without initialise the Bean at the time of
+     *  of getting the Accessor.
+     *
+     * @param cls    The Class of the Bean, used in the Configuration of the BeanRepository
+     * @param <T>    The Type of the Bean
+     * @return a Provider for the Bean of the given Class.
+     */
+    public <T> Provider<T> getProvider(final Class<T> cls) {
+        return providerFor(beanProviderFor(cls));
+    }
+
+    private <T> Provider<T> providerFor(final BeanProvider beanProvider) {
+        return () -> beanProvider.getBean(BeanRepository.this, dryRun.isDryRun());
+    }
+
+    /**
+     * @see BeanRepository#getProvider(Class)
+     * @return Providers for all registered {@code singleton} Beans
+     */
+    public Set<Provider<?>> getProvidersForSingletons() {
+        return providers(SingletonProvider.class);
+    }
+
+    /**
+     * @see BeanRepository#getProvider(Class)
+     * @return Providers for all registered {@code prototype} Beans
+     */
+    public Set<Provider<?>> getProvidersForPrototypes() {
+        return providers(PrototypeProvider.class);
+    }
+
+    /**
+     * @see BeanRepository#getProvider(Class)
+     * @return Providers for all registered {@code instance} Beans
+     */
+    public Set<Provider<?>> getProvidersForInstances() {
+        return providers(InstanceProvider.class);
+    }
+
+    public <T extends BeanProvider> Set<Provider<?>> providers(final Class<T> beanProviderCls) {
+        final Set<Provider<?>> result = new HashSet<>();
+        for (BeanProvider provider : beanCreators.values()) {
+            if (beanProviderCls.isAssignableFrom(provider.getClass())) {
+                result.add(providerFor(provider));
             }
         }
         return result;

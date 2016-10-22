@@ -38,4 +38,13 @@ public interface BeanAccessor {
      * @return a new created Bean
      */
     <T> T getBean(Function<BeanAccessor, T> creator);
+
+    /**
+     * Get an Accessor which provides a Bean.
+     *
+     * @param cls    The Class for which a Bean is registered for.
+     * @param <T>    The Type of the Bean
+     * @return The full initialised Bean with all Dependencies.
+     */
+    <T> Provider<T> getProvider(Class<T> cls);
 }

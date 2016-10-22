@@ -23,8 +23,11 @@ class BeanRepositoryShelter implements BeanAccessor {
         return repository.getBean(creator);
     }
 
-    @Override
-    public <T> T getBean(Function<BeanAccessor, T> creator) {
+    @Override public <T> T getBean(Function<BeanAccessor, T> creator) {
         return repository.getBean(creator);
+    }
+
+    @Override public <T> Provider<T> getProvider(final Class<T> cls) {
+        return repository.getProvider(cls);
     }
 }

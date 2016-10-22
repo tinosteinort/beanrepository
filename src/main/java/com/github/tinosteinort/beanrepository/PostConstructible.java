@@ -3,6 +3,7 @@ package com.github.tinosteinort.beanrepository;
 /**
  * This Class provides a Method to execute Code after a Bean is initialised.
  */
+@FunctionalInterface
 public interface PostConstructible {
 
     /**
