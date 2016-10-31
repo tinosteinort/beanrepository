@@ -1,4 +1,4 @@
-package de.tse.beanrepository.example;
+package com.github.tinosteinort.beanrepository.example;
 
 import com.github.tinosteinort.beanrepository.BeanAccessor;
 import com.github.tinosteinort.beanrepository.BeanRepository;
@@ -271,4 +271,40 @@ public class ExampleTest {
         final MailService mailService = repo.getBean(MailService.class);
         mailService.sendMail("You", "Hi!");
     }
+
+    @Test public void factoryWithCustomCreatorMethod() {
+
+        final BeanRepository repo = new BeanRepository.BeanRepositoryBuilder()
+                .singleton(SomeServiceFactory.class, SomeServiceFactory::new)
+                .build();
+
+        final SomeServiceFactory factory = repo.getBean(SomeServiceFactory.class);
+        final SomeService service  = factory.create(1);
+
+        service.print();
+    }
+
+    @Test public void singletonFactoryWithoutDependency() {
+
+        final BeanRepository repo = new BeanRepository.BeanRepositoryBuilder()
+                .singletonFactory(ServiceWithParameter.class, FactoryWithoutDependency::new)
+                .build();
+
+        final ServiceWithParameter service  = repo.getBean(ServiceWithParameter.class);
+
+        service.print("Abc");
+    }
+
+    @Test public void singletonFactoryWithDependency() {
+
+        final BeanRepository repo = new BeanRepository.BeanRepositoryBuilder()
+                .singleton(PrintService.class, PrintService::new)
+                .singletonFactory(MailService.class, FactoryWithDependency::new)
+                .build();
+
+        final MailService service = repo.getBean(MailService.class);
+
+        service.sendMail("You", "Hi!");
+    }
 }
+

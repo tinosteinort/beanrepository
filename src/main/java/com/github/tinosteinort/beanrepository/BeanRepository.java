@@ -235,6 +235,41 @@ public class BeanRepository {
         }
 
         /**
+         * Registers a Factory for a Bean of {@code singleton} Scope. The Factory by itself is not a Bean, but
+         *  the created Instance is. No {@link PostConstructible#onPostConstruct(BeanRepository)} is executed for the
+         *  Factory Object. The {@link PostConstructible#onPostConstruct(BeanRepository)} Method is executed on the
+         *  created Bean, if the {@link PostConstructible} Interface is implemented.
+         *
+         * @param cls        The Key for the Bean. An Instance of this Class has to be returned by the Factory.
+         * @param factory    The Factory which returns a Bean of the specified Class
+         * @param <T>        The Type of the Bean
+         * @return The {@link BeanRepositoryBuilder} to construct other Beans. Part of the fluent API.
+         */
+        public <T> BeanRepositoryBuilder singletonFactory(final Class<T> cls, final Supplier<Factory<T>> factory) {
+            validateBeanId(cls);
+            beanCreators.put(cls, new SingletonProvider(name, repository -> factory.get().createInstance()));
+            return this;
+        }
+
+        /**
+         * Registers a Factory for a Bean of {@code singleton} Scope. The Factory by itself is not a Bean, but
+         *  the created Instance is. No {@link PostConstructible#onPostConstruct(BeanRepository)} is executed for the
+         *  Factory Object. The {@link PostConstructible#onPostConstruct(BeanRepository)} Method is executed on the
+         *  created Bean, if the {@link PostConstructible} Interface is implemented. This function provides the
+         *  {@link BeanAccessor} to the Factory for resolving other Dependencies.
+         *
+         * @param cls        The Key for the Bean. An Instance of this Class has to be returned by the Factory.
+         * @param creator    The Factory which returns a Bean of the specified Class
+         * @param <T>        The Type of the Bean
+         * @return The {@link BeanRepositoryBuilder} to construct other Beans. Part of the fluent API.
+         */
+        public <T> BeanRepositoryBuilder singletonFactory(final Class<T> cls, final Function<BeanAccessor, Factory<T>> creator) {
+            validateBeanId(cls);
+            beanCreators.put(cls, new SingletonProvider(name, repository -> creator.apply(repository).createInstance()));
+            return this;
+        }
+
+        /**
          * Registers a Bean with the Scope {@code prototype} in the BeanRepository. This Method is used to create
          *  a Bean which has Dependencies to other Beans. Beans of this Scope a created every Time when the
          *  {@link BeanRepository} is requested for the Bean.
@@ -264,6 +299,41 @@ public class BeanRepository {
         public <T> BeanRepositoryBuilder prototype(final Class<T> cls, final Supplier<T> creator) {
             validateBeanId(cls);
             beanCreators.put(cls, new PrototypeProvider(name, repository -> creator.get()));
+            return this;
+        }
+
+        /**
+         * Registers a Factory for a Bean of {@code prototype} Scope. The Factory by itself is not a Bean, but
+         *  the created Instance is. No {@link PostConstructible#onPostConstruct(BeanRepository)} is executed for the
+         *  Factory Object. The {@link PostConstructible#onPostConstruct(BeanRepository)} Method is executed on the
+         *  created Bean, if the {@link PostConstructible} Interface is implemented.
+         *
+         * @param cls        The Key for the Bean. An Instance of this Class has to be returned by the Factory.
+         * @param factory    The Factory which returns a Bean of the specified Class
+         * @param <T>        The Type of the Bean
+         * @return The {@link BeanRepositoryBuilder} to construct other Beans. Part of the fluent API.
+         */
+        public <T> BeanRepositoryBuilder prototypeFactory(final Class<T> cls, final Supplier<Factory<T>> factory) {
+            validateBeanId(cls);
+            beanCreators.put(cls, new PrototypeProvider(name, repository -> factory.get().createInstance()));
+            return this;
+        }
+
+        /**
+         * Registers a Factory for a Bean of {@code prototype} Scope. The Factory by itself is not a Bean, but
+         *  the created Instance is. No {@link PostConstructible#onPostConstruct(BeanRepository)} is executed for the
+         *  Factory Object. The {@link PostConstructible#onPostConstruct(BeanRepository)} Method is executed on the
+         *  created Bean, if the {@link PostConstructible} Interface is implemented. This function provides the
+         *  {@link BeanAccessor} to the Factory for resolving other Dependencies.
+         *
+         * @param cls        The Key for the Bean. An Instance of this Class has to be returned by the Factory.
+         * @param creator    The Factory which returns a Bean of the specified Class
+         * @param <T>        The Type of the Bean
+         * @return The {@link BeanRepositoryBuilder} to construct other Beans. Part of the fluent API.
+         */
+        public <T> BeanRepositoryBuilder prototypeFactory(final Class<T> cls, final Function<BeanAccessor, Factory<T>> creator) {
+            validateBeanId(cls);
+            beanCreators.put(cls, new PrototypeProvider(name, repository -> creator.apply(repository).createInstance()));
             return this;
         }
 
