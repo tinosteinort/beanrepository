@@ -253,6 +253,30 @@ Accessing a Prototype Bean with Dependencies and Parameter:
     service.print("Dependency is used to print Text");
 ```
 
+## Provider ##
+
+A `Provider` delivers a Bean. The Bean is initialised when the `get` Method of the `Provider` is called.
+ It is possible to get a `Provider` for each registered Bean.
+```java
+    Provider<BeanClass> provider = repo.getProvider(BeanClass.class); // does not execute PostConstructible.onPostConstruct
+    BeanClass bean = provider.get(); // executes PostConstructible.onPostConstruct
+```
+
+## Factory ##
+
+A Factory is a Class which creates an Instance of a Bean. Within the `BeanRepository` a Factory itself is
+ not a Bean, but has access to the `BeanAccessor`. Even if the Factory Class implements `PostConstructible`,
+ the Method `onPostConstruct` is not executed for the Factory, but for the created Bean, if the Bean Class
+ implements `PostConstructible`. It is possible to create Factories for singleton and prototype Beans. A
+ Factory has to implement the `Factory` Interface.
+
+```java
+    BeanRepository repo = new BeanRepository.BeanRepositoryBuilder()
+            .prototypeFactory(PrintService.class, PrintServiceFactory::new) // Factory is called, every Time when PrintService is requested
+            .singletonFactory(MailService.class, MailServiceFactory::new)   // Factory is called only once
+            .build();
+```
+
 ## Modularisation ##
 
 It is possible to create multiple BeanRepositories which can be wired together. One `BeanRepository` equates
@@ -286,6 +310,10 @@ If working with Modules, dont call `getBean()` before all Modules are wired toge
  before all Beans are available. This may lead to an unexpected State.
 
 # Version History #
+
+## v1.3.0 ##
+Enhancements
+* A `Factory` can be used to create Beans
 
 ## v1.2.0 ##
 Enhancements
