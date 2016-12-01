@@ -309,13 +309,13 @@ public class BeanRepository {
          *  created Bean, if the {@link PostConstructible} Interface is implemented.
          *
          * @param cls        The Key for the Bean. An Instance of this Class has to be returned by the Factory.
-         * @param factory    The Factory which returns a Bean of the specified Class
+         * @param factory    The {@link Supplier} which creates an Instance of the Factory
          * @param <T>        The Type of the Bean
          * @return The {@link BeanRepositoryBuilder} to construct other Beans. Part of the fluent API.
          */
         public <T> BeanRepositoryBuilder prototypeFactory(final Class<T> cls, final Supplier<Factory<T>> factory) {
             validateBeanId(cls);
-            beanCreators.put(cls, new PrototypeProvider(name, repository -> factory.get().createInstance()));
+            beanCreators.put(cls, new PrototypeFactoryProvider(name, repository -> factory.get()));
             return this;
         }
 
@@ -327,13 +327,13 @@ public class BeanRepository {
          *  {@link BeanAccessor} to the Factory for resolving other Dependencies.
          *
          * @param cls        The Key for the Bean. An Instance of this Class has to be returned by the Factory.
-         * @param creator    The Factory which returns a Bean of the specified Class
+         * @param creator    The {@link Function} which creates an Instance of the Factory
          * @param <T>        The Type of the Bean
          * @return The {@link BeanRepositoryBuilder} to construct other Beans. Part of the fluent API.
          */
         public <T> BeanRepositoryBuilder prototypeFactory(final Class<T> cls, final Function<BeanAccessor, Factory<T>> creator) {
             validateBeanId(cls);
-            beanCreators.put(cls, new PrototypeProvider(name, repository -> creator.apply(repository).createInstance()));
+            beanCreators.put(cls, new PrototypeFactoryProvider(name, repository -> creator.apply(repository)));
             return this;
         }
 
