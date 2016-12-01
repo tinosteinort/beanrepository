@@ -78,7 +78,7 @@ Include the following Artifact to use the `BeanRepository`:
 <dependency>
     <groupId>com.github.tinosteinort</groupId>
     <artifactId>beanrepository</artifactId>
-    <version>1.3.0</version>
+    <version>1.3.1</version>
 </dependency>
 ```
 
@@ -310,6 +310,11 @@ If working with Modules, dont call `getBean()` before all Modules are wired toge
  before all Beans are available. This may lead to an unexpected State.
 
 # Version History #
+
+## v1.3.1 ##
+Fixes:
+* `Factory.createInstance()` is not called while dryRun. It is executed once for singleton Beans,
+    and every time, when a prototype Bean is requested
 
 ## v1.3.0 ##
 Enhancements
