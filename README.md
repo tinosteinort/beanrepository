@@ -1,43 +1,26 @@
-BeanRepository - a Bean Obtaining Framework
-===========================================
+BeanRepository - a Service Locator as a Dependency Injection Alternative
+========================================================================
 
-In an other Project I want to work with Injections of Singletons,
- Instances and so on. But because it has to run in a Sandbox (without
- Codesigning) no Reflection was allowed. Spring uses in most cases
- Reflection and Google Guice accessed some not allowed System Properties.
-
-So, this was the PERFECT time to create my own (very) limited Dependency
- Injection/Obtaining Framework :-)
-
-Since then, I work on this Project, even if the origin Projects needs no
- more Features.
-
-See [ExampleTest](src/test/java/com/github/tinosteinort/beanrepository/example/ExampleTest.java)
- for Examples.
+With this Framework it is possible to manage Bean Dependencies in an other way than with
+ Dependency Injection. Every Bean has to get its own Dependencies from a BeanRepository,
+ which is the 'Service Locator'. This is possible without using Reflection. Because of
+ that fact, the BeanRepository can be used in the Java Sandbox, where Reflection is not
+ allowed. The Service Locator is described by Martin Fowler in
+ [this Article](http://martinfowler.com/articles/injection.html).
 
 
-# Some Kind of Dependency Injection #
-
-With this Framework, every Bean has to get its own Dependencies from a Repository. This
- is the Reason why 'Dependency Injection' may not the correct Description. But the goal
- is equal: simply manage Dependencies of a Bean, without worrying about the Bean
- Lifecycle.
-
-
-## Origin Requirements ##
+## Features ##
 
 * Simple, self-explanatory and failsafe Configuration in Java Code
 * No use of Reflection or Annotation Magic
 * Support for Singletons and Instances
 * Fail Fast: Detection of cyclic References on start up
 * Execute Code after Initialisation of the Bean
-
-
-## Additional Features ##
-
 * Support for Prototypes (even with Parameters)
 * Detect Beans of a specific Type: `Set<T> getBeansOfType(final Class<T> cls)`
 * Modularity
+* Provider
+* Factories
 
 
 ## Limitations ##
@@ -53,18 +36,6 @@ With this Framework, every Bean has to get its own Dependencies from a Repositor
     * use [PostConstructible](src/main/java/de/tse/beanrepository/PostConstructible.java)
        for initialisation Code
 * A Bean can only be accessed by a Class
-
-
-## Other Frameworks ##
-
-After some more research: there are plenty of Dependency Injection Frameworks:
-* [JayWire](https://github.com/vanillasource/jaywire)
-* [net.nanojl:injector](https://nanojl.net/injector/)
-* [Feather](https://github.com/zsoltherpai/feather)
-* [Silk](https://github.com/jbee/silk)
-* and many more...
-
-But there is no Reason for a Developer, to don't write an own Dependency Framework. Just for Fun :-)
 
 
 # User Guide #
