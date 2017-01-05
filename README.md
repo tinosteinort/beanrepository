@@ -1,12 +1,11 @@
 BeanRepository - a Service Locator as a Dependency Injection Alternative
 ========================================================================
 
-With this Framework it is possible to manage Bean Dependencies in an other way than with
- Dependency Injection. Every Bean has to get its own Dependencies from a BeanRepository,
- which is the 'Service Locator'. This is possible without using Reflection. Because of
- that fact, the BeanRepository can be used in the Java Sandbox, where Reflection is not
- allowed. The Service Locator is described by Martin Fowler in
- [this Article](http://martinfowler.com/articles/injection.html).
+This Framework is the Implementation of a mix of the Service Locator Pattern and a
+ the Dependency Injection Pattern. These Patterns are described by Martin Fowler in
+ [this Article](http://martinfowler.com/articles/injection.html). The `BeanRepository`
+ does not use Reflection for injecting Beans. Because of that Fact, it can be used in
+ the Java Sandbox, where Reflection is not allowed.
 
 
 ## Features ##
@@ -21,6 +20,7 @@ With this Framework it is possible to manage Bean Dependencies in an other way t
 * Modularity
 * Provider
 * Factories
+* Constructor Injection up to 5 Parameters
 
 
 ## Limitations ##
@@ -53,13 +53,11 @@ Include the following Artifact to use the `BeanRepository`:
 </dependency>
 ```
 
-## Get needed Beans in Constructor ##
+## Get Dependencies, Part 1 ##
 
-Every Bean that has a Dependency, needs the
- [BeanAccessor](src/main/java/com/github/tinosteinort/beanrepository/BeanAccessor.java)
- as Parameter, so that the Bean can obtains its own Dependencies.
+Example Services:
 ```java
-    public class PrintService { // no Dependencies -> no BeanAccessor needed
+    public class PrintService {
 
         public void print(final String value) {
             System.out.println(value);
@@ -68,9 +66,53 @@ Every Bean that has a Dependency, needs the
 
     public class MailService {
 
-        private final PrintService printService; // Dependency! -> BeanAccessor needed
+        private final PrintService printService;
 
-        public MailService(final BeanAccessor beans) {
+        public MailService(final PrintService printService) {
+            this.printService = printService;
+        }
+
+        public void sendMail(final String to, final String text) {
+            printService.print("Message for " + to + ": " + text);
+        }
+    }
+```
+
+Setup of the `BeanRepository` to get full initialized Beans with Dependency by Constructor
+ Injection:
+```java
+    public static void main(String[] args) {
+
+        final BeanRepository repo = new BeanRepository.BeanRepositoryBuilder()
+                .singleton(PrintService.class, PrintService::new)
+                .singleton(MailService.class, MailService::new, PrintService.class)
+                .build();
+
+        final MailService = repo.getBean(MailService.class);
+    }
+```
+The Classes of the referenced Beans has to be listed behind the Constructor Reference.
+
+## Get Dependencies, Part 2 ##
+
+The previous Example only works for Beans with 5 (or less) Dependencies. The get more Dependencies
+ the [BeanAccessor](src/main/java/com/github/tinosteinort/beanrepository/BeanAccessor.java) has to
+ be used. The needed Dependencies can be determined in the Constructor of the Bean.
+
+Services:
+```java
+    public class PrintService {
+
+        public void print(final String value) {
+            System.out.println(value);
+        }
+    }
+
+    public class MailService {
+
+        private final PrintService printService;
+
+        public MailService(final BeanAccessor beans) { // Using of BeanAccessor
             this.printService = beans.getBean(PrintService.class);
         }
 
@@ -78,6 +120,17 @@ Every Bean that has a Dependency, needs the
             printService.print("Message for " + to + ": " + text);
         }
     }
+```
+
+Setup of the BeanRepository to get full initialized Beans with the `BeanAccessor`
+```java
+    public static void main(String[] args) {
+
+        final BeanRepository repo = new BeanRepository.BeanRepositoryBuilder()
+                .singleton(PrintService.class, PrintService::new)
+                .singleton(MailService.class, MailService::new) // Type of referenced Bean is not required
+                .build();
+        }
 ```
 
 ## Initialisation in onPostConstruct() to get needed Beans ##
@@ -123,7 +176,7 @@ To create a `BeanRepository`, the `BeanRepositoryBuilder` has to be used. The Sc
  by the Method, called on the `BeanRepositoryBuilder`.
 ```java
     final BeanRepository repo = new BeanRepository.BeanRepositoryBuilder()
-            .singleton(MailService.class, MailService::new)
+            .singleton(MailService.class, MailService::new, PrintService.class)
             .singleton(PrintService.class, PrintService::new)
             .build();
 
