@@ -2,7 +2,27 @@ package com.github.tinosteinort.beanrepository.example;
 
 import com.github.tinosteinort.beanrepository.BeanAccessor;
 import com.github.tinosteinort.beanrepository.BeanRepository;
-import com.github.tinosteinort.beanrepository.example.services.*;
+import com.github.tinosteinort.beanrepository.example.services.CollectorServiceOnPostConstruct;
+import com.github.tinosteinort.beanrepository.example.services.FactoryWithDependency;
+import com.github.tinosteinort.beanrepository.example.services.FactoryWithoutDependency;
+import com.github.tinosteinort.beanrepository.example.services.MailService;
+import com.github.tinosteinort.beanrepository.example.services.MyInterface;
+import com.github.tinosteinort.beanrepository.example.services.MyInterfaceImpl1;
+import com.github.tinosteinort.beanrepository.example.services.MyInterfaceImpl2;
+import com.github.tinosteinort.beanrepository.example.services.PrintService;
+import com.github.tinosteinort.beanrepository.example.services.ServiceA;
+import com.github.tinosteinort.beanrepository.example.services.ServiceB;
+import com.github.tinosteinort.beanrepository.example.services.ServiceWithBeanDependenciesAndParameter;
+import com.github.tinosteinort.beanrepository.example.services.ServiceWithConstructorDependency;
+import com.github.tinosteinort.beanrepository.example.services.ServiceWithConstructorDependencyFactory;
+import com.github.tinosteinort.beanrepository.example.services.ServiceWithForbiddenCast;
+import com.github.tinosteinort.beanrepository.example.services.ServiceWithParameter;
+import com.github.tinosteinort.beanrepository.example.services.ServiceWithParameterPostConstructible;
+import com.github.tinosteinort.beanrepository.example.services.ServiceWithPostConstruct;
+import com.github.tinosteinort.beanrepository.example.services.ServiceWithPostConstructCounter;
+import com.github.tinosteinort.beanrepository.example.services.ServiceWithoutPostConstruct;
+import com.github.tinosteinort.beanrepository.example.services.SomeService;
+import com.github.tinosteinort.beanrepository.example.services.SomeServiceFactory;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -306,5 +326,28 @@ public class ExampleTest {
 
         service.sendMail("You", "Hi!");
     }
-}
 
+    @Test public void constructorInjectionWithOneParam() {
+
+        final BeanRepository repo = new BeanRepository.BeanRepositoryBuilder()
+                .singleton(PrintService.class, PrintService::new)
+                .singleton(ServiceWithConstructorDependency.class, ServiceWithConstructorDependency::new, PrintService.class)
+                .build();
+
+        final ServiceWithConstructorDependency service = repo.getBean(ServiceWithConstructorDependency.class);
+
+        service.doSomething();
+    }
+
+    @Test public void constructorInjectionForSingletonFactoryWithOneParam() {
+
+        final BeanRepository repo = new BeanRepository.BeanRepositoryBuilder()
+                .singleton(PrintService.class, PrintService::new)
+                .singletonFactory(ServiceWithConstructorDependency.class, ServiceWithConstructorDependencyFactory::new, PrintService.class)
+                .build();
+
+        final ServiceWithConstructorDependency service = repo.getBean(ServiceWithConstructorDependency.class);
+
+        service.doSomething();
+    }
+}

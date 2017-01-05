@@ -235,6 +235,129 @@ public class BeanRepository {
         }
 
         /**
+         * Registers a Bean with the Scope {@code singleton} in the BeanRepository. This Method is used to create
+         *  a Bean with one Dependency to an other Bean. Constructor Injection is used to populate the Dependency.
+         *
+         * @param cls           The Key for the Bean. Has to be the same Class as the Bean or a super Class of the Bean.
+         * @param creator       The Constructor Reference.
+         * @param dependency1   Class of the 1st referenced Dependency in the Constructor.
+         * @param <T>           The Type of the Bean.
+         * @param <DEP_1>       The Type of the 1st Dependency
+         * @return The {@link BeanRepositoryBuilder} to construct other Beans. Part of the fluent API.
+         */
+        public <T, DEP_1> BeanRepositoryBuilder singleton(final Class<T> cls,
+                final ConstructorWith1Parameter<T, DEP_1> creator,
+                final Class<DEP_1> dependency1) {
+            validateBeanId(cls);
+            beanCreators.put(cls, new SingletonProvider(name, beans -> creator.create(beans.getBean(dependency1))));
+            return this;
+        }
+
+        /**
+         * Registers a Bean with the Scope {@code singleton} in the BeanRepository. This Method is used to create
+         *  a Bean with two Dependencies to other Beans. Constructor Injection is used to populate the Dependency.
+         *
+         * @param cls           The Key for the Bean. Has to be the same Class as the Bean or a super Class of the Bean.
+         * @param creator       The Constructor Reference.
+         * @param dependency1   Class of the 1st referenced Dependency in the Constructor.
+         * @param dependency2   Class of the 2nd referenced Dependency in the Constructor.
+         * @param <T>           The Type of the Bean.
+         * @param <DEP_1>       The Type of the 1st Dependency.
+         * @param <DEP_2>       The Type of the 2nd Dependency.
+         * @return The {@link BeanRepositoryBuilder} to construct other Beans. Part of the fluent API.
+         */
+        public <T, DEP_1, DEP_2> BeanRepositoryBuilder singleton(final Class<T> cls,
+                final ConstructorWith2Parameters<T, DEP_1, DEP_2> creator,
+                final Class<DEP_1> dependency1, final Class<DEP_2> dependency2) {
+            validateBeanId(cls);
+            beanCreators.put(cls, new SingletonProvider(name, beans -> creator.create(
+                    beans.getBean(dependency1), beans.getBean(dependency2))));
+            return this;
+        }
+
+        /**
+         * Registers a Bean with the Scope {@code singleton} in the BeanRepository. This Method is used to create
+         *  a Bean with three Dependencies to other Beans. Constructor Injection is used to populate the Dependency.
+         *
+         * @param cls           The Key for the Bean. Has to be the same Class as the Bean or a super Class of the Bean.
+         * @param creator       The Constructor Reference.
+         * @param dependency1   Class of the 1st referenced Dependency in the Constructor.
+         * @param dependency2   Class of the 2nd referenced Dependency in the Constructor.
+         * @param dependency3   Class of the 3rd referenced Dependency in the Constructor.
+         * @param <T>           The Type of the Bean.
+         * @param <DEP_1>       The Type of the 1st Dependency.
+         * @param <DEP_2>       The Type of the 2nd Dependency.
+         * @param <DEP_3>       The Type of the 3rd Dependency.
+         * @return The {@link BeanRepositoryBuilder} to construct other Beans. Part of the fluent API.
+         */
+        public <T, DEP_1, DEP_2, DEP_3> BeanRepositoryBuilder singleton(final Class<T> cls,
+                final ConstructorWith3Parameters<T, DEP_1, DEP_2, DEP_3> creator,
+                final Class<DEP_1> dependency1, final Class<DEP_2> dependency2, final Class<DEP_3> dependency3) {
+            validateBeanId(cls);
+            beanCreators.put(cls, new SingletonProvider(name, beans -> creator.create(
+                    beans.getBean(dependency1), beans.getBean(dependency2), beans.getBean(dependency3))));
+            return this;
+        }
+
+        /**
+         * Registers a Bean with the Scope {@code singleton} in the BeanRepository. This Method is used to create
+         *  a Bean with four Dependencies to other Beans. Constructor Injection is used to populate the Dependency.
+         *
+         * @param cls           The Key for the Bean. Has to be the same Class as the Bean or a super Class of the Bean.
+         * @param creator       The Constructor Reference.
+         * @param dependency1   Class of the 1st referenced Dependency in the Constructor.
+         * @param dependency2   Class of the 2nd referenced Dependency in the Constructor.
+         * @param dependency3   Class of the 3rd referenced Dependency in the Constructor.
+         * @param dependency4   Class of the 4th referenced Dependency in the Constructor.
+         * @param <T>           The Type of the Bean.
+         * @param <DEP_1>       The Type of the 1st Dependency.
+         * @param <DEP_2>       The Type of the 2nd Dependency.
+         * @param <DEP_3>       The Type of the 3rd Dependency.
+         * @param <DEP_4>       The Type of the 4th Dependency.
+         * @return The {@link BeanRepositoryBuilder} to construct other Beans. Part of the fluent API.
+         */
+        public <T, DEP_1, DEP_2, DEP_3, DEP_4> BeanRepositoryBuilder singleton(final Class<T> cls,
+                final ConstructorWith4Parameters<T, DEP_1, DEP_2, DEP_3, DEP_4> creator,
+                final Class<DEP_1> dependency1, final Class<DEP_2> dependency2, final Class<DEP_3> dependency3,
+                final Class<DEP_4> dependency4) {
+            validateBeanId(cls);
+            beanCreators.put(cls, new SingletonProvider(name, beans -> creator.create(
+                    beans.getBean(dependency1), beans.getBean(dependency2), beans.getBean(dependency3),
+                    beans.getBean(dependency4))));
+            return this;
+        }
+
+        /**
+         * Registers a Bean with the Scope {@code singleton} in the BeanRepository. This Method is used to create
+         *  a Bean with five Dependencies to other Beans. Constructor Injection is used to populate the Dependency.
+         *
+         * @param cls           The Key for the Bean. Has to be the same Class as the Bean or a super Class of the Bean.
+         * @param creator       The Constructor Reference.
+         * @param dependency1   Class of the 1st referenced Dependency in the Constructor.
+         * @param dependency2   Class of the 2nd referenced Dependency in the Constructor.
+         * @param dependency3   Class of the 3rd referenced Dependency in the Constructor.
+         * @param dependency4   Class of the 4th referenced Dependency in the Constructor.
+         * @param dependency5   Class of the 5th referenced Dependency in the Constructor.
+         * @param <T>           The Type of the Bean.
+         * @param <DEP_1>       The Type of the 1st Dependency.
+         * @param <DEP_2>       The Type of the 2nd Dependency.
+         * @param <DEP_3>       The Type of the 3rd Dependency.
+         * @param <DEP_4>       The Type of the 4th Dependency.
+         * @param <DEP_5>       The Type of the 5th Dependency.
+         * @return The {@link BeanRepositoryBuilder} to construct other Beans. Part of the fluent API.
+         */
+        public <T, DEP_1, DEP_2, DEP_3, DEP_4, DEP_5> BeanRepositoryBuilder singleton(final Class<T> cls,
+                final ConstructorWith5Parameters<T, DEP_1, DEP_2, DEP_3, DEP_4, DEP_5> creator,
+                final Class<DEP_1> dependency1, final Class<DEP_2> dependency2, final Class<DEP_3> dependency3,
+                final Class<DEP_4> dependency4, final Class<DEP_5> dependency5) {
+            validateBeanId(cls);
+            beanCreators.put(cls, new SingletonProvider(name, beans -> creator.create(
+                    beans.getBean(dependency1), beans.getBean(dependency2), beans.getBean(dependency3),
+                    beans.getBean(dependency4), beans.getBean(dependency5))));
+            return this;
+        }
+
+        /**
          * Registers a Factory for a Bean of {@code singleton} Scope. The Factory by itself is not a Bean, but
          *  the created Instance is. No {@link PostConstructible#onPostConstruct(BeanRepository)} is executed for the
          *  Factory Object. The {@link PostConstructible#onPostConstruct(BeanRepository)} Method is executed on the
@@ -248,6 +371,144 @@ public class BeanRepository {
         public <T> BeanRepositoryBuilder singletonFactory(final Class<T> cls, final Supplier<Factory<T>> creator) {
             validateBeanId(cls);
             beanCreators.put(cls, new SingletonFactoryProvider(name, repository -> creator.get()));
+            return this;
+        }
+
+        /**
+         * Registers a Factory for a Bean of {@code singleton} Scope. Dependencies are injected into the Constructor.
+         *  The Factory by itself is not a Bean, but the created Instance is. No
+         *  {@link PostConstructible#onPostConstruct(BeanRepository)} is executed for the Factory Object. The
+         *  {@link PostConstructible#onPostConstruct(BeanRepository)} Method is executed on the created Bean, if the
+         *  {@link PostConstructible} Interface is implemented.
+         *
+         * @param cls           The Key for the Bean. An Instance of this Class has to be returned by the Factory.
+         * @param creator       The Constructor Reference to the Factory Class.
+         * @param dependency1   Class of the 1st referenced Dependency in the Constructor.
+         * @param <T>           The Type of the Bean.
+         * @param <DEP_1>       The Type of the 1st Dependency.
+         * @return The {@link BeanRepositoryBuilder} to construct other Beans. Part of the fluent API.
+         */
+        public <T, DEP_1> BeanRepositoryBuilder singletonFactory(final Class<T> cls,
+                final ConstructorWith1Parameter<Factory<T>, DEP_1> creator,
+                final Class<DEP_1> dependency1) {
+            validateBeanId(cls);
+            beanCreators.put(cls, new SingletonFactoryProvider(name, beans -> creator.create(beans.getBean(dependency1))));
+            return this;
+        }
+
+        /**
+         * Registers a Factory for a Bean of {@code singleton} Scope. Dependencies are injected into the Constructor.
+         *  The Factory by itself is not a Bean, but the created Instance is. No
+         *  {@link PostConstructible#onPostConstruct(BeanRepository)} is executed for the Factory Object. The
+         *  {@link PostConstructible#onPostConstruct(BeanRepository)} Method is executed on the created Bean, if the
+         *  {@link PostConstructible} Interface is implemented.
+         *
+         * @param cls           The Key for the Bean. An Instance of this Class has to be returned by the Factory.
+         * @param creator       The Constructor Reference to the Factory Class.
+         * @param dependency1   Class of the 1st referenced Dependency in the Constructor.
+         * @param dependency2   Class of the 2nd referenced Dependency in the Constructor.
+         * @param <T>           The Type of the Bean.
+         * @param <DEP_1>       The Type of the 1st Dependency.
+         * @param <DEP_2>       The Type of the 2nd Dependency.
+         * @return The {@link BeanRepositoryBuilder} to construct other Beans. Part of the fluent API.
+         */
+        public <T, DEP_1, DEP_2> BeanRepositoryBuilder singletonFactory(final Class<T> cls,
+                final ConstructorWith2Parameters<Factory<T>, DEP_1, DEP_2> creator,
+                final Class<DEP_1> dependency1, final Class<DEP_2> dependency2) {
+            validateBeanId(cls);
+            beanCreators.put(cls, new SingletonFactoryProvider(name, beans -> creator.create(
+                    beans.getBean(dependency1), beans.getBean(dependency2))));
+            return this;
+        }
+
+        /**
+         * Registers a Factory for a Bean of {@code singleton} Scope. Dependencies are injected into the Constructor.
+         *  The Factory by itself is not a Bean, but the created Instance is. No
+         *  {@link PostConstructible#onPostConstruct(BeanRepository)} is executed for the Factory Object. The
+         *  {@link PostConstructible#onPostConstruct(BeanRepository)} Method is executed on the created Bean, if the
+         *  {@link PostConstructible} Interface is implemented.
+         *
+         * @param cls           The Key for the Bean. An Instance of this Class has to be returned by the Factory.
+         * @param creator       The Constructor Reference to the Factory Class.
+         * @param dependency1   Class of the 1st referenced Dependency in the Constructor.
+         * @param dependency2   Class of the 2nd referenced Dependency in the Constructor.
+         * @param dependency3   Class of the 3rd referenced Dependency in the Constructor.
+         * @param <T>           The Type of the Bean.
+         * @param <DEP_1>       The Type of the 1st Dependency.
+         * @param <DEP_2>       The Type of the 2nd Dependency.
+         * @param <DEP_3>       The Type of the 3rd Dependency.
+         * @return The {@link BeanRepositoryBuilder} to construct other Beans. Part of the fluent API.
+         */
+        public <T, DEP_1, DEP_2, DEP_3> BeanRepositoryBuilder singletonFactory(final Class<T> cls,
+                final ConstructorWith3Parameters<Factory<T>, DEP_1, DEP_2, DEP_3> creator,
+                final Class<DEP_1> dependency1, final Class<DEP_2> dependency2, final Class<DEP_3> dependency3) {
+            validateBeanId(cls);
+            beanCreators.put(cls, new SingletonFactoryProvider(name, beans -> creator.create(
+                    beans.getBean(dependency1), beans.getBean(dependency2), beans.getBean(dependency3))));
+            return this;
+        }
+
+        /**
+         * Registers a Factory for a Bean of {@code singleton} Scope. Dependencies are injected into the Constructor.
+         *  The Factory by itself is not a Bean, but the created Instance is. No
+         *  {@link PostConstructible#onPostConstruct(BeanRepository)} is executed for the Factory Object. The
+         *  {@link PostConstructible#onPostConstruct(BeanRepository)} Method is executed on the created Bean, if the
+         *  {@link PostConstructible} Interface is implemented.
+         *
+         * @param cls           The Key for the Bean. An Instance of this Class has to be returned by the Factory.
+         * @param creator       The Constructor Reference to the Factory Class.
+         * @param dependency1   Class of the 1st referenced Dependency in the Constructor.
+         * @param dependency2   Class of the 2nd referenced Dependency in the Constructor.
+         * @param dependency3   Class of the 3rd referenced Dependency in the Constructor.
+         * @param dependency4   Class of the 4th referenced Dependency in the Constructor.
+         * @param <T>           The Type of the Bean.
+         * @param <DEP_1>       The Type of the 1st Dependency.
+         * @param <DEP_2>       The Type of the 2nd Dependency.
+         * @param <DEP_3>       The Type of the 3rd Dependency.
+         * @param <DEP_4>       The Type of the 4th Dependency.
+         * @return The {@link BeanRepositoryBuilder} to construct other Beans. Part of the fluent API.
+         */
+        public <T, DEP_1, DEP_2, DEP_3, DEP_4> BeanRepositoryBuilder singletonFactory(final Class<T> cls,
+                final ConstructorWith4Parameters<Factory<T>, DEP_1, DEP_2, DEP_3, DEP_4> creator,
+                final Class<DEP_1> dependency1, final Class<DEP_2> dependency2, final Class<DEP_3> dependency3,
+                final Class<DEP_4> dependency4) {
+            validateBeanId(cls);
+            beanCreators.put(cls, new SingletonFactoryProvider(name, beans -> creator.create(
+                    beans.getBean(dependency1), beans.getBean(dependency2), beans.getBean(dependency3),
+                    beans.getBean(dependency4))));
+            return this;
+        }
+
+        /**
+         * Registers a Factory for a Bean of {@code singleton} Scope. Dependencies are injected into the Constructor.
+         *  The Factory by itself is not a Bean, but the created Instance is. No
+         *  {@link PostConstructible#onPostConstruct(BeanRepository)} is executed for the Factory Object. The
+         *  {@link PostConstructible#onPostConstruct(BeanRepository)} Method is executed on the created Bean, if the
+         *  {@link PostConstructible} Interface is implemented.
+         *
+         * @param cls           The Key for the Bean. An Instance of this Class has to be returned by the Factory.
+         * @param creator       The Constructor Reference to the Factory Class.
+         * @param dependency1   Class of the 1st referenced Dependency in the Constructor.
+         * @param dependency2   Class of the 2nd referenced Dependency in the Constructor.
+         * @param dependency3   Class of the 3rd referenced Dependency in the Constructor.
+         * @param dependency4   Class of the 4th referenced Dependency in the Constructor.
+         * @param dependency5   Class of the 5th referenced Dependency in the Constructor.
+         * @param <T>           The Type of the Bean.
+         * @param <DEP_1>       The Type of the 1st Dependency.
+         * @param <DEP_2>       The Type of the 2nd Dependency.
+         * @param <DEP_3>       The Type of the 3rd Dependency.
+         * @param <DEP_4>       The Type of the 4th Dependency.
+         * @param <DEP_5>       The Type of the 5th Dependency.
+         * @return The {@link BeanRepositoryBuilder} to construct other Beans. Part of the fluent API.
+         */
+        public <T, DEP_1, DEP_2, DEP_3, DEP_4, DEP_5> BeanRepositoryBuilder singletonFactory(final Class<T> cls,
+                final ConstructorWith5Parameters<Factory<T>, DEP_1, DEP_2, DEP_3, DEP_4, DEP_5> creator,
+                final Class<DEP_1> dependency1, final Class<DEP_2> dependency2, final Class<DEP_3> dependency3,
+                final Class<DEP_4> dependency4, final Class<DEP_5> dependency5) {
+            validateBeanId(cls);
+            beanCreators.put(cls, new SingletonFactoryProvider(name, beans -> creator.create(
+                    beans.getBean(dependency1), beans.getBean(dependency2), beans.getBean(dependency3),
+                    beans.getBean(dependency4), beans.getBean(dependency5))));
             return this;
         }
 
@@ -303,6 +564,129 @@ public class BeanRepository {
         }
 
         /**
+         * Registers a Bean with the Scope {@code prototype} in the BeanRepository. This Method is used to create
+         *  a Bean with one Dependency to an other Bean. Constructor Injection is used to populate the Dependency.
+         *
+         * @param cls           The Key for the Bean. Has to be the same Class as the Bean or a super Class of the Bean.
+         * @param creator       The Constructor Reference.
+         * @param dependency1   Class of the 1st referenced Dependency in the Constructor.
+         * @param <T>           The Type of the Bean.
+         * @param <DEP_1>       The Type of the 1st Dependency
+         * @return The {@link BeanRepositoryBuilder} to construct other Beans. Part of the fluent API.
+         */
+        public <T, DEP_1> BeanRepositoryBuilder prototype(final Class<T> cls,
+                final ConstructorWith1Parameter<T, DEP_1> creator,
+                final Class<DEP_1> dependency1) {
+            validateBeanId(cls);
+            beanCreators.put(cls, new PrototypeProvider(name, beans -> creator.create(beans.getBean(dependency1))));
+            return this;
+        }
+
+        /**
+         * Registers a Bean with the Scope {@code prototype} in the BeanRepository. This Method is used to create
+         *  a Bean with two Dependencies to other Beans. Constructor Injection is used to populate the Dependency.
+         *
+         * @param cls           The Key for the Bean. Has to be the same Class as the Bean or a super Class of the Bean.
+         * @param creator       The Constructor Reference.
+         * @param dependency1   Class of the 1st referenced Dependency in the Constructor.
+         * @param dependency2   Class of the 2nd referenced Dependency in the Constructor.
+         * @param <T>           The Type of the Bean.
+         * @param <DEP_1>       The Type of the 1st Dependency.
+         * @param <DEP_2>       The Type of the 2nd Dependency.
+         * @return The {@link BeanRepositoryBuilder} to construct other Beans. Part of the fluent API.
+         */
+        public <T, DEP_1, DEP_2> BeanRepositoryBuilder prototype(final Class<T> cls,
+                final ConstructorWith2Parameters<T, DEP_1, DEP_2> creator,
+                final Class<DEP_1> dependency1, final Class<DEP_2> dependency2) {
+            validateBeanId(cls);
+            beanCreators.put(cls, new PrototypeProvider(name, beans -> creator.create(
+                    beans.getBean(dependency1), beans.getBean(dependency2))));
+            return this;
+        }
+
+        /**
+         * Registers a Bean with the Scope {@code prototype} in the BeanRepository. This Method is used to create
+         *  a Bean with three Dependencies to other Beans. Constructor Injection is used to populate the Dependency.
+         *
+         * @param cls           The Key for the Bean. Has to be the same Class as the Bean or a super Class of the Bean.
+         * @param creator       The Constructor Reference.
+         * @param dependency1   Class of the 1st referenced Dependency in the Constructor.
+         * @param dependency2   Class of the 2nd referenced Dependency in the Constructor.
+         * @param dependency3   Class of the 3rd referenced Dependency in the Constructor.
+         * @param <T>           The Type of the Bean.
+         * @param <DEP_1>       The Type of the 1st Dependency.
+         * @param <DEP_2>       The Type of the 2nd Dependency.
+         * @param <DEP_3>       The Type of the 3rd Dependency.
+         * @return The {@link BeanRepositoryBuilder} to construct other Beans. Part of the fluent API.
+         */
+        public <T, DEP_1, DEP_2, DEP_3> BeanRepositoryBuilder prototype(final Class<T> cls,
+                final ConstructorWith3Parameters<T, DEP_1, DEP_2, DEP_3> creator,
+                final Class<DEP_1> dependency1, final Class<DEP_2> dependency2, final Class<DEP_3> dependency3) {
+            validateBeanId(cls);
+            beanCreators.put(cls, new PrototypeProvider(name, beans -> creator.create(
+                    beans.getBean(dependency1), beans.getBean(dependency2), beans.getBean(dependency3))));
+            return this;
+        }
+
+        /**
+         * Registers a Bean with the Scope {@code prototype} in the BeanRepository. This Method is used to create
+         *  a Bean with four Dependencies to other Beans. Constructor Injection is used to populate the Dependency.
+         *
+         * @param cls           The Key for the Bean. Has to be the same Class as the Bean or a super Class of the Bean.
+         * @param creator       The Constructor Reference.
+         * @param dependency1   Class of the 1st referenced Dependency in the Constructor.
+         * @param dependency2   Class of the 2nd referenced Dependency in the Constructor.
+         * @param dependency3   Class of the 3rd referenced Dependency in the Constructor.
+         * @param dependency4   Class of the 4th referenced Dependency in the Constructor.
+         * @param <T>           The Type of the Bean.
+         * @param <DEP_1>       The Type of the 1st Dependency.
+         * @param <DEP_2>       The Type of the 2nd Dependency.
+         * @param <DEP_3>       The Type of the 3rd Dependency.
+         * @param <DEP_4>       The Type of the 4th Dependency.
+         * @return The {@link BeanRepositoryBuilder} to construct other Beans. Part of the fluent API.
+         */
+        public <T, DEP_1, DEP_2, DEP_3, DEP_4> BeanRepositoryBuilder prototype(final Class<T> cls,
+                final ConstructorWith4Parameters<T, DEP_1, DEP_2, DEP_3, DEP_4> creator,
+                final Class<DEP_1> dependency1, final Class<DEP_2> dependency2, final Class<DEP_3> dependency3,
+                final Class<DEP_4> dependency4) {
+            validateBeanId(cls);
+            beanCreators.put(cls, new PrototypeProvider(name, beans -> creator.create(
+                    beans.getBean(dependency1), beans.getBean(dependency2), beans.getBean(dependency3),
+                    beans.getBean(dependency4))));
+            return this;
+        }
+
+        /**
+         * Registers a Bean with the Scope {@code prototype} in the BeanRepository. This Method is used to create
+         *  a Bean with five Dependencies to other Beans. Constructor Injection is used to populate the Dependency.
+         *
+         * @param cls           The Key for the Bean. Has to be the same Class as the Bean or a super Class of the Bean.
+         * @param creator       The Constructor Reference.
+         * @param dependency1   Class of the 1st referenced Dependency in the Constructor.
+         * @param dependency2   Class of the 2nd referenced Dependency in the Constructor.
+         * @param dependency3   Class of the 3rd referenced Dependency in the Constructor.
+         * @param dependency4   Class of the 4th referenced Dependency in the Constructor.
+         * @param dependency5   Class of the 5th referenced Dependency in the Constructor.
+         * @param <T>           The Type of the Bean.
+         * @param <DEP_1>       The Type of the 1st Dependency.
+         * @param <DEP_2>       The Type of the 2nd Dependency.
+         * @param <DEP_3>       The Type of the 3rd Dependency.
+         * @param <DEP_4>       The Type of the 4th Dependency.
+         * @param <DEP_5>       The Type of the 5th Dependency.
+         * @return The {@link BeanRepositoryBuilder} to construct other Beans. Part of the fluent API.
+         */
+        public <T, DEP_1, DEP_2, DEP_3, DEP_4, DEP_5> BeanRepositoryBuilder prototype(final Class<T> cls,
+                final ConstructorWith5Parameters<T, DEP_1, DEP_2, DEP_3, DEP_4, DEP_5> creator,
+                final Class<DEP_1> dependency1, final Class<DEP_2> dependency2, final Class<DEP_3> dependency3,
+                final Class<DEP_4> dependency4, final Class<DEP_5> dependency5) {
+            validateBeanId(cls);
+            beanCreators.put(cls, new PrototypeProvider(name, beans -> creator.create(
+                    beans.getBean(dependency1), beans.getBean(dependency2), beans.getBean(dependency3),
+                    beans.getBean(dependency4), beans.getBean(dependency5))));
+            return this;
+        }
+
+        /**
          * Registers a Factory for a Bean of {@code prototype} Scope. The Factory by itself is not a Bean, but
          *  the created Instance is. No {@link PostConstructible#onPostConstruct(BeanRepository)} is executed for the
          *  Factory Object. The {@link PostConstructible#onPostConstruct(BeanRepository)} Method is executed on the
@@ -316,6 +700,144 @@ public class BeanRepository {
         public <T> BeanRepositoryBuilder prototypeFactory(final Class<T> cls, final Supplier<Factory<T>> factory) {
             validateBeanId(cls);
             beanCreators.put(cls, new PrototypeFactoryProvider(name, repository -> factory.get()));
+            return this;
+        }
+
+        /**
+         * Registers a Factory for a Bean of {@code prototype} Scope. Dependencies are injected into the Constructor.
+         *  The Factory by itself is not a Bean, but the created Instance is. No
+         *  {@link PostConstructible#onPostConstruct(BeanRepository)} is executed for the Factory Object. The
+         *  {@link PostConstructible#onPostConstruct(BeanRepository)} Method is executed on the created Bean, if the
+         *  {@link PostConstructible} Interface is implemented.
+         *
+         * @param cls           The Key for the Bean. An Instance of this Class has to be returned by the Factory.
+         * @param creator       The Constructor Reference to the Factory Class.
+         * @param dependency1   Class of the 1st referenced Dependency in the Constructor.
+         * @param <T>           The Type of the Bean.
+         * @param <DEP_1>       The Type of the 1st Dependency.
+         * @return The {@link BeanRepositoryBuilder} to construct other Beans. Part of the fluent API.
+         */
+        public <T, DEP_1> BeanRepositoryBuilder prototypeFactory(final Class<T> cls,
+                final ConstructorWith1Parameter<Factory<T>, DEP_1> creator,
+                final Class<DEP_1> dependency1) {
+            validateBeanId(cls);
+            beanCreators.put(cls, new PrototypeFactoryProvider(name, beans -> creator.create(beans.getBean(dependency1))));
+            return this;
+        }
+
+        /**
+         * Registers a Factory for a Bean of {@code prototype} Scope. Dependencies are injected into the Constructor.
+         *  The Factory by itself is not a Bean, but the created Instance is. No
+         *  {@link PostConstructible#onPostConstruct(BeanRepository)} is executed for the Factory Object. The
+         *  {@link PostConstructible#onPostConstruct(BeanRepository)} Method is executed on the created Bean, if the
+         *  {@link PostConstructible} Interface is implemented.
+         *
+         * @param cls           The Key for the Bean. An Instance of this Class has to be returned by the Factory.
+         * @param creator       The Constructor Reference to the Factory Class.
+         * @param dependency1   Class of the 1st referenced Dependency in the Constructor.
+         * @param dependency2   Class of the 2nd referenced Dependency in the Constructor.
+         * @param <T>           The Type of the Bean.
+         * @param <DEP_1>       The Type of the 1st Dependency.
+         * @param <DEP_2>       The Type of the 2nd Dependency.
+         * @return The {@link BeanRepositoryBuilder} to construct other Beans. Part of the fluent API.
+         */
+        public <T, DEP_1, DEP_2> BeanRepositoryBuilder prototypeFactory(final Class<T> cls,
+                final ConstructorWith2Parameters<Factory<T>, DEP_1, DEP_2> creator,
+                final Class<DEP_1> dependency1, final Class<DEP_2> dependency2) {
+            validateBeanId(cls);
+            beanCreators.put(cls, new PrototypeFactoryProvider(name, beans -> creator.create(
+                    beans.getBean(dependency1), beans.getBean(dependency2))));
+            return this;
+        }
+
+        /**
+         * Registers a Factory for a Bean of {@code prototype} Scope. Dependencies are injected into the Constructor.
+         *  The Factory by itself is not a Bean, but the created Instance is. No
+         *  {@link PostConstructible#onPostConstruct(BeanRepository)} is executed for the Factory Object. The
+         *  {@link PostConstructible#onPostConstruct(BeanRepository)} Method is executed on the created Bean, if the
+         *  {@link PostConstructible} Interface is implemented.
+         *
+         * @param cls           The Key for the Bean. An Instance of this Class has to be returned by the Factory.
+         * @param creator       The Constructor Reference to the Factory Class.
+         * @param dependency1   Class of the 1st referenced Dependency in the Constructor.
+         * @param dependency2   Class of the 2nd referenced Dependency in the Constructor.
+         * @param dependency3   Class of the 3rd referenced Dependency in the Constructor.
+         * @param <T>           The Type of the Bean.
+         * @param <DEP_1>       The Type of the 1st Dependency.
+         * @param <DEP_2>       The Type of the 2nd Dependency.
+         * @param <DEP_3>       The Type of the 3rd Dependency.
+         * @return The {@link BeanRepositoryBuilder} to construct other Beans. Part of the fluent API.
+         */
+        public <T, DEP_1, DEP_2, DEP_3> BeanRepositoryBuilder prototypeFactory(final Class<T> cls,
+                final ConstructorWith3Parameters<Factory<T>, DEP_1, DEP_2, DEP_3> creator,
+                final Class<DEP_1> dependency1, final Class<DEP_2> dependency2, final Class<DEP_3> dependency3) {
+            validateBeanId(cls);
+            beanCreators.put(cls, new PrototypeFactoryProvider(name, beans -> creator.create(
+                    beans.getBean(dependency1), beans.getBean(dependency2), beans.getBean(dependency3))));
+            return this;
+        }
+
+        /**
+         * Registers a Factory for a Bean of {@code prototype} Scope. Dependencies are injected into the Constructor.
+         *  The Factory by itself is not a Bean, but the created Instance is. No
+         *  {@link PostConstructible#onPostConstruct(BeanRepository)} is executed for the Factory Object. The
+         *  {@link PostConstructible#onPostConstruct(BeanRepository)} Method is executed on the created Bean, if the
+         *  {@link PostConstructible} Interface is implemented.
+         *
+         * @param cls           The Key for the Bean. An Instance of this Class has to be returned by the Factory.
+         * @param creator       The Constructor Reference to the Factory Class.
+         * @param dependency1   Class of the 1st referenced Dependency in the Constructor.
+         * @param dependency2   Class of the 2nd referenced Dependency in the Constructor.
+         * @param dependency3   Class of the 3rd referenced Dependency in the Constructor.
+         * @param dependency4   Class of the 4th referenced Dependency in the Constructor.
+         * @param <T>           The Type of the Bean.
+         * @param <DEP_1>       The Type of the 1st Dependency.
+         * @param <DEP_2>       The Type of the 2nd Dependency.
+         * @param <DEP_3>       The Type of the 3rd Dependency.
+         * @param <DEP_4>       The Type of the 4th Dependency.
+         * @return The {@link BeanRepositoryBuilder} to construct other Beans. Part of the fluent API.
+         */
+        public <T, DEP_1, DEP_2, DEP_3, DEP_4> BeanRepositoryBuilder prototypeFactory(final Class<T> cls,
+                final ConstructorWith4Parameters<Factory<T>, DEP_1, DEP_2, DEP_3, DEP_4> creator,
+                final Class<DEP_1> dependency1, final Class<DEP_2> dependency2, final Class<DEP_3> dependency3,
+                final Class<DEP_4> dependency4) {
+            validateBeanId(cls);
+            beanCreators.put(cls, new PrototypeFactoryProvider(name, beans -> creator.create(
+                    beans.getBean(dependency1), beans.getBean(dependency2), beans.getBean(dependency3),
+                    beans.getBean(dependency4))));
+            return this;
+        }
+
+        /**
+         * Registers a Factory for a Bean of {@code prototype} Scope. Dependencies are injected into the Constructor.
+         *  The Factory by itself is not a Bean, but the created Instance is. No
+         *  {@link PostConstructible#onPostConstruct(BeanRepository)} is executed for the Factory Object. The
+         *  {@link PostConstructible#onPostConstruct(BeanRepository)} Method is executed on the created Bean, if the
+         *  {@link PostConstructible} Interface is implemented.
+         *
+         * @param cls           The Key for the Bean. An Instance of this Class has to be returned by the Factory.
+         * @param creator       The Constructor Reference to the Factory Class.
+         * @param dependency1   Class of the 1st referenced Dependency in the Constructor.
+         * @param dependency2   Class of the 2nd referenced Dependency in the Constructor.
+         * @param dependency3   Class of the 3rd referenced Dependency in the Constructor.
+         * @param dependency4   Class of the 4th referenced Dependency in the Constructor.
+         * @param dependency5   Class of the 5th referenced Dependency in the Constructor.
+         * @param <T>           The Type of the Bean.
+         * @param <DEP_1>       The Type of the 1st Dependency.
+         * @param <DEP_2>       The Type of the 2nd Dependency.
+         * @param <DEP_3>       The Type of the 3rd Dependency.
+         * @param <DEP_4>       The Type of the 4th Dependency.
+         * @param <DEP_5>       The Type of the 5th Dependency.
+         * @return The {@link BeanRepositoryBuilder} to construct other Beans. Part of the fluent API.
+         */
+        public <T, DEP_1, DEP_2, DEP_3, DEP_4, DEP_5> BeanRepositoryBuilder prototypeFactory(final Class<T> cls,
+                final ConstructorWith5Parameters<Factory<T>, DEP_1, DEP_2, DEP_3, DEP_4, DEP_5> creator,
+                final Class<DEP_1> dependency1, final Class<DEP_2> dependency2, final Class<DEP_3> dependency3,
+                final Class<DEP_4> dependency4, final Class<DEP_5> dependency5) {
+            validateBeanId(cls);
+            beanCreators.put(cls, new PrototypeFactoryProvider(name, beans -> creator.create(
+                    beans.getBean(dependency1), beans.getBean(dependency2), beans.getBean(dependency3),
+                    beans.getBean(dependency4), beans.getBean(dependency5))));
             return this;
         }
 
