@@ -12,8 +12,8 @@ This Framework is the Implementation of a mix of the Service Locator Pattern and
 
 * Simple, self-explanatory and failsafe Configuration in Java Code
 * No use of Reflection or Annotation Magic
-* Support for Singletons and Instances
-* Fail Fast: Detection of cyclic References on start up
+* Support for Singletons, Prototypes and Instances
+* Fail Fast on start up
 * Execute Code after Initialisation of the Bean
 * Support for Prototypes (even with Parameters)
 * Detect Beans of a specific Type: `Set<T> getBeansOfType(final Class<T> cls)`
@@ -25,16 +25,12 @@ This Framework is the Implementation of a mix of the Service Locator Pattern and
 
 ## Limitations ##
 
-* No resolving of cyclic References -> leads to StackOverflow on start up (fail fast)
+* Cyclic References not allowed
 * Only lazy Creation of Beans. Beans are created, when they are needed (in
    dependence of the scope)
 * No Request or Session Scope
-* Beans has to be obtained in the Constructor or in its `onPostConstruct()` Method
 * No initialisation Code allowed in Constructor
     * Constructor may be called multiple times while Creation of the `BeanRepository`
-    * Not all Beans may be available at this Time
-    * use [PostConstructible](src/main/java/de/tse/beanrepository/PostConstructible.java)
-       for initialisation Code
 * A Bean can only be accessed by a Class
 
 
@@ -49,7 +45,7 @@ Include the following Artifact to use the `BeanRepository`:
 <dependency>
     <groupId>com.github.tinosteinort</groupId>
     <artifactId>beanrepository</artifactId>
-    <version>1.3.1</version>
+    <version>1.4.0</version>
 </dependency>
 ```
 
@@ -303,37 +299,40 @@ A Factory is a Class which creates an Instance of a Bean. Within the `BeanReposi
 
 ## Modularisation ##
 
-It is possible to create multiple BeanRepositories which can be wired together. One `BeanRepository` equates
- to one Module. Every `BeanRepository` can get a name for better Recognition in Case of an Error.
+One `BeanRepository` equates to one Module. It is possible to create a Graph of BeanRepositories. While creating
+ a `BeanRepository`, a parent `BeanRepository` can be passed. A Child Repository can get References to Beans from
+ the Parent, but not from an other Child of the Parent Repository.
 
 Important: Every `BeanRepository` has to be valid on its own.
 
 So a Tree can be build out of BeanRepositories. If two BeanRepositories has no Correlation, the Beans
  of the Repositories has no Correlation, too.
 ```java
-    final BeanRepository logicRepo = new BeanRepository.BeanRepositoryBuilder("LogicModule")
+    final BeanRepository baseRepo = new BeanRepository.BeanRepositoryBuilder("Base")
             .singleton(MyInterfaceImpl1.class, MyInterfaceImpl1::new)
             .build();
 
-    final BeanRepository dataRepo = new BeanRepository.BeanRepositoryBuilder("DataModule")
+    final BeanRepository dataRepo = new BeanRepository.BeanRepositoryBuilder("Data", baseRepo)
             .singleton(MyInterfaceImpl2.class, MyInterfaceImpl2::new)
             .build();
 
-    // #MARKER#
-
-    final BeanRepository repo = new BeanRepository.BeanRepositoryBuilder("CompositeModule")
+    final BeanRepository otherRepo = new BeanRepository.BeanRepositoryBuilder("Other", baseRepo)
+            .singleton(MyInterfaceImpl3.class, MyInterfaceImpl3::new)
             .build(logicRepo, dataRepo);
 
-    // At this Point all Modules are wired together
 
-    final Set<MyInterface> beans = repo.getBeansOfType(MyInterface.class);
+    final Set<MyInterface> beans1 = dataRepo.getBeansOfType(MyInterface.class); // contains MyInterfaceImpl1 and MyInterfaceImpl2
+    final Set<MyInterface> beans2 = otherRepo.getBeansOfType(MyInterface.class); // contains MyInterfaceImpl1 and MyInterfaceImpl3
 ```
 
-If working with Modules, dont call `getBean()` before all Modules are wired together
- (e.g. at `#MARKER#`). This may lead to missing Beans, because `onPostConstruct()` is executed,
- before all Beans are available. This may lead to an unexpected State.
-
 # Version History #
+
+## v1.4.0 ##
+Fixes:
+* Modularisation does not work as expected. Concept refactored.
+
+Enhancements:
+* Constructor Injection
 
 ## v1.3.1 ##
 Fixes:
@@ -341,18 +340,18 @@ Fixes:
     and every time, when a prototype Bean is requested
 
 ## v1.3.0 ##
-Enhancements
+Enhancements:
 * A `Factory` can be used to create Beans
 
 ## v1.2.0 ##
-Enhancements
+Enhancements:
 * Add `Provider` Interface, and Methods to get Providers for registered Beans
 
 ## v1.1 ##
 Fixes:
 * `onPostConstruct` was called multiple Times on referenced Beans
 
-Enhancements
+Enhancements:
 * Add other `getBean(...)` Methods to `BeanAccessor`. This allows to generate `prototype` Beans in
    a Constructor
 

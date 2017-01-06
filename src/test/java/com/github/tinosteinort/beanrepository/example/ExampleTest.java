@@ -9,6 +9,7 @@ import com.github.tinosteinort.beanrepository.example.services.MailService;
 import com.github.tinosteinort.beanrepository.example.services.MyInterface;
 import com.github.tinosteinort.beanrepository.example.services.MyInterfaceImpl1;
 import com.github.tinosteinort.beanrepository.example.services.MyInterfaceImpl2;
+import com.github.tinosteinort.beanrepository.example.services.MyInterfaceImpl3;
 import com.github.tinosteinort.beanrepository.example.services.PrintService;
 import com.github.tinosteinort.beanrepository.example.services.ServiceA;
 import com.github.tinosteinort.beanrepository.example.services.ServiceB;
@@ -166,62 +167,26 @@ public class ExampleTest {
         Assert.assertNotEquals(repo.getBean(MyInterfaceImpl1.class), repo.getBean(MyInterfaceImpl2.class));
     }
 
-    @Test public void collectBeansOverModuleBounds() {
+    @Test public void modularisation() {
 
-        final BeanRepository repo1 = new BeanRepository.BeanRepositoryBuilder("LogicModule")
+        final BeanRepository parent = new BeanRepository.BeanRepositoryBuilder("ParentModule")
+                .singleton(PrintService.class, PrintService::new)
                 .singleton(MyInterfaceImpl1.class, MyInterfaceImpl1::new)
                 .build();
 
-        final BeanRepository repo2 = new BeanRepository.BeanRepositoryBuilder("DataModule")
+        final BeanRepository module1 = new BeanRepository.BeanRepositoryBuilder("OneModule", parent)
+                .singleton(MailService.class, MailService::new)
+                .build();
+
+        final BeanRepository module2 = new BeanRepository.BeanRepositoryBuilder("AnotherModule", parent)
                 .singleton(MyInterfaceImpl2.class, MyInterfaceImpl2::new)
                 .build();
 
-        final BeanRepository repo = new BeanRepository.BeanRepositoryBuilder("CompositeModule")
-                .build(repo1, repo2);
+        final MailService mailService = module1.getBean(MailService.class);
+        mailService.sendMail("You", "Hi!");
 
-        final Set<MyInterface> beans = repo.getBeansOfType(MyInterface.class);
-        Assert.assertEquals(2, beans.size());
-    }
-
-    @Test public void dependencyToOtherModule() {
-
-        final BeanRepository repo1 = new BeanRepository.BeanRepositoryBuilder("BaseModule")
-                .singleton(PrintService.class, PrintService::new)
-                .build();
-
-        final BeanRepository repo = new BeanRepository.BeanRepositoryBuilder("AdvancedModule")
-                .singleton(MailService.class, MailService::new)
-                .build(repo1);
-
-        final MailService mailService = repo.getBean(MailService.class);
-        mailService.sendMail("You", "Hi again!");
-    }
-
-    @Test(expected = RuntimeException.class)
-    public void dependentBeansNotAllowedInDifferentModules() {
-
-        final BeanRepository repo1 = new BeanRepository.BeanRepositoryBuilder()
-                .singleton(PrintService.class, PrintService::new)
-                .build();
-
-        final BeanRepository repo2 = new BeanRepository.BeanRepositoryBuilder()
-                .singleton(MailService.class, MailService::new)
-                .build(); // requires PrintService -> not available -> Error
-    }
-
-    @Test(expected = RuntimeException.class)
-    public void sameBeanInDifferentModulesNotAllowed() {
-
-        final BeanRepository module1 = new BeanRepository.BeanRepositoryBuilder("Module1")
-                .singleton(PrintService.class, PrintService::new)
-                .build();
-
-        final BeanRepository module2 = new BeanRepository.BeanRepositoryBuilder("Module2")
-                .singleton(PrintService.class, PrintService::new)
-                .build();
-
-        final BeanRepository repo = new BeanRepository.BeanRepositoryBuilder("ApplicationBeans")
-                .build(module1, module2);
+        final Set<MyInterface> beansOfModule2 = module2.getBeansOfType(MyInterface.class);
+        Assert.assertEquals(2, beansOfModule2.size());
     }
 
     @Test public void prototypeWithParameter() {

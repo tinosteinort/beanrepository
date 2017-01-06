@@ -12,13 +12,15 @@ import java.util.function.Supplier;
 public class BeanRepository {
 
     private final String name;
+    private final Optional<BeanRepository> parent;
     private final Map<Class<?>, BeanProvider> beanCreators = new HashMap<>();
     private final BeanAccessor accessor = new BeanRepositoryShelter(this);
     private final PostConstructor postConstructor = new PostConstructor(this);
     private final DryRunAware dryRun = new DryRunAware();
 
-    private BeanRepository(final String name, final Map<Class<?>, BeanProvider> beanCreators) {
+    private BeanRepository(final String name, final BeanRepository parent, final Map<Class<?>, BeanProvider> beanCreators) {
         this.name = name;
+        this.parent = Optional.ofNullable(parent);
         this.beanCreators.putAll(beanCreators);
     }
 
@@ -40,7 +42,8 @@ public class BeanRepository {
     private BeanProvider beanProviderFor(final Class<?> cls) {
         final BeanProvider provider = beanCreators.get(cls);
         if (provider == null) {
-            throw new RuntimeException("No Bean registered for Class " + cls.getName());
+            return parent.orElseThrow(() -> new RuntimeException("No Bean registered for Class " + cls.getName()))
+                    .beanProviderFor(cls);
         }
         return provider;
     }
@@ -93,6 +96,7 @@ public class BeanRepository {
      */
     public <T> Set<T> getBeansOfType(final Class<T> cls) {
         final Set<T> result = new HashSet<>();
+        parent.ifPresent(parent -> result.addAll(parent.getBeansOfType(cls)));
         for (BeanProvider provider : beanCreators.values()) {
             final Object bean = provider.getBean(this, true);
             if (cls.isAssignableFrom(bean.getClass())) {
@@ -181,7 +185,19 @@ public class BeanRepository {
         private static final String ANONYMOUS = "<anonymous>";
 
         private final String name;
+        private final BeanRepository parentRepository;
         private final Map<Class<?>, BeanProvider> beanCreators = new HashMap<>();
+
+        /**
+         * Creates a new Builder for a {@link BeanRepository}.
+         *
+         * @param name    The optional name for the constructed {@link BeanRepository}.
+         * @param parentRepository  The parent BeanRepository.
+         */
+        public BeanRepositoryBuilder(final String name, final BeanRepository parentRepository) {
+            this.name = Objects.toString(name, ANONYMOUS);
+            this.parentRepository = parentRepository;
+        }
 
         /**
          * Creates a new Builder for a {@link BeanRepository}.
@@ -189,14 +205,23 @@ public class BeanRepository {
          * @param name    The optional name for the constructed {@link BeanRepository}.
          */
         public BeanRepositoryBuilder(final String name) {
-            this.name = Objects.toString(name, ANONYMOUS);
+            this(name, null);
+        }
+
+        /**
+         * Creates a new Builder for a {@link BeanRepository} with a parent BeanDirectory.
+         *
+         * @param parentRepository  The parent BeanDirectory.
+         */
+        public BeanRepositoryBuilder(final BeanRepository parentRepository) {
+            this(null, parentRepository);
         }
 
         /**
          * Creates a new Builder for a {@link BeanRepository}.
          */
         public BeanRepositoryBuilder() {
-            this(null);
+            this(null, null);
         }
 
         /**
@@ -876,60 +901,25 @@ public class BeanRepository {
             if (beanCreators.containsKey(cls)) {
                 throw new IllegalArgumentException("There is already a bean of Type: " + cls);
             }
-        }
-
-        /**
-         * Constructs a {@link BeanRepository} with all for the Builder defined Beans.
-         *
-         * @param otherRepositories    If the Beans should be grouped in Modules, it is possible to merge different
-         *                             BeanRepositories together. One BeanRepository equates to one Module. All Beans
-         *                             of {@code otherRepositories} are summarised in one new BeanRepository. Do not
-         *                             access Beans from a BeanRepository while not all Modules are wired together.
-         *                             This can lead to an inconsistent state, because not all Beans may be
-         *                             registered.
-         * @return a full configured and initialised {@link BeanRepository}
-         */
-        public BeanRepository build(final Collection<BeanRepository> otherRepositories) {
-            return build(otherRepositories.toArray(new BeanRepository[otherRepositories.size()]));
-        }
-
-        /**
-         * Constructs a {@link BeanRepository} with all for the Builder defined Beans.
-         *
-         * @param otherRepositories    If the Beans should be grouped in Modules, it is possible to merge different
-         *                             BeanRepositories together. One BeanRepository equates to one Module. All Beans
-         *                             of {@code otherRepositories} are summarised in one new BeanRepository. Do not
-         *                             access Beans from a BeanRepository while not all Modules are wired together.
-         *                             This can lead to an inconsistent state, because not all Beans may be
-         *                             registered.
-         * @return a full configured and initialised {@link BeanRepository}
-         */
-        public BeanRepository build(final BeanRepository ...otherRepositories) {
-
-            final Map<Class<?>, BeanProvider> compositeCreators = new HashMap<>();
-            for (BeanRepository other : otherRepositories) {
-                transferBeans(other.beanCreators, compositeCreators);
+            if (parentRepository != null && parentRepository.beanCreators.containsKey(cls)) {
+                throw new IllegalArgumentException(String.format("Error while register Bean: " +
+                                "[%s@%s] already exist in Repository [%s]."
+                        , cls.getName(), name
+                        , parentRepository.name)
+                );
             }
-            transferBeans(beanCreators, compositeCreators);
+        }
 
-            final BeanRepository repository = new BeanRepository(name, compositeCreators);
+        /**
+         * Constructs a {@link BeanRepository} with all for the Builder defined Beans.
+         *
+         * @return a full configured and initialised {@link BeanRepository}
+         */
+        public BeanRepository build() {
+            final BeanRepository repository = new BeanRepository(name, parentRepository, beanCreators);
             repository.executeDryRun();
 
             return repository;
-        }
-
-        private void transferBeans(final Map<Class<?>, BeanProvider> source, final Map<Class<?>, BeanProvider> target) {
-            for (Map.Entry<Class<?>, BeanProvider> entry : source.entrySet()) {
-                final BeanProvider existing = target.get(entry.getKey());
-                if (existing != null) {
-                    throw new IllegalArgumentException(String.format("Error while integrate Modules. " +
-                                    "Bean [%s@%s] already exist in Repository %s."
-                            , entry.getKey().getName(), entry.getValue().getRepositoryId()
-                            , existing.getRepositoryId())
-                    );
-                }
-                target.put(entry.getKey(), entry.getValue());
-            }
         }
     }
 }
