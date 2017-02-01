@@ -57,4 +57,41 @@ public abstract class BeanDefinition<T> {
 
         return new ConstructorWith2ParametersBeanDefinition<>(scope, beanClass, ctor2Params, dependency1, dependency2);
     }
+
+    public static <T, DEP_1, DEP_2, DEP_3> BeanDefinition<T> create(final Scope scope, final Class<T> beanClass,
+                                                         final ConstructorWith3Parameters<T, DEP_1, DEP_2,
+                                                                 DEP_3> ctor3Params,
+                                                         final Class<DEP_1> dependency1,
+                                                         final Class<DEP_2> dependency2,
+                                                         final Class<DEP_3> dependency3) {
+
+        return new ConstructorWith3ParametersBeanDefinition<>(scope, beanClass, ctor3Params, dependency1, dependency2,
+                dependency3);
+    }
+
+    public static <T, DEP_1, DEP_2, DEP_3, DEP_4> BeanDefinition<T> create(final Scope scope, final Class<T> beanClass,
+                                                         final ConstructorWith4Parameters<T, DEP_1, DEP_2,
+                                                                 DEP_3, DEP_4> ctor4Params,
+                                                         final Class<DEP_1> dependency1,
+                                                         final Class<DEP_2> dependency2,
+                                                         final Class<DEP_3> dependency3,
+                                                         final Class<DEP_4> dependency4) {
+
+        return new ConstructorWith4ParametersBeanDefinition<>(scope, beanClass, ctor4Params, dependency1, dependency2,
+                dependency3, dependency4);
+    }
+
+    public static <T, DEP_1, DEP_2, DEP_3, DEP_4, DEP_5> BeanDefinition<T> create(final Scope scope,
+                                                         final Class<T> beanClass,
+                                                         final ConstructorWith5Parameters<T, DEP_1, DEP_2,
+                                                                 DEP_3, DEP_4, DEP_5> ctor5Params,
+                                                         final Class<DEP_1> dependency1,
+                                                         final Class<DEP_2> dependency2,
+                                                         final Class<DEP_3> dependency3,
+                                                         final Class<DEP_4> dependency4,
+                                                         final Class<DEP_5> dependency5) {
+
+        return new ConstructorWith5ParametersBeanDefinition<>(scope, beanClass, ctor5Params, dependency1, dependency2,
+                dependency3, dependency4, dependency5);
+    }
 }

@@ -313,9 +313,7 @@ public class BeanRepository {
         public <T, DEP_1, DEP_2, DEP_3> BeanRepositoryBuilder singleton(final Class<T> cls,
                 final ConstructorWith3Parameters<T, DEP_1, DEP_2, DEP_3> creator,
                 final Class<DEP_1> dependency1, final Class<DEP_2> dependency2, final Class<DEP_3> dependency3) {
-            validateBeanId(cls);
-            beanCreators.put(cls, new SingletonProvider(name, beans -> creator.create(
-                    beans.getBean(dependency1), beans.getBean(dependency2), beans.getBean(dependency3))));
+            definition(BeanDefinition.create(Scope.SINGLETON, cls, creator, dependency1, dependency2, dependency3));
             return this;
         }
 
@@ -340,10 +338,8 @@ public class BeanRepository {
                 final ConstructorWith4Parameters<T, DEP_1, DEP_2, DEP_3, DEP_4> creator,
                 final Class<DEP_1> dependency1, final Class<DEP_2> dependency2, final Class<DEP_3> dependency3,
                 final Class<DEP_4> dependency4) {
-            validateBeanId(cls);
-            beanCreators.put(cls, new SingletonProvider(name, beans -> creator.create(
-                    beans.getBean(dependency1), beans.getBean(dependency2), beans.getBean(dependency3),
-                    beans.getBean(dependency4))));
+            definition(BeanDefinition.create(Scope.SINGLETON, cls, creator, dependency1, dependency2, dependency3,
+                    dependency4));
             return this;
         }
 
@@ -370,10 +366,8 @@ public class BeanRepository {
                 final ConstructorWith5Parameters<T, DEP_1, DEP_2, DEP_3, DEP_4, DEP_5> creator,
                 final Class<DEP_1> dependency1, final Class<DEP_2> dependency2, final Class<DEP_3> dependency3,
                 final Class<DEP_4> dependency4, final Class<DEP_5> dependency5) {
-            validateBeanId(cls);
-            beanCreators.put(cls, new SingletonProvider(name, beans -> creator.create(
-                    beans.getBean(dependency1), beans.getBean(dependency2), beans.getBean(dependency3),
-                    beans.getBean(dependency4), beans.getBean(dependency5))));
+            definition(BeanDefinition.create(Scope.SINGLETON, cls, creator, dependency1, dependency2, dependency3,
+                    dependency4, dependency5));
             return this;
         }
 
@@ -637,9 +631,7 @@ public class BeanRepository {
         public <T, DEP_1, DEP_2, DEP_3> BeanRepositoryBuilder prototype(final Class<T> cls,
                 final ConstructorWith3Parameters<T, DEP_1, DEP_2, DEP_3> creator,
                 final Class<DEP_1> dependency1, final Class<DEP_2> dependency2, final Class<DEP_3> dependency3) {
-            validateBeanId(cls);
-            beanCreators.put(cls, new PrototypeProvider(name, beans -> creator.create(
-                    beans.getBean(dependency1), beans.getBean(dependency2), beans.getBean(dependency3))));
+            definition(BeanDefinition.create(Scope.PROTOTYPE, cls, creator, dependency1, dependency2, dependency3));
             return this;
         }
 
@@ -664,10 +656,8 @@ public class BeanRepository {
                 final ConstructorWith4Parameters<T, DEP_1, DEP_2, DEP_3, DEP_4> creator,
                 final Class<DEP_1> dependency1, final Class<DEP_2> dependency2, final Class<DEP_3> dependency3,
                 final Class<DEP_4> dependency4) {
-            validateBeanId(cls);
-            beanCreators.put(cls, new PrototypeProvider(name, beans -> creator.create(
-                    beans.getBean(dependency1), beans.getBean(dependency2), beans.getBean(dependency3),
-                    beans.getBean(dependency4))));
+            definition(BeanDefinition.create(Scope.PROTOTYPE, cls, creator, dependency1, dependency2, dependency3,
+                    dependency4));
             return this;
         }
 
@@ -694,10 +684,8 @@ public class BeanRepository {
                 final ConstructorWith5Parameters<T, DEP_1, DEP_2, DEP_3, DEP_4, DEP_5> creator,
                 final Class<DEP_1> dependency1, final Class<DEP_2> dependency2, final Class<DEP_3> dependency3,
                 final Class<DEP_4> dependency4, final Class<DEP_5> dependency5) {
-            validateBeanId(cls);
-            beanCreators.put(cls, new PrototypeProvider(name, beans -> creator.create(
-                    beans.getBean(dependency1), beans.getBean(dependency2), beans.getBean(dependency3),
-                    beans.getBean(dependency4), beans.getBean(dependency5))));
+            definition(BeanDefinition.create(Scope.PROTOTYPE, cls, creator, dependency1, dependency2, dependency3,
+                    dependency4, dependency5));
             return this;
         }
 
