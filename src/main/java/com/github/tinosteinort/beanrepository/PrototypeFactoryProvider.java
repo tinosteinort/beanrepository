@@ -4,7 +4,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Function;
 
-public class PrototypeFactoryProvider implements BeanProvider {
+class PrototypeFactoryProvider implements BeanProvider {
 
     private final String repositoryId;
     private final Function<BeanAccessor, Factory> creator;

@@ -2,6 +2,8 @@ package com.github.tinosteinort.beanrepository.example;
 
 import com.github.tinosteinort.beanrepository.BeanAccessor;
 import com.github.tinosteinort.beanrepository.BeanRepository;
+import com.github.tinosteinort.beanrepository.BeanDefinition;
+import com.github.tinosteinort.beanrepository.Scope;
 import com.github.tinosteinort.beanrepository.example.services.CollectorServiceOnPostConstruct;
 import com.github.tinosteinort.beanrepository.example.services.FactoryWithDependency;
 import com.github.tinosteinort.beanrepository.example.services.FactoryWithoutDependency;
@@ -9,7 +11,6 @@ import com.github.tinosteinort.beanrepository.example.services.MailService;
 import com.github.tinosteinort.beanrepository.example.services.MyInterface;
 import com.github.tinosteinort.beanrepository.example.services.MyInterfaceImpl1;
 import com.github.tinosteinort.beanrepository.example.services.MyInterfaceImpl2;
-import com.github.tinosteinort.beanrepository.example.services.MyInterfaceImpl3;
 import com.github.tinosteinort.beanrepository.example.services.PrintService;
 import com.github.tinosteinort.beanrepository.example.services.ServiceA;
 import com.github.tinosteinort.beanrepository.example.services.ServiceB;
@@ -314,5 +315,17 @@ public class ExampleTest {
         final ServiceWithConstructorDependency service = repo.getBean(ServiceWithConstructorDependency.class);
 
         service.doSomething();
+    }
+
+    @Test public void externalBeanDefinitionNoParam() {
+
+        final BeanDefinition<PrintService> definition = BeanDefinition.create(Scope.SINGLETON, PrintService.class, PrintService::new);
+
+        final BeanRepository repo = new BeanRepository.BeanRepositoryBuilder()
+                .definition(definition)
+                .build();
+
+        final PrintService printService = repo.getBean(PrintService.class);
+        printService.print("Created by Definition");
     }
 }

@@ -237,8 +237,7 @@ public class BeanRepository {
          * @return The {@link BeanRepositoryBuilder} to construct other Beans. Part of the fluent API.
          */
         public <T> BeanRepositoryBuilder singleton(final Class<T> cls, final Function<BeanAccessor, T> creator) {
-            validateBeanId(cls);
-            beanCreators.put(cls, new SingletonProvider(name, creator));
+            definition(BeanDefinition.create(Scope.SINGLETON, cls, creator));
             return this;
         }
 
@@ -254,8 +253,7 @@ public class BeanRepository {
          * @return The {@link BeanRepositoryBuilder} to construct other Beans. Part of the fluent API.
          */
         public <T> BeanRepositoryBuilder singleton(final Class<T> cls, final Supplier<T> creator) {
-            validateBeanId(cls);
-            beanCreators.put(cls, new SingletonProvider(name, repository -> creator.get()));
+            definition(BeanDefinition.create(Scope.SINGLETON, cls, creator));
             return this;
         }
 
@@ -273,8 +271,7 @@ public class BeanRepository {
         public <T, DEP_1> BeanRepositoryBuilder singleton(final Class<T> cls,
                 final ConstructorWith1Parameter<T, DEP_1> creator,
                 final Class<DEP_1> dependency1) {
-            validateBeanId(cls);
-            beanCreators.put(cls, new SingletonProvider(name, beans -> creator.create(beans.getBean(dependency1))));
+            definition(BeanDefinition.create(Scope.SINGLETON, cls, creator, dependency1));
             return this;
         }
 
@@ -294,9 +291,7 @@ public class BeanRepository {
         public <T, DEP_1, DEP_2> BeanRepositoryBuilder singleton(final Class<T> cls,
                 final ConstructorWith2Parameters<T, DEP_1, DEP_2> creator,
                 final Class<DEP_1> dependency1, final Class<DEP_2> dependency2) {
-            validateBeanId(cls);
-            beanCreators.put(cls, new SingletonProvider(name, beans -> creator.create(
-                    beans.getBean(dependency1), beans.getBean(dependency2))));
+            definition(BeanDefinition.create(Scope.SINGLETON, cls, creator, dependency1, dependency2));
             return this;
         }
 
@@ -567,8 +562,7 @@ public class BeanRepository {
          * @return The {@link BeanRepositoryBuilder} to construct other Beans. Part of the fluent API.
          */
         public <T> BeanRepositoryBuilder prototype(final Class<T> cls, final Function<BeanAccessor, T> creator) {
-            validateBeanId(cls);
-            beanCreators.put(cls, new PrototypeProvider(name, creator));
+            definition(BeanDefinition.create(Scope.PROTOTYPE, cls, creator));
             return this;
         }
 
@@ -583,8 +577,7 @@ public class BeanRepository {
          * @return The {@link BeanRepositoryBuilder} to construct other Beans. Part of the fluent API.
          */
         public <T> BeanRepositoryBuilder prototype(final Class<T> cls, final Supplier<T> creator) {
-            validateBeanId(cls);
-            beanCreators.put(cls, new PrototypeProvider(name, repository -> creator.get()));
+            definition(BeanDefinition.create(Scope.PROTOTYPE, cls, creator));
             return this;
         }
 
@@ -602,8 +595,7 @@ public class BeanRepository {
         public <T, DEP_1> BeanRepositoryBuilder prototype(final Class<T> cls,
                 final ConstructorWith1Parameter<T, DEP_1> creator,
                 final Class<DEP_1> dependency1) {
-            validateBeanId(cls);
-            beanCreators.put(cls, new PrototypeProvider(name, beans -> creator.create(beans.getBean(dependency1))));
+            definition(BeanDefinition.create(Scope.PROTOTYPE, cls, creator, dependency1));
             return this;
         }
 
@@ -623,9 +615,7 @@ public class BeanRepository {
         public <T, DEP_1, DEP_2> BeanRepositoryBuilder prototype(final Class<T> cls,
                 final ConstructorWith2Parameters<T, DEP_1, DEP_2> creator,
                 final Class<DEP_1> dependency1, final Class<DEP_2> dependency2) {
-            validateBeanId(cls);
-            beanCreators.put(cls, new PrototypeProvider(name, beans -> creator.create(
-                    beans.getBean(dependency1), beans.getBean(dependency2))));
+            definition(BeanDefinition.create(Scope.PROTOTYPE, cls, creator, dependency1, dependency2));
             return this;
         }
 
@@ -894,6 +884,12 @@ public class BeanRepository {
         public <T> BeanRepositoryBuilder instance(final T instance) {
             validateBeanId(instance.getClass());
             beanCreators.put(instance.getClass(), new InstanceProvider(name, instance));
+            return this;
+        }
+
+        public <T> BeanRepositoryBuilder definition(final BeanDefinition definition) {
+            validateBeanId(definition.getBeanClass());
+            beanCreators.put(definition.getBeanClass(), definition.asBeanProvider(name));
             return this;
         }
 
