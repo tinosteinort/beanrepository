@@ -383,8 +383,7 @@ public class BeanRepository {
          * @return The {@link BeanRepositoryBuilder} to construct other Beans. Part of the fluent API.
          */
         public <T> BeanRepositoryBuilder singletonFactory(final Class<T> cls, final Supplier<Factory<T>> creator) {
-            validateBeanId(cls);
-            beanCreators.put(cls, new SingletonFactoryProvider(name, repository -> creator.get()));
+            definition(BeanDefinition.createFactory(Scope.SINGLETON, cls, creator));
             return this;
         }
 
@@ -405,8 +404,7 @@ public class BeanRepository {
         public <T, DEP_1> BeanRepositoryBuilder singletonFactory(final Class<T> cls,
                 final ConstructorWith1Parameter<Factory<T>, DEP_1> creator,
                 final Class<DEP_1> dependency1) {
-            validateBeanId(cls);
-            beanCreators.put(cls, new SingletonFactoryProvider(name, beans -> creator.create(beans.getBean(dependency1))));
+            definition(BeanDefinition.createFactory(Scope.SINGLETON, cls, creator, dependency1));
             return this;
         }
 
@@ -429,9 +427,7 @@ public class BeanRepository {
         public <T, DEP_1, DEP_2> BeanRepositoryBuilder singletonFactory(final Class<T> cls,
                 final ConstructorWith2Parameters<Factory<T>, DEP_1, DEP_2> creator,
                 final Class<DEP_1> dependency1, final Class<DEP_2> dependency2) {
-            validateBeanId(cls);
-            beanCreators.put(cls, new SingletonFactoryProvider(name, beans -> creator.create(
-                    beans.getBean(dependency1), beans.getBean(dependency2))));
+            definition(BeanDefinition.createFactory(Scope.SINGLETON, cls, creator, dependency1, dependency2));
             return this;
         }
 
@@ -456,9 +452,8 @@ public class BeanRepository {
         public <T, DEP_1, DEP_2, DEP_3> BeanRepositoryBuilder singletonFactory(final Class<T> cls,
                 final ConstructorWith3Parameters<Factory<T>, DEP_1, DEP_2, DEP_3> creator,
                 final Class<DEP_1> dependency1, final Class<DEP_2> dependency2, final Class<DEP_3> dependency3) {
-            validateBeanId(cls);
-            beanCreators.put(cls, new SingletonFactoryProvider(name, beans -> creator.create(
-                    beans.getBean(dependency1), beans.getBean(dependency2), beans.getBean(dependency3))));
+            definition(BeanDefinition.createFactory(Scope.SINGLETON, cls, creator, dependency1, dependency2,
+                    dependency3));
             return this;
         }
 
@@ -486,10 +481,8 @@ public class BeanRepository {
                 final ConstructorWith4Parameters<Factory<T>, DEP_1, DEP_2, DEP_3, DEP_4> creator,
                 final Class<DEP_1> dependency1, final Class<DEP_2> dependency2, final Class<DEP_3> dependency3,
                 final Class<DEP_4> dependency4) {
-            validateBeanId(cls);
-            beanCreators.put(cls, new SingletonFactoryProvider(name, beans -> creator.create(
-                    beans.getBean(dependency1), beans.getBean(dependency2), beans.getBean(dependency3),
-                    beans.getBean(dependency4))));
+            definition(BeanDefinition.createFactory(Scope.SINGLETON, cls, creator, dependency1, dependency2,
+                    dependency3, dependency4));
             return this;
         }
 
@@ -519,10 +512,8 @@ public class BeanRepository {
                 final ConstructorWith5Parameters<Factory<T>, DEP_1, DEP_2, DEP_3, DEP_4, DEP_5> creator,
                 final Class<DEP_1> dependency1, final Class<DEP_2> dependency2, final Class<DEP_3> dependency3,
                 final Class<DEP_4> dependency4, final Class<DEP_5> dependency5) {
-            validateBeanId(cls);
-            beanCreators.put(cls, new SingletonFactoryProvider(name, beans -> creator.create(
-                    beans.getBean(dependency1), beans.getBean(dependency2), beans.getBean(dependency3),
-                    beans.getBean(dependency4), beans.getBean(dependency5))));
+            definition(BeanDefinition.createFactory(Scope.SINGLETON, cls, creator, dependency1, dependency2,
+                    dependency3, dependency4, dependency5));
             return this;
         }
 
@@ -538,9 +529,9 @@ public class BeanRepository {
          * @param <T>        The Type of the Bean
          * @return The {@link BeanRepositoryBuilder} to construct other Beans. Part of the fluent API.
          */
-        public <T> BeanRepositoryBuilder singletonFactory(final Class<T> cls, final Function<BeanAccessor, Factory<T>> creator) {
-            validateBeanId(cls);
-            beanCreators.put(cls, new SingletonFactoryProvider(name, repository -> creator.apply(repository)));
+        public <T> BeanRepositoryBuilder singletonFactory(final Class<T> cls,
+                final Function<BeanAccessor, Factory<T>> creator) {
+            definition(BeanDefinition.createFactory(Scope.SINGLETON, cls, creator));
             return this;
         }
 
@@ -701,8 +692,7 @@ public class BeanRepository {
          * @return The {@link BeanRepositoryBuilder} to construct other Beans. Part of the fluent API.
          */
         public <T> BeanRepositoryBuilder prototypeFactory(final Class<T> cls, final Supplier<Factory<T>> factory) {
-            validateBeanId(cls);
-            beanCreators.put(cls, new PrototypeFactoryProvider(name, repository -> factory.get()));
+            definition(BeanDefinition.createFactory(Scope.PROTOTYPE, cls, factory));
             return this;
         }
 
@@ -723,8 +713,7 @@ public class BeanRepository {
         public <T, DEP_1> BeanRepositoryBuilder prototypeFactory(final Class<T> cls,
                 final ConstructorWith1Parameter<Factory<T>, DEP_1> creator,
                 final Class<DEP_1> dependency1) {
-            validateBeanId(cls);
-            beanCreators.put(cls, new PrototypeFactoryProvider(name, beans -> creator.create(beans.getBean(dependency1))));
+            definition(BeanDefinition.createFactory(Scope.PROTOTYPE, cls, creator, dependency1));
             return this;
         }
 
@@ -747,9 +736,7 @@ public class BeanRepository {
         public <T, DEP_1, DEP_2> BeanRepositoryBuilder prototypeFactory(final Class<T> cls,
                 final ConstructorWith2Parameters<Factory<T>, DEP_1, DEP_2> creator,
                 final Class<DEP_1> dependency1, final Class<DEP_2> dependency2) {
-            validateBeanId(cls);
-            beanCreators.put(cls, new PrototypeFactoryProvider(name, beans -> creator.create(
-                    beans.getBean(dependency1), beans.getBean(dependency2))));
+            definition(BeanDefinition.createFactory(Scope.PROTOTYPE, cls, creator, dependency1, dependency2));
             return this;
         }
 
@@ -774,9 +761,8 @@ public class BeanRepository {
         public <T, DEP_1, DEP_2, DEP_3> BeanRepositoryBuilder prototypeFactory(final Class<T> cls,
                 final ConstructorWith3Parameters<Factory<T>, DEP_1, DEP_2, DEP_3> creator,
                 final Class<DEP_1> dependency1, final Class<DEP_2> dependency2, final Class<DEP_3> dependency3) {
-            validateBeanId(cls);
-            beanCreators.put(cls, new PrototypeFactoryProvider(name, beans -> creator.create(
-                    beans.getBean(dependency1), beans.getBean(dependency2), beans.getBean(dependency3))));
+            definition(BeanDefinition.createFactory(Scope.PROTOTYPE, cls, creator, dependency1, dependency2,
+                    dependency3));
             return this;
         }
 
@@ -804,10 +790,8 @@ public class BeanRepository {
                 final ConstructorWith4Parameters<Factory<T>, DEP_1, DEP_2, DEP_3, DEP_4> creator,
                 final Class<DEP_1> dependency1, final Class<DEP_2> dependency2, final Class<DEP_3> dependency3,
                 final Class<DEP_4> dependency4) {
-            validateBeanId(cls);
-            beanCreators.put(cls, new PrototypeFactoryProvider(name, beans -> creator.create(
-                    beans.getBean(dependency1), beans.getBean(dependency2), beans.getBean(dependency3),
-                    beans.getBean(dependency4))));
+            definition(BeanDefinition.createFactory(Scope.PROTOTYPE, cls, creator, dependency1, dependency2,
+                    dependency3, dependency4));
             return this;
         }
 
@@ -837,10 +821,8 @@ public class BeanRepository {
                 final ConstructorWith5Parameters<Factory<T>, DEP_1, DEP_2, DEP_3, DEP_4, DEP_5> creator,
                 final Class<DEP_1> dependency1, final Class<DEP_2> dependency2, final Class<DEP_3> dependency3,
                 final Class<DEP_4> dependency4, final Class<DEP_5> dependency5) {
-            validateBeanId(cls);
-            beanCreators.put(cls, new PrototypeFactoryProvider(name, beans -> creator.create(
-                    beans.getBean(dependency1), beans.getBean(dependency2), beans.getBean(dependency3),
-                    beans.getBean(dependency4), beans.getBean(dependency5))));
+            definition(BeanDefinition.createFactory(Scope.PROTOTYPE, cls, creator, dependency1, dependency2,
+                    dependency3, dependency4, dependency5));
             return this;
         }
 
@@ -856,9 +838,9 @@ public class BeanRepository {
          * @param <T>        The Type of the Bean
          * @return The {@link BeanRepositoryBuilder} to construct other Beans. Part of the fluent API.
          */
-        public <T> BeanRepositoryBuilder prototypeFactory(final Class<T> cls, final Function<BeanAccessor, Factory<T>> creator) {
-            validateBeanId(cls);
-            beanCreators.put(cls, new PrototypeFactoryProvider(name, repository -> creator.apply(repository)));
+        public <T> BeanRepositoryBuilder prototypeFactory(final Class<T> cls,
+                final Function<BeanAccessor, Factory<T>> creator) {
+            definition(BeanDefinition.createFactory(Scope.PROTOTYPE, cls, creator));
             return this;
         }
 
@@ -870,8 +852,7 @@ public class BeanRepository {
          * @return The {@link BeanRepositoryBuilder} to construct other Beans. Part of the fluent API.
          */
         public <T> BeanRepositoryBuilder instance(final T instance) {
-            validateBeanId(instance.getClass());
-            beanCreators.put(instance.getClass(), new InstanceProvider(name, instance));
+            definition(BeanDefinition.createInstance(instance));
             return this;
         }
 

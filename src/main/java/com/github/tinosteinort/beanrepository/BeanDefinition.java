@@ -29,13 +29,25 @@ public abstract class BeanDefinition<T> {
     public static <T> BeanDefinition<T> create(final Scope scope, final Class<T> beanClass,
                                                final Supplier<T> supplier) {
 
-        return new ProviderBeanDefinition<>(scope, beanClass, supplier);
+        return new SupplierBeanDefinition<>(scope, beanClass, supplier);
+    }
+
+    public static <T> BeanDefinition<T> createFactory(final Scope scope, final Class<T> beanClass,
+                                               final Supplier<Factory<T>> supplier) {
+
+        return new SupplierFactoryBeanDefinition<>(scope, beanClass, supplier);
     }
 
     public static <T> BeanDefinition<T> create(final Scope scope, final Class<T> beanClass,
                                                final Function<BeanAccessor, T> function) {
 
         return new FunctionBeanDefinition<>(scope, beanClass, function);
+    }
+
+    public static <T> BeanDefinition<T> createFactory(final Scope scope, final Class<T> beanClass,
+                                                      final Function<BeanAccessor, Factory<T>> function) {
+
+        return new FunctionFactoryBeanDefinition<>(scope, beanClass, function);
     }
 
     public static <T> BeanDefinition<T> createInstance(final T instance) {
@@ -93,5 +105,61 @@ public abstract class BeanDefinition<T> {
 
         return new ConstructorWith5ParametersBeanDefinition<>(scope, beanClass, ctor5Params, dependency1, dependency2,
                 dependency3, dependency4, dependency5);
+    }
+
+    public static <T, DEP_1> BeanDefinition<T> createFactory(final Scope scope, final Class<T> beanClass,
+                                                        final ConstructorWith1Parameter<Factory<T>, DEP_1> ctor1Param,
+                                                        final Class<DEP_1> dependency1) {
+
+        return new ConstructorWith1ParameterFactoryBeanDefinition<>(scope, beanClass, ctor1Param, dependency1);
+    }
+
+    public static <T, DEP_1, DEP_2> BeanDefinition<T> createFactory(final Scope scope, final Class<T> beanClass,
+                                                        final ConstructorWith2Parameters<Factory<T>, DEP_1,
+                                                                DEP_2> ctor2Params,
+                                                        final Class<DEP_1> dependency1,
+                                                        final Class<DEP_2> dependency2) {
+
+        return new ConstructorWith2ParametersFactoryBeanDefinition<>(scope, beanClass, ctor2Params, dependency1,
+                dependency2);
+    }
+
+    public static <T, DEP_1, DEP_2, DEP_3> BeanDefinition<T> createFactory(final Scope scope,
+                                                        final Class<T> beanClass,
+                                                        final ConstructorWith3Parameters<Factory<T>, DEP_1, DEP_2,
+                                                                DEP_3> ctor3Params,
+                                                        final Class<DEP_1> dependency1,
+                                                        final Class<DEP_2> dependency2,
+                                                        final Class<DEP_3> dependency3) {
+
+        return new ConstructorWith3ParametersFactoryBeanDefinition<>(scope, beanClass, ctor3Params, dependency1,
+                dependency2, dependency3);
+    }
+
+    public static <T, DEP_1, DEP_2, DEP_3, DEP_4> BeanDefinition<T> createFactory(final Scope scope,
+                                                        final Class<T> beanClass,
+                                                        final ConstructorWith4Parameters<Factory<T>, DEP_1, DEP_2,
+                                                                DEP_3, DEP_4> ctor4Params,
+                                                        final Class<DEP_1> dependency1,
+                                                        final Class<DEP_2> dependency2,
+                                                        final Class<DEP_3> dependency3,
+                                                        final Class<DEP_4> dependency4) {
+
+        return new ConstructorWith4ParametersFactoryBeanDefinition<>(scope, beanClass, ctor4Params, dependency1,
+                dependency2, dependency3, dependency4);
+    }
+
+    public static <T, DEP_1, DEP_2, DEP_3, DEP_4, DEP_5> BeanDefinition<T> createFactory(final Scope scope,
+                                                        final Class<T> beanClass,
+                                                        final ConstructorWith5Parameters<Factory<T>, DEP_1, DEP_2,
+                                                                DEP_3, DEP_4, DEP_5> ctor5Params,
+                                                        final Class<DEP_1> dependency1,
+                                                        final Class<DEP_2> dependency2,
+                                                        final Class<DEP_3> dependency3,
+                                                        final Class<DEP_4> dependency4,
+                                                        final Class<DEP_5> dependency5) {
+
+        return new ConstructorWith5ParametersFactoryBeanDefinition<>(scope, beanClass, ctor5Params, dependency1,
+                dependency2, dependency3, dependency4, dependency5);
     }
 }

@@ -1,5 +1,5 @@
-BeanRepository - a Service Locator as a Dependency Injection Alternative
-========================================================================
+BeanRepository - Dependency Injection / Service Locator Mix
+===========================================================
 
 This Framework is the Implementation of a mix of the Service Locator Pattern and a
  the Dependency Injection Pattern. These Patterns are described by Martin Fowler in
@@ -11,16 +11,15 @@ This Framework is the Implementation of a mix of the Service Locator Pattern and
 ## Features ##
 
 * Simple, self-explanatory and failsafe Configuration in Java Code
-* No use of Reflection or Annotation Magic
-* Support for Singletons, Prototypes and Instances
-* Fail Fast on start up
-* Execute Code after Initialisation of the Bean
-* Support for Prototypes (even with Parameters)
-* Detect Beans of a specific Type: `Set<T> getBeansOfType(final Class<T> cls)`
-* Modularity
+* No use of Reflection or Annotations
+* Constructor Injection
+* Support for Singletons, Prototypes (even with Parameters) and Instances
 * Provider
 * Factories
-* Constructor Injection up to 5 Parameters
+* Fail Fast on start up
+* Execute Code after Initialisation of the Bean
+* Detect Beans of a specific Type
+* Modularity
 
 
 ## Limitations ##
@@ -49,7 +48,9 @@ Include the following Artifact to use the `BeanRepository`:
 </dependency>
 ```
 
-## Get Dependencies, Part 1 ##
+## Get Dependencies: Dependency Injection Style ##
+
+At the Momemnt, 'real' Depenency Injection only works with 5 Dependencies. If
 
 Example Services:
 ```java
@@ -89,11 +90,12 @@ Setup of the `BeanRepository` to get full initialized Beans with Dependency by C
 ```
 The Classes of the referenced Beans has to be listed behind the Constructor Reference.
 
-## Get Dependencies, Part 2 ##
+## Get Dependencies: Service Locator Style ##
 
-The previous Example only works for Beans with 5 (or less) Dependencies. The get more Dependencies
- the [BeanAccessor](src/main/java/com/github/tinosteinort/beanrepository/BeanAccessor.java) has to
- be used. The needed Dependencies can be determined in the Constructor of the Bean.
+As an alternative to the Dependency Injection, the Beans can be determined manually. The
+ [BeanAccessor](src/main/java/com/github/tinosteinort/beanrepository/BeanAccessor.java) has
+ to be used in the Constructor of the Bean. There is no Limitation with the amount of the
+ needed Beans.
 
 Services:
 ```java
@@ -118,7 +120,7 @@ Services:
     }
 ```
 
-Setup of the BeanRepository to get full initialized Beans with the `BeanAccessor`
+Setup of the BeanRepository to get full initialized Beans with the `BeanAccessor`:
 ```java
     public static void main(String[] args) {
 

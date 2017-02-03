@@ -317,12 +317,17 @@ public class ExampleTest {
         service.doSomething();
     }
 
-    @Test public void externalBeanDefinitionNoParam() {
+    @Test public void externalBeanDefinition() {
 
-        final BeanDefinition<PrintService> definition = BeanDefinition.create(Scope.SINGLETON, PrintService.class, PrintService::new);
+        final BeanDefinition<PrintService> definition1 =
+                BeanDefinition.create(Scope.SINGLETON, PrintService.class, PrintService::new);
+
+        final BeanDefinition<ServiceWithConstructorDependency> definition2 =
+                BeanDefinition.create(Scope.SINGLETON, ServiceWithConstructorDependency.class, ServiceWithConstructorDependency::new, PrintService.class);
 
         final BeanRepository repo = new BeanRepository.BeanRepositoryBuilder()
-                .definition(definition)
+                .definition(definition1)
+                .definition(definition2)
                 .build();
 
         final PrintService printService = repo.getBean(PrintService.class);

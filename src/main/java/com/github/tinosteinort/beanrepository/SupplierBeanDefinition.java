@@ -2,11 +2,11 @@ package com.github.tinosteinort.beanrepository;
 
 import java.util.function.Supplier;
 
-class ProviderBeanDefinition<T> extends BeanDefinition<T> {
+class SupplierBeanDefinition<T> extends BeanDefinition<T> {
 
     private final Supplier<T> supplier;
 
-    ProviderBeanDefinition(final Scope scope, final Class<T> beanClass, final Supplier<T> supplier) {
+    SupplierBeanDefinition(final Scope scope, final Class<T> beanClass, final Supplier<T> supplier) {
         super(scope, beanClass);
         this.supplier = supplier;
     }
