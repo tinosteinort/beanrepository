@@ -22,7 +22,7 @@ class ConstructorWith1ParameterBeanDefinition<T, DEP_1> extends BeanDefinition<T
                 return new PrototypeProvider(repositoryName, beans -> ctor1Param.create(
                         beans.getBean(dependency1)));
             default:
-                throw  new IllegalArgumentException("Scope not supported: " + getScope());
+                throw new IllegalArgumentException("Scope not supported: " + getScope());
         }
     }
 }

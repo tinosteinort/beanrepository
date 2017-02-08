@@ -38,7 +38,7 @@ class ConstructorWith4ParametersFactoryBeanDefinition<T, DEP_1, DEP_2, DEP_3, DE
                         beans.getBean(dependency3),
                         beans.getBean(dependency4)));
             default:
-                throw  new IllegalArgumentException("Scope not supported: " + getScope());
+                throw new IllegalArgumentException("Scope not supported: " + getScope());
         }
     }
 }

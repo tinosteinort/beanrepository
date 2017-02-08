@@ -330,7 +330,7 @@ public class ExampleTest {
                 .definition(definition2)
                 .build();
 
-        final PrintService printService = repo.getBean(PrintService.class);
-        printService.print("Created by Definition");
+        final ServiceWithConstructorDependency printService = repo.getBean(ServiceWithConstructorDependency.class);
+        printService.doSomething();
     }
 }

@@ -27,7 +27,7 @@ class ConstructorWith2ParametersFactoryBeanDefinition<T, DEP_1, DEP_2> extends B
                         beans.getBean(dependency1),
                         beans.getBean(dependency2)));
             default:
-                throw  new IllegalArgumentException("Scope not supported: " + getScope());
+                throw new IllegalArgumentException("Scope not supported: " + getScope());
         }
     }
 }

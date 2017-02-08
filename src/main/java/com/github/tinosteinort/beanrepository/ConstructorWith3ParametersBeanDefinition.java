@@ -32,7 +32,7 @@ class ConstructorWith3ParametersBeanDefinition<T, DEP_1, DEP_2, DEP_3> extends B
                         beans.getBean(dependency2),
                         beans.getBean(dependency3)));
             default:
-                throw  new IllegalArgumentException("Scope not supported: " + getScope());
+                throw new IllegalArgumentException("Scope not supported: " + getScope());
         }
     }
 }
