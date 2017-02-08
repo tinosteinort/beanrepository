@@ -178,7 +178,6 @@ public class ModularizationTest {
         Assert.assertEquals(1, ParentBean2.onPostConstructCounter);
     }
 
-    // TODO Richtigkeit überprüfen
     @Test public void dryRunOfChildBeanMustNotExecuteOnPostConstructOfParentPrototypeBean() {
 
         final BeanRepository parent = new BeanRepository.BeanRepositoryBuilder("Parent")

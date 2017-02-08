@@ -327,6 +327,27 @@ So a Tree can be build out of BeanRepositories. If two BeanRepositories has no C
     final Set<MyInterface> beans2 = otherRepo.getBeansOfType(MyInterface.class); // contains MyInterfaceImpl1 and MyInterfaceImpl3
 ```
 
+### External Bean Definition ###
+
+An other Way of Mudularisation is to define `BeanDefinition` in different Modules of the Application, collect
+ them and summarise into one BeanRepository.
+
+```java
+    List<BeanDefinition<?>> beansOfModule1 = getBeansOfModule1();
+    List<BeanDefinition<?>> beansOfModule2 = getBeansOfModule2();
+
+    BeanRepository.BeanRepositoryBuilder builder = new BeanRepository.BeanRepositoryBuilder();
+
+    for (BeanDefinition<?> def : beansOfModule1) {
+        builder.definition(def);
+    }
+    for (BeanDefinition<?> def : beansOfModule2) {
+        builder.definition(def);
+    }
+
+    BeanRepository repo = builder.build();
+```
+
 # Version History #
 
 ## v1.4.0 ##
