@@ -856,6 +856,13 @@ public class BeanRepository {
             return this;
         }
 
+        /**
+         * Registers a previous created Bean Definition
+         *
+         * @param definition    The Definition of how the Beans has to be created.
+         * @param <T>           The Type of the Bean
+         * @return The {@link BeanRepositoryBuilder} to construct other Beans. Part of the fluent API.
+         */
         public <T> BeanRepositoryBuilder definition(final BeanDefinition definition) {
             validateBeanId(definition.getBeanClass());
             beanCreators.put(definition.getBeanClass(), definition.asBeanProvider(name));
