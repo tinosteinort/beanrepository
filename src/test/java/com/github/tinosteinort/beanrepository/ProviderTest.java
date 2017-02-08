@@ -43,11 +43,12 @@ public class ProviderTest {
         final BeanRepository repo = new BeanRepository.BeanRepositoryBuilder()
                 .singleton(MailService.class, MailService::new)
                 .singleton(PrintService.class, PrintService::new)
+                .singletonFactory(SomeService.class, SomeServiceFactory::new)
                 .prototype(BeanWithPostConstructPrototype.class, BeanWithPostConstructPrototype::new)
                 .instance("123")
                 .build();
 
-        Assert.assertEquals(2, repo.getProvidersForSingletons().size());
+        Assert.assertEquals(3, repo.getProvidersForSingletons().size());
     }
 
     @Test public void getProviderForPrototypes() {
@@ -55,11 +56,12 @@ public class ProviderTest {
         final BeanRepository repo = new BeanRepository.BeanRepositoryBuilder()
                 .prototype(MailService.class, MailService::new)
                 .prototype(PrintService.class, PrintService::new)
+                .prototypeFactory(SomeService.class, SomeServiceFactory::new)
                 .singleton(BeanWithPostConstructSingleton.class, BeanWithPostConstructSingleton::new)
                 .instance("123")
                 .build();
 
-        Assert.assertEquals(2, repo.getProvidersForPrototypes().size());
+        Assert.assertEquals(3, repo.getProvidersForPrototypes().size());
     }
 
     @Test public void getProviderForInstances() {
@@ -129,5 +131,16 @@ class SomeBean {
 
     public SomeBean(final BeanAccessor beans) {
         this.beanWithPostConstruct = beans.getProvider(BeanWithPostConstruct.class).get();
+    }
+}
+
+class SomeService {
+
+}
+
+class SomeServiceFactory implements Factory<SomeService> {
+
+    @Override public SomeService createInstance() {
+        return new SomeService();
     }
 }
