@@ -42,7 +42,8 @@ public class BeanRepository {
     private BeanProvider beanProviderFor(final Class<?> cls) {
         final BeanProvider provider = beanCreators.get(cls);
         if (provider == null) {
-            return parent.orElseThrow(() -> new RuntimeException("No Bean registered for Class " + cls.getName()))
+            return parent
+                    .orElseThrow(() -> new RuntimeException("No Bean registered for Class " + cls.getName()))
                     .beanProviderFor(cls);
         }
         return provider;
@@ -61,7 +62,7 @@ public class BeanRepository {
      * @see PostConstructible
      * @return a new created Object
      */
-    public <T> T getBean(final Supplier<T> creator) {
+    public <T> T getPrototypeBean(final Supplier<T> creator) {
         final PrototypeProvider provider = new PrototypeProvider(name, repository -> creator.get());
         return provider.getBean(this, dryRun.isDryRun());
     }
@@ -79,8 +80,257 @@ public class BeanRepository {
      * @see PostConstructible
      * @return a new created Object
      */
-    public <T> T getBean(final Function<BeanAccessor, T> creator) {
+    public <T> T getPrototypeBean(final Function<BeanAccessor, T> creator) {
         final PrototypeProvider provider = new PrototypeProvider(name, creator);
+        return provider.getBean(this, dryRun.isDryRun());
+    }
+
+    /**
+     * Returns a new {@code prototype} Bean, created by the given Function. It is possible to pass Parameter
+     *  to the Constructor of the Bean. The Method
+     *  {@link PostConstructible#onPostConstruct(BeanRepository)} is executed for every Call of this Method, if
+     *  the Interface is implemented.
+     *
+     * @param creator    The Code to create the new Object
+     * @param param1     The 1st Parameter
+     * @param <T>        The Type of the Bean
+     * @param <P1>       The Type of the 1st Parameter
+     * @see BeanAccessor
+     * @see PostConstructible
+     * @return a new created Object
+     */
+    public <T, P1> T getPrototypeBean(final ConstructorWith1Parameter<T, P1> creator, final P1 param1) {
+        final PrototypeProvider provider = new PrototypeProvider(name, beans -> creator.create(param1));
+        return provider.getBean(this, dryRun.isDryRun());
+    }
+
+    /**
+     * Returns a new {@code prototype} Bean, created by the given Function. It is possible to pass Parameter
+     *  to the Constructor of the Bean. The Method
+     *  {@link PostConstructible#onPostConstruct(BeanRepository)} is executed for every Call of this Method, if
+     *  the Interface is implemented.
+     *
+     * @param creator    The Code to create the new Object
+     * @param param1     The 1st Parameter
+     * @param param2     The 2nd Parameter
+     * @param <T>        The Type of the Bean
+     * @param <P1>       The Type of the 1st Parameter
+     * @param <P2>       The Type of the 2nd Parameter
+     * @see BeanAccessor
+     * @see PostConstructible
+     * @return a new created Object
+     */
+    public <T, P1, P2> T getPrototypeBean(final ConstructorWith2Parameters<T, P1, P2> creator, final P1 param1,
+            final P2 param2) {
+        final PrototypeProvider provider = new PrototypeProvider(name, beans -> creator.create(param1, param2));
+        return provider.getBean(this, dryRun.isDryRun());
+    }
+
+    /**
+     * Returns a new {@code prototype} Bean, created by the given Function. It is possible to pass Parameter
+     *  to the Constructor of the Bean. The Method
+     *  {@link PostConstructible#onPostConstruct(BeanRepository)} is executed for every Call of this Method, if
+     *  the Interface is implemented.
+     *
+     * @param creator    The Code to create the new Object
+     * @param param1     The 1st Parameter
+     * @param param2     The 2nd Parameter
+     * @param param3     The 3rd Parameter
+     * @param <T>        The Type of the Bean
+     * @param <P1>       The Type of the 1st Parameter
+     * @param <P2>       The Type of the 2nd Parameter
+     * @param <P3>       The Type of the 3rd Parameter
+     * @see BeanAccessor
+     * @see PostConstructible
+     * @return a new created Object
+     */
+    public <T, P1, P2, P3> T getPrototypeBean(final ConstructorWith3Parameters<T, P1, P2, P3> creator,
+            final P1 param1, final P2 param2, final P3 param3) {
+        final PrototypeProvider provider = new PrototypeProvider(name, beans -> creator.create(param1, param2,
+                param3));
+        return provider.getBean(this, dryRun.isDryRun());
+    }
+
+    /**
+     * Returns a new {@code prototype} Bean, created by the given Function. It is possible to pass Parameter
+     *  to the Constructor of the Bean. The Method
+     *  {@link PostConstructible#onPostConstruct(BeanRepository)} is executed for every Call of this Method, if
+     *  the Interface is implemented.
+     *
+     * @param creator    The Code to create the new Object
+     * @param param1     The 1st Parameter
+     * @param param2     The 2nd Parameter
+     * @param param3     The 3rd Parameter
+     * @param param4     The 4th Parameter
+     * @param <T>        The Type of the Bean
+     * @param <P1>       The Type of the 1st Parameter
+     * @param <P2>       The Type of the 2nd Parameter
+     * @param <P3>       The Type of the 3rd Parameter
+     * @param <P4>       The Type of the 4th Parameter
+     * @see BeanAccessor
+     * @see PostConstructible
+     * @return a new created Object
+     */
+    public <T, P1, P2, P3, P4> T getPrototypeBean(final ConstructorWith4Parameters<T, P1, P2, P3, P4> creator,
+            final P1 param1, final P2 param2, final P3 param3, final P4 param4) {
+        final PrototypeProvider provider = new PrototypeProvider(name, beans -> creator.create(param1, param2,
+                param3, param4));
+        return provider.getBean(this, dryRun.isDryRun());
+    }
+
+    /**
+     * Returns a new {@code prototype} Bean, created by the given Function. It is possible to pass Parameter
+     *  to the Constructor of the Bean. The Method
+     *  {@link PostConstructible#onPostConstruct(BeanRepository)} is executed for every Call of this Method, if
+     *  the Interface is implemented.
+     *
+     * @param creator    The Code to create the new Object
+     * @param param1     The 1st Parameter
+     * @param param2     The 2nd Parameter
+     * @param param3     The 3rd Parameter
+     * @param param4     The 4th Parameter
+     * @param param5     The 5th Parameter
+     * @param <T>        The Type of the Bean
+     * @param <P1>       The Type of the 1st Parameter
+     * @param <P2>       The Type of the 2nd Parameter
+     * @param <P3>       The Type of the 3rd Parameter
+     * @param <P4>       The Type of the 4th Parameter
+     * @param <P5>       The Type of the 5th Parameter
+     * @see BeanAccessor
+     * @see PostConstructible
+     * @return a new created Object
+     */
+    public <T, P1, P2, P3, P4, P5> T getPrototypeBean(final ConstructorWith5Parameters<T, P1, P2, P3, P4, P5> creator,
+            final P1 param1, final P2 param2, final P3 param3, final P4 param4, final P5 param5) {
+        final PrototypeProvider provider = new PrototypeProvider(name, beans -> creator.create(param1, param2,
+                param3, param4, param5));
+        return provider.getBean(this, dryRun.isDryRun());
+    }
+
+    /**
+     * Returns a new {@code prototype} Bean, created by the given Function. It is possible to pass Parameter
+     *  to the Constructor of the Bean, and determine Dependencies with the {@link BeanAccessor}. The Method
+     *  {@link PostConstructible#onPostConstruct(BeanRepository)} is executed for every Call of this Method, if
+     *  the Interface is implemented.
+     *
+     * @param creator    The Code to create the new Object
+     * @param param1     The 1st Parameter
+     * @param <T>        The Type of the Bean
+     * @param <P1>       The Type of the 1st Parameter
+     * @see BeanAccessor
+     * @see PostConstructible
+     * @return a new created Object
+     */
+    public <T, P1> T getPrototypeBean(final ConstructorWithBeansAnd1Parameter<T, P1> creator,
+            final P1 param1) {
+        final PrototypeProvider provider = new PrototypeProvider(name, beans -> creator.create(beans, param1));
+        return provider.getBean(this, dryRun.isDryRun());
+    }
+
+    /**
+     * Returns a new {@code prototype} Bean, created by the given Function. It is possible to pass Parameter
+     *  to the Constructor of the Bean, and determine Dependencies with the {@link BeanAccessor}. The Method
+     *  {@link PostConstructible#onPostConstruct(BeanRepository)} is executed for every Call of this Method, if
+     *  the Interface is implemented.
+     *
+     * @param creator    The Code to create the new Object
+     * @param param1     The 1st Parameter
+     * @param param2     The 2nd Parameter
+     * @param <T>        The Type of the Bean
+     * @param <P1>       The Type of the 1st Parameter
+     * @param <P2>       The Type of the 2nd Parameter
+     * @see BeanAccessor
+     * @see PostConstructible
+     * @return a new created Object
+     */
+    public <T, P1, P2> T getPrototypeBean(
+            final ConstructorWithBeansAnd2Parameters<T, P1, P2> creator, final P1 param1, final P2 param2) {
+        final PrototypeProvider provider = new PrototypeProvider(name, beans -> creator.create(beans, param1,
+                param2));
+        return provider.getBean(this, dryRun.isDryRun());
+    }
+
+    /**
+     * Returns a new {@code prototype} Bean, created by the given Function. It is possible to pass Parameter
+     *  to the Constructor of the Bean, and determine Dependencies with the {@link BeanAccessor}. The Method
+     *  {@link PostConstructible#onPostConstruct(BeanRepository)} is executed for every Call of this Method, if
+     *  the Interface is implemented.
+     *
+     * @param creator    The Code to create the new Object
+     * @param param1     The 1st Parameter
+     * @param param2     The 2nd Parameter
+     * @param param3     The 3rd Parameter
+     * @param <T>        The Type of the Bean
+     * @param <P1>       The Type of the 1st Parameter
+     * @param <P2>       The Type of the 2nd Parameter
+     * @param <P3>       The Type of the 3rd Parameter
+     * @see BeanAccessor
+     * @see PostConstructible
+     * @return a new created Object
+     */
+    public <T, P1, P2, P3> T getPrototypeBean(
+            final ConstructorWithBeansAnd3Parameters<T, P1, P2, P3> creator, final P1 param1, final P2 param2,
+            final P3 param3) {
+        final PrototypeProvider provider = new PrototypeProvider(name, beans -> creator.create(beans, param1, param2,
+                param3));
+        return provider.getBean(this, dryRun.isDryRun());
+    }
+
+    /**
+     * Returns a new {@code prototype} Bean, created by the given Function. It is possible to pass Parameter
+     *  to the Constructor of the Bean, and determine Dependencies with the {@link BeanAccessor}. The Method
+     *  {@link PostConstructible#onPostConstruct(BeanRepository)} is executed for every Call of this Method, if
+     *  the Interface is implemented.
+     *
+     * @param creator    The Code to create the new Object
+     * @param param1     The 1st Parameter
+     * @param param2     The 2nd Parameter
+     * @param param3     The 3rd Parameter
+     * @param param4     The 4th Parameter
+     * @param <T>        The Type of the Bean
+     * @param <P1>       The Type of the 1st Parameter
+     * @param <P2>       The Type of the 2nd Parameter
+     * @param <P3>       The Type of the 3rd Parameter
+     * @param <P4>       The Type of the 4th Parameter
+     * @see BeanAccessor
+     * @see PostConstructible
+     * @return a new created Object
+     */
+    public <T, P1, P2, P3, P4> T getPrototypeBean(
+            final ConstructorWithBeansAnd4Parameters<T, P1, P2, P3, P4> creator, final P1 param1, final P2 param2,
+            final P3 param3, final P4 param4) {
+        final PrototypeProvider provider = new PrototypeProvider(name, beans -> creator.create(beans, param1, param2,
+                param3, param4));
+        return provider.getBean(this, dryRun.isDryRun());
+    }
+
+    /**
+     * Returns a new {@code prototype} Bean, created by the given Function. It is possible to pass Parameter
+     *  to the Constructor of the Bean, and determine Dependencies with the {@link BeanAccessor}. The Method
+     *  {@link PostConstructible#onPostConstruct(BeanRepository)} is executed for every Call of this Method, if
+     *  the Interface is implemented.
+     *
+     * @param creator    The Code to create the new Object
+     * @param param1     The 1st Parameter
+     * @param param2     The 2nd Parameter
+     * @param param3     The 3rd Parameter
+     * @param param4     The 4th Parameter
+     * @param param5     The 5th Parameter
+     * @param <T>        The Type of the Bean
+     * @param <P1>       The Type of the 1st Parameter
+     * @param <P2>       The Type of the 2nd Parameter
+     * @param <P3>       The Type of the 3rd Parameter
+     * @param <P4>       The Type of the 4th Parameter
+     * @param <P5>       The Type of the 5th Parameter
+     * @see BeanAccessor
+     * @see PostConstructible
+     * @return a new created Object
+     */
+    public <T, P1, P2, P3, P4, P5> T getPrototypeBean(
+            final ConstructorWithBeansAnd5Parameters<T, P1, P2, P3, P4, P5> creator, final P1 param1, final P2 param2,
+            final P3 param3, final P4 param4, final P5 param5) {
+        final PrototypeProvider provider = new PrototypeProvider(name, beans -> creator.create(beans, param1, param2,
+                param3, param4, param5));
         return provider.getBean(this, dryRun.isDryRun());
     }
 
@@ -127,7 +377,7 @@ public class BeanRepository {
      * @return Providers for all registered {@code singleton} Beans
      */
     public Set<Provider<?>> getProvidersForSingletons() {
-        return providers(SingletonProvider.class);
+        return providers(SingletonProvider.class, SingletonFactoryProvider.class);
     }
 
     /**
@@ -135,7 +385,7 @@ public class BeanRepository {
      * @return Providers for all registered {@code prototype} Beans
      */
     public Set<Provider<?>> getProvidersForPrototypes() {
-        return providers(PrototypeProvider.class);
+        return providers(PrototypeProvider.class, PrototypeFactoryProvider.class);
     }
 
     /**
@@ -146,11 +396,14 @@ public class BeanRepository {
         return providers(InstanceProvider.class);
     }
 
-    public <T extends BeanProvider> Set<Provider<?>> providers(final Class<T> beanProviderCls) {
+    private Set<Provider<?>> providers(final Class<? extends BeanProvider> ...beanProviderClasses) {
         final Set<Provider<?>> result = new HashSet<>();
         for (BeanProvider provider : beanCreators.values()) {
-            if (beanProviderCls.isAssignableFrom(provider.getClass())) {
-                result.add(providerFor(provider));
+            for (Class<?> cls : beanProviderClasses) {
+                if (cls.isAssignableFrom(provider.getClass())) {
+                    result.add(providerFor(provider));
+                    break;
+                }
             }
         }
         return result;

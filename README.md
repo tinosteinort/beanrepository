@@ -50,7 +50,7 @@ Include the following Artifact to use the `BeanRepository`:
 
 ## Get Dependencies: Dependency Injection Style ##
 
-At the Momemnt, 'real' Depenency Injection only works with 5 Dependencies. If
+At the Momemnt, 'real' Depenency Injection only works with up to 5 Dependencies.
 
 Example Services:
 ```java

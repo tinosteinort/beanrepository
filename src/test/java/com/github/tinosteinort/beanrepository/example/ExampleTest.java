@@ -197,7 +197,7 @@ public class ExampleTest {
 
         final String param = "parameterGeneratedAtRuntime";
 
-        final ServiceWithParameter service = repo.getBean(() -> new ServiceWithParameter(param));
+        final ServiceWithParameter service = repo.getPrototypeBean(ServiceWithParameter::new, param);
         service.print("123");
     }
 
@@ -210,7 +210,7 @@ public class ExampleTest {
         final String param = "parameterGeneratedAtRuntime";
 
         final ServiceWithBeanDependenciesAndParameter service =
-                repo.getBean((BeanAccessor beans) -> new ServiceWithBeanDependenciesAndParameter(beans, param));
+                repo.getPrototypeBean(ServiceWithBeanDependenciesAndParameter::new, param);
 
         service.print("PrintService is used to print Text");
     }
@@ -225,7 +225,7 @@ public class ExampleTest {
         final String param = "PostConstructiblePrototype";
 
         final ServiceWithParameterPostConstructible service =
-                repo.getBean(() -> new ServiceWithParameterPostConstructible(param));
+                repo.getPrototypeBean(ServiceWithParameterPostConstructible::new, param);
 
         service.doSomething();
         Assert.assertEquals(2, service.getManyBeans().size()); // proofs that onPostConstruct(...) is executed for Prototype Beans with Parameter
