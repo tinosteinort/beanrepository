@@ -44,7 +44,7 @@ Include the following Artifact to use the `BeanRepository`:
 <dependency>
     <groupId>com.github.tinosteinort</groupId>
     <artifactId>beanrepository</artifactId>
-    <version>1.4.0</version>
+    <version>1.5.0</version>
 </dependency>
 ```
 
@@ -240,7 +240,7 @@ A Prototype Bean with Parameter can not registered in the `BeanRepository`, but 
 
     final String param = "parameterGeneratedAtRuntime";
 
-    final ServiceWithParameter service = repo.getBean(() -> new ServiceWithParameter(param));
+    final ServiceWithParameter service = repo.getPrototypeBean(ServiceWithParameter:new, param);
     service.print("123");
 ```
 It is also possible, to get other Beans from within a Prototype Bean with Parameter. Example:
@@ -270,7 +270,7 @@ Accessing a Prototype Bean with Dependencies and Parameter:
     final String param = "parameterGeneratedAtRuntime";
 
     final ServiceWithBeanDependenciesAndParameter service =
-            repo.getBean((BeanAccessor beans) -> new ServiceWithBeanDependenciesAndParameter(beans, param));
+            repo.getPrototypeBean(ServiceWithBeanDependenciesAndParameter::new, param);
 
     service.print("Dependency is used to print Text");
 ```
@@ -333,22 +333,30 @@ An other Way of Mudularisation is to define `BeanDefinition` in different Module
  them and summarise into one BeanRepository.
 
 ```java
-    List<BeanDefinition<?>> beansOfModule1 = getBeansOfModule1();
-    List<BeanDefinition<?>> beansOfModule2 = getBeansOfModule2();
+    final BeanDefinition<PrintService> definition1 =
+            BeanDefinition.create(Scope.SINGLETON, PrintService.class, PrintService::new);
 
-    BeanRepository.BeanRepositoryBuilder builder = new BeanRepository.BeanRepositoryBuilder();
+    final BeanDefinition<ServiceWithConstructorDependency> definition2 =
+            BeanDefinition.create(Scope.SINGLETON, MailService.class, MailService::new, PrintService.class);
 
-    for (BeanDefinition<?> def : beansOfModule1) {
-        builder.definition(def);
-    }
-    for (BeanDefinition<?> def : beansOfModule2) {
-        builder.definition(def);
-    }
-
-    BeanRepository repo = builder.build();
+    final BeanRepository repo = new BeanRepository.BeanRepositoryBuilder()
+            .definition(definition1)
+            .definition(definition2)
+            .build();
 ```
 
 # Version History #
+
+## v1.5.0 ##
+Fixes:
+* [Issue#2](https://github.com/tinosteinort/beanrepository/issues/2):
+  getProvidersForSingletons() does not consider Factories
+
+Enhancements:
+* [Issue#1](https://github.com/tinosteinort/beanrepository/issues/1):
+  Method should be private, not for external use
+* Support simple Access to Prototype Beans with Parameter (with and without Dependencies
+  to other Beans)
 
 ## v1.4.0 ##
 Fixes:
