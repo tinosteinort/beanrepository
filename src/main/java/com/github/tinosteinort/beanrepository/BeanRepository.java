@@ -348,12 +348,23 @@ public class BeanRepository {
         final Set<T> result = new HashSet<>();
         parent.ifPresent(parent -> result.addAll(parent.getBeansOfType(cls)));
         for (BeanProvider provider : beanCreators.values()) {
-            final Object bean = provider.getBean(this, true);
+            final Object bean = createNotInitialisedBeanInstance(provider);
             if (cls.isAssignableFrom(bean.getClass())) {
                 result.add(provider.getBean(this, dryRun.isDryRun()));
             }
         }
         return result;
+    }
+
+    private Object createNotInitialisedBeanInstance(final BeanProvider provider) {
+        try {
+            return dryRun.execute(() -> {
+                return provider.getBean(this, dryRun.isDryRun());
+            });
+        }
+        catch (Exception ex) {
+            throw new RuntimeException("Could not create Bean Instance", ex);
+        }
     }
 
     /**
