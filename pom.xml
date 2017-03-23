@@ -13,7 +13,7 @@
     <name>${project.artifactId}-${project.version}</name>
     <url>https://github.com/tinosteinort/beanrepository</url>
 
-    <description>A Service Locator as a Dependency Injection Alternative. Without Reflection and Annotations.</description>
+    <description>BeanRepository - Dependency Injection / Service Locator Mix. Without Reflection and Annotations.</description>
 
     <licenses>
         <license>

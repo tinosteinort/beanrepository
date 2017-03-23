@@ -44,7 +44,7 @@ Include the following Artifact to use the `BeanRepository`:
 <dependency>
     <groupId>com.github.tinosteinort</groupId>
     <artifactId>beanrepository</artifactId>
-    <version>1.5.0</version>
+    <version>1.5.1</version>
 </dependency>
 ```
 
@@ -346,6 +346,11 @@ An other Way of Mudularisation is to define `BeanDefinition` in different Module
 ```
 
 # Version History #
+
+## v1.5.1 ##
+Fixes:
+* [Issue#3](https://github.com/tinosteinort/beanrepository/issues/3):
+  StackOverflowError when using PostConstructible in Combination with ConstructorInjection
 
 ## v1.5.0 ##
 Fixes:
