@@ -7,7 +7,7 @@
 
     <groupId>com.github.tinosteinort</groupId>
     <artifactId>beanrepository</artifactId>
-    <version>1.5.1-SNAPSHOT</version>
+    <version>1.5.1</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}-${project.version}</name>
