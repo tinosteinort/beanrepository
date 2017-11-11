@@ -15,7 +15,7 @@ class BeanRepositoryShelter implements BeanAccessor {
     public BeanRepositoryShelter(final BeanRepository repository) {
         this.repository = repository;
     }
-    @Override public <T> T getBean(final Class<T> cls) {
+    @Override public <R, T extends R> T getBean(final Class<R> cls) {
         return repository.getBean(cls);
     }
 
@@ -81,7 +81,7 @@ class BeanRepositoryShelter implements BeanAccessor {
         return repository.getPrototypeBean(creator, param1, param2, param3, param4, param5);
     }
 
-    @Override public <T> Provider<T> getProvider(final Class<T> cls) {
+    @Override public <R, T extends R> Provider<T> getProvider(final Class<R> cls) {
         return repository.getProvider(cls);
     }
 }

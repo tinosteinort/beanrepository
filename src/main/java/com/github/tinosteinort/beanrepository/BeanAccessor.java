@@ -14,10 +14,11 @@ public interface BeanAccessor {
      * Get the full initialised Bean from the Repository which is registered for the given Class {@code cls}.
      *
      * @param cls    The Class for which a Bean is registered for.
+     * @param <R>    The Type or a super Type of the Bean
      * @param <T>    The Type of the Bean
      * @return The full initialised Bean with all Dependencies.
      */
-    <T> T getBean(Class<T> cls);
+    <R, T extends R> T getBean(Class<R> cls);
 
     /**
      * Creates a new, full initialised, {@code prototype} Bean with the given {@code creator}. It is possible
@@ -249,8 +250,9 @@ public interface BeanAccessor {
      * Get an Accessor which provides a Bean.
      *
      * @param cls    The Class for which a Bean is registered for.
+     * @param <R>    The Type or a super Type of the Bean
      * @param <T>    The Type of the Bean
      * @return The full initialised Bean with all Dependencies.
      */
-    <T> Provider<T> getProvider(Class<T> cls);
+    <R, T extends R> Provider<T> getProvider(Class<R> cls);
 }

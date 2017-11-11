@@ -1,6 +1,11 @@
 package com.github.tinosteinort.beanrepository;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -14,14 +19,17 @@ public class BeanRepository {
     private final String name;
     private final Optional<BeanRepository> parent;
     private final Map<Class<?>, BeanProvider> beanCreators = new HashMap<>();
+    private final Map<Class<?>, Class<?>> aliases = new HashMap<>();
     private final BeanAccessor accessor = new BeanRepositoryShelter(this);
     private final PostConstructor postConstructor = new PostConstructor(this);
     private final DryRunAware dryRun = new DryRunAware();
 
-    private BeanRepository(final String name, final BeanRepository parent, final Map<Class<?>, BeanProvider> beanCreators) {
+    private BeanRepository(final String name, final BeanRepository parent,
+            final Map<Class<?>, BeanProvider> beanCreators, final Map<Class<?>, Class<?>> aliases) {
         this.name = name;
         this.parent = Optional.ofNullable(parent);
         this.beanCreators.putAll(beanCreators);
+        this.aliases.putAll(aliases);
     }
 
     /**
@@ -30,11 +38,12 @@ public class BeanRepository {
      *  that the {@link PostConstructible#onPostConstruct(BeanRepository)} Method is executed.
      *
      * @param cls    The Class of the Bean, used in the Configuration of the BeanRepository
+     * @param <R>    The Type or a super Type of the Bean
      * @param <T>    The Type of the Bean
      * @see PostConstructible
      * @return a constructed and full initialised Bean.
      */
-    public <T> T getBean(final Class<T> cls) {
+    public <R, T extends R> T getBean(final Class<R> cls) {
         final BeanProvider provider = beanProviderFor(cls);
         return provider.getBean(this, dryRun.isDryRun());
     }
@@ -42,6 +51,10 @@ public class BeanRepository {
     private BeanProvider beanProviderFor(final Class<?> cls) {
         final BeanProvider provider = beanCreators.get(cls);
         if (provider == null) {
+            final Class<?> aliasEntry = aliases.get(cls);
+            if (aliasEntry != null) {
+                return beanProviderFor(aliasEntry);
+            }
             return parent
                     .orElseThrow(() -> new RuntimeException("No Bean registered for Class " + cls.getName()))
                     .beanProviderFor(cls);
@@ -372,10 +385,11 @@ public class BeanRepository {
      *  of getting the Accessor.
      *
      * @param cls    The Class of the Bean, used in the Configuration of the BeanRepository
+     * @param <R>    The Type or a super Type of the Bean
      * @param <T>    The Type of the Bean
      * @return a Provider for the Bean of the given Class.
      */
-    public <T> Provider<T> getProvider(final Class<T> cls) {
+    public <R, T extends R> Provider<T> getProvider(final Class<R> cls) {
         return providerFor(beanProviderFor(cls));
     }
 
@@ -451,6 +465,7 @@ public class BeanRepository {
         private final String name;
         private final BeanRepository parentRepository;
         private final Map<Class<?>, BeanProvider> beanCreators = new HashMap<>();
+        private final Map<Class<?>, Class<?>> aliases = new HashMap<>();
 
         /**
          * Creates a new Builder for a {@link BeanRepository}.
@@ -1121,6 +1136,21 @@ public class BeanRepository {
         }
 
         /**
+         * Creates an alias for a Bean. The alias has to be a super Type of the Bean. An alias can be used to
+         *  determine a Bean with {@link BeanRepository#getBean(Class)}. An alias points to the same Bean Definition.
+         * @param alias     The class of the alias
+         * @param beanCls   The bean id for which a alias should be registered
+         * @param <A>       The alias type for the bean
+         * @param <AF>      The type of the bean for which a alias should be registered
+         * @return The {@link BeanRepositoryBuilder} to construct other Beans. Part of the fluent API.
+         */
+        public <A, AF extends A> BeanRepositoryBuilder alias(final Class<A> alias, final Class<AF> beanCls) {
+            validateAliasBeanId(alias);
+            aliases.put(alias, beanCls);
+            return this;
+        }
+
+        /**
          * Registers a previous created Bean Definition
          *
          * @param definition    The Definition of how the Beans has to be created.
@@ -1146,13 +1176,19 @@ public class BeanRepository {
             }
         }
 
+        private void validateAliasBeanId(final Class<?> cls) {
+            if (aliases.containsKey(cls)) {
+                throw new IllegalArgumentException(String.format("There is already an alias with class %s", cls.getName()));
+            }
+        }
+
         /**
          * Constructs a {@link BeanRepository} with all for the Builder defined Beans.
          *
          * @return a full configured and initialised {@link BeanRepository}
          */
         public BeanRepository build() {
-            final BeanRepository repository = new BeanRepository(name, parentRepository, beanCreators);
+            final BeanRepository repository = new BeanRepository(name, parentRepository, beanCreators, aliases);
             repository.executeDryRun();
 
             return repository;

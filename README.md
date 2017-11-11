@@ -16,6 +16,7 @@ This Framework is the Implementation of a mix of the Service Locator Pattern and
 * Support for Singletons, Prototypes (even with Parameters) and Instances
 * Provider
 * Factories
+* Aliases for beans
 * Fail Fast on start up
 * Execute Code after Initialisation of the Bean
 * Detect Beans of a specific Type
@@ -298,6 +299,22 @@ A Factory is a Class which creates an Instance of a Bean. Within the `BeanReposi
             .singletonFactory(MailService.class, MailServiceFactory::new)   // Factory is called only once
             .build();
 ```
+
+## Aliases for Beans ##
+
+It is possible to define an alias for a bean. A bean with an alias can be determined by
+ querying for the registered bean id OR by the defined alias class.
+
+```java
+    final BeanRepository repo = new BeanRepository.BeanRepositoryBuilder()
+            .singleton(PrintService.class, PrintService::new)
+            .alias(WriterService.class, PrintService.class)
+            .build();
+
+    final WriterService service = repo.getBean(WriterService.class);
+    service.print("Written by alias");
+```
+In this example the `PrintService` implements the `WriterService` interface.
 
 ## Modularisation ##
 

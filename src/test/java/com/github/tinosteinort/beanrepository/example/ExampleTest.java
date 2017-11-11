@@ -25,6 +25,7 @@ import com.github.tinosteinort.beanrepository.example.services.ServiceWithPostCo
 import com.github.tinosteinort.beanrepository.example.services.ServiceWithoutPostConstruct;
 import com.github.tinosteinort.beanrepository.example.services.SomeService;
 import com.github.tinosteinort.beanrepository.example.services.SomeServiceFactory;
+import com.github.tinosteinort.beanrepository.example.services.WriterService;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -332,5 +333,16 @@ public class ExampleTest {
 
         final ServiceWithConstructorDependency printService = repo.getBean(ServiceWithConstructorDependency.class);
         printService.doSomething();
+    }
+
+    @Test public void beanWithAlias() {
+
+        final BeanRepository repo = new BeanRepository.BeanRepositoryBuilder()
+                .singleton(PrintService.class, PrintService::new)
+                .alias(WriterService.class, PrintService.class)
+                .build();
+
+        final WriterService service = repo.getBean(WriterService.class);
+        service.print("Written by alias");
     }
 }
