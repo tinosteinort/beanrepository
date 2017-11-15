@@ -136,6 +136,20 @@ public class AliasTest {
         assertEquals(service, alias);
         assertTrue(System.identityHashCode(service) == System.identityHashCode(alias));
     }
+
+    @Test public void aliasAsReference() {
+
+        final BeanRepository repository = new BeanRepository.BeanRepositoryBuilder()
+                .singleton(ReferencingAliasService.class, ReferencingAliasService::new, SomeServiceInterface.class)
+                .singletonFactory(SomeServiceImpl.class, SomeServiceImplFactory::new)
+                .alias(SomeServiceInterface.class, SomeServiceImpl.class)
+                .build();
+
+        final ReferencingAliasService service = repository.getBean(ReferencingAliasService.class);
+
+        assertNotNull(service);
+        assertNotNull(service.getSomeServiceInterface());
+    }
 }
 
 class SomeServiceImpl implements SomeServiceInterface, SomeSecondServiceInterface {
@@ -168,4 +182,17 @@ class SomeServiceWithPostConstructImpl implements SomeServiceWithPostConstructIn
 
 interface  SomeServiceWithPostConstructInterface {
 
+}
+
+class ReferencingAliasService {
+
+    private final SomeServiceInterface someServiceInterface;
+
+    public ReferencingAliasService(final SomeServiceInterface someServiceInterface) {
+        this.someServiceInterface = someServiceInterface;
+    }
+
+    public SomeServiceInterface getSomeServiceInterface() {
+        return someServiceInterface;
+    }
 }
