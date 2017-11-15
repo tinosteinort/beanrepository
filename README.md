@@ -45,7 +45,7 @@ Include the following Artifact to use the `BeanRepository`:
 <dependency>
     <groupId>com.github.tinosteinort</groupId>
     <artifactId>beanrepository</artifactId>
-    <version>1.5.1</version>
+    <version>1.6.0</version>
 </dependency>
 ```
 
@@ -363,6 +363,10 @@ An other Way of Mudularisation is to define `BeanDefinition` in different Module
 ```
 
 # Version History #
+
+## v1.6.0 ##
+Enhancements:
+* Aliases for beans
 
 ## v1.5.1 ##
 Fixes:
