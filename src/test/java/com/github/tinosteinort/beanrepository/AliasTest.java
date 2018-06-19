@@ -91,12 +91,13 @@ public class AliasTest {
 
     @Test public void aliasTriggersPostConstruct() {
 
+        SomeServiceWithPostConstructImpl.initCounter = 0;
+
         final BeanRepository repository = new BeanRepository.BeanRepositoryBuilder()
-                .singleton(SomeServiceWithPostConstructImpl.class, SomeServiceWithPostConstructImpl::new)
+                .prototype(SomeServiceWithPostConstructImpl.class, SomeServiceWithPostConstructImpl::new)
                 .alias(SomeServiceWithPostConstructInterface.class, SomeServiceWithPostConstructImpl.class)
                 .build();
 
-        SomeServiceWithPostConstructImpl.initCounter = 0;
         Assert.assertEquals(0, SomeServiceWithPostConstructImpl.initCounter);
 
         repository.getBean(SomeServiceWithPostConstructInterface.class);
@@ -105,13 +106,14 @@ public class AliasTest {
 
     @Test public void aliasDoesntTriggerAdditionalPostConstruct() {
 
+        SomeServiceWithPostConstructImpl.initCounter = 0;
+
         final BeanRepository repository = new BeanRepository.BeanRepositoryBuilder()
                 .singleton(SomeServiceWithPostConstructImpl.class, SomeServiceWithPostConstructImpl::new)
                 .alias(SomeServiceWithPostConstructInterface.class, SomeServiceWithPostConstructImpl.class)
                 .build();
 
-        SomeServiceWithPostConstructImpl.initCounter = 0;
-        Assert.assertEquals(0, SomeServiceWithPostConstructImpl.initCounter);
+        Assert.assertEquals(1, SomeServiceWithPostConstructImpl.initCounter);
 
         repository.getBean(SomeServiceWithPostConstructImpl.class);
         Assert.assertEquals(1, SomeServiceWithPostConstructImpl.initCounter);

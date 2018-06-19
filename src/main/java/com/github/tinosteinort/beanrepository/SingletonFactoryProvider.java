@@ -29,6 +29,7 @@ class SingletonFactoryProvider implements BeanProvider {
             if (instance == null) {
                 final Factory factory = creator.apply(repository.accessor());
                 if (!dryRun) {
+                    repository.postConstruct(factory);
                     final Object beanInstance = factory.createInstance();
                     repository.postConstruct(beanInstance);
                     instance = beanInstance;

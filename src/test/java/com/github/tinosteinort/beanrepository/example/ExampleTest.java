@@ -243,7 +243,7 @@ public class ExampleTest {
                 .singleton(ServiceWithoutPostConstruct.class, ServiceWithoutPostConstruct::new)
                 .build();
 
-        Assert.assertEquals(0, ServiceWithPostConstructCounter.getPostConstructCount());
+        Assert.assertEquals(1, ServiceWithPostConstructCounter.getPostConstructCount());
         final ServiceWithoutPostConstruct service = repo.getBean(ServiceWithoutPostConstruct.class);
         Assert.assertEquals(1, ServiceWithPostConstructCounter.getPostConstructCount());
     }

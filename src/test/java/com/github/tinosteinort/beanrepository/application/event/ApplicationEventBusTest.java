@@ -1,6 +1,7 @@
 package com.github.tinosteinort.beanrepository.application.event;
 
 import com.github.tinosteinort.beanrepository.BeanRepository;
+import com.github.tinosteinort.beanrepository.Executed;
 import org.junit.Before;
 import org.junit.Test;
 

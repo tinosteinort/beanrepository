@@ -11,9 +11,7 @@ public class SingletonFactoryTest {
                 .singletonFactory(Bean.class, BeanFactory::new)
                 .build();
 
-        // createInstance() must not executed while dryRun
-
-        Assert.assertEquals(0, BeanFactory.createCounter);
+        Assert.assertEquals(1, BeanFactory.createCounter);
         Bean bean = repo.getBean(Bean.class);
         Assert.assertEquals(1, BeanFactory.createCounter);
     }

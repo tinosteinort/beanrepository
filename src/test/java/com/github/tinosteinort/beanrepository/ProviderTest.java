@@ -3,12 +3,16 @@ package com.github.tinosteinort.beanrepository;
 import com.github.tinosteinort.beanrepository.example.services.MailService;
 import com.github.tinosteinort.beanrepository.example.services.PrintService;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Set;
 
 public class ProviderTest {
 
+    @Before public void setup() {
+        BeanWithPostConstructSingleton.postConstructCounter = 0;
+    }
     @Test public void postConstructNotCalledBeforeGet_singleton() {
 
         final BeanRepository repo = new BeanRepository.BeanRepositoryBuilder()
@@ -16,7 +20,7 @@ public class ProviderTest {
                 .build();
 
         final Provider<BeanWithPostConstructSingleton> provider = repo.getProvider(BeanWithPostConstructSingleton.class);
-        Assert.assertEquals(0, BeanWithPostConstructSingleton.postConstructCounter);
+        Assert.assertEquals(1, BeanWithPostConstructSingleton.postConstructCounter);
 
         provider.get();
         Assert.assertEquals(1, BeanWithPostConstructSingleton.postConstructCounter);
@@ -81,11 +85,10 @@ public class ProviderTest {
     @Test public void postConstructOnDryRun() {
 
         final BeanRepository repo = new BeanRepository.BeanRepositoryBuilder()
-                .singleton(SomeBean.class, SomeBean::new)
-                .singleton(BeanWithPostConstruct.class, BeanWithPostConstruct::new)
+                .prototype(SomeBean.class, SomeBean::new)
+                .prototype(BeanWithPostConstruct.class, BeanWithPostConstruct::new)
                 .build();
 
-        // The dryRun should not set postConstructExecuted to true
         Assert.assertFalse(BeanWithPostConstruct.postConstructExecuted);
 
         // Getting the Provider should not set postConstructExecuted to true

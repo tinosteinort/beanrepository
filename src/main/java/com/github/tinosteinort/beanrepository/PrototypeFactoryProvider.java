@@ -24,6 +24,7 @@ class PrototypeFactoryProvider implements BeanProvider {
             return null;
         }
 
+        repository.postConstruct(factory);
         beanInstance = factory.createInstance();
         repository.postConstruct(beanInstance);
         return (T) beanInstance;

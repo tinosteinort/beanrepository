@@ -450,6 +450,12 @@ public class BeanRepository {
         });
     }
 
+    private void initialiseSingletonBeans() {
+        for (Provider<?> singletonProvider : providers(SingletonProvider.class, SingletonFactoryProvider.class)) {
+            singletonProvider.get();
+        }
+    }
+
     @Override public String toString() {
         return "[" + BeanRepository.class.getSimpleName() + ": " + name + "]";
     }
@@ -466,6 +472,7 @@ public class BeanRepository {
         private final BeanRepository parentRepository;
         private final Map<Class<?>, BeanProvider> beanCreators = new HashMap<>();
         private final Map<Class<?>, Class<?>> aliases = new HashMap<>();
+        private boolean lazySingletonBeans = false;
 
         /**
          * Creates a new Builder for a {@link BeanRepository}.
@@ -501,6 +508,20 @@ public class BeanRepository {
          */
         public BeanRepositoryBuilder() {
             this(null, null);
+        }
+
+        /**
+         * Defines if beans of scope {@code singleton} are initialised when the {@code BeanRepository} is built.
+         *
+         * @param lazySingletonBeans {@code true} if singleton beans should be initialised when requested,
+         *                                       otherwise {@code false}. Default is {@code false}, so that
+         *                                       singleton beans are created when,
+         *                                       {@code BeanRepositoryBuilder.build()} is called.
+         * @return The {@link BeanRepositoryBuilder} to construct other Beans. Part of the fluent API.
+         */
+        public BeanRepositoryBuilder enableLazySingletonBeans(final boolean lazySingletonBeans) {
+            this.lazySingletonBeans = lazySingletonBeans;
+            return this;
         }
 
         /**
@@ -1190,6 +1211,10 @@ public class BeanRepository {
         public BeanRepository build() {
             final BeanRepository repository = new BeanRepository(name, parentRepository, beanCreators, aliases);
             repository.executeDryRun();
+
+            if (!lazySingletonBeans) {
+                repository.initialiseSingletonBeans();
+            }
 
             return repository;
         }

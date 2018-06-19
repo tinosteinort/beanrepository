@@ -35,18 +35,13 @@ public class ExampleApp implements BeanRepositoryConfigurator {
 
 class StartupListener extends AbstractApplicationEventListener<ApplicationStartedEvent> {
 
-    private final BeanAccessor beans;
-
     protected StartupListener(BeanAccessor beans) {
         super(ApplicationStartedEvent.class);
-        this.beans = beans;
     }
 
     @Override
     public void onEvent(ApplicationEvent event) {
         System.out.println("Application started");
-
-        beans.getBean(EventListenerService.class);
     }
 }
 

@@ -147,10 +147,12 @@ public class ModularizationTest {
 
         final BeanRepository parent = new BeanRepository.BeanRepositoryBuilder("Parent")
                 .singleton(ParentBean1.class, ParentBean1::new)
+                .enableLazySingletonBeans(true)
                 .build();
 
         final BeanRepository child = new BeanRepository.BeanRepositoryBuilder("Child", parent)
                 .singleton(ChildBean1.class, ChildBean1::new, ParentBean1.class)
+                .enableLazySingletonBeans(true)
                 .build();
 
         Assert.assertEquals(0, ParentBean1.onPostConstructCounter);
@@ -163,6 +165,7 @@ public class ModularizationTest {
 
         final BeanRepository parent = new BeanRepository.BeanRepositoryBuilder("Parent")
                 .singleton(ParentBean2.class, ParentBean2::new)
+                .enableLazySingletonBeans(true)
                 .build();
 
         Assert.assertEquals(0, ParentBean2.onPostConstructCounter);
@@ -180,6 +183,8 @@ public class ModularizationTest {
 
     @Test public void dryRunOfChildBeanMustNotExecuteOnPostConstructOfParentPrototypeBean() {
 
+        PrototypeParentBean.onPostConstructCounter = 0;
+
         final BeanRepository parent = new BeanRepository.BeanRepositoryBuilder("Parent")
                 .prototype(PrototypeParentBean.class, PrototypeParentBean::new)
                 .build();
@@ -190,6 +195,7 @@ public class ModularizationTest {
 
         final BeanRepository child = new BeanRepository.BeanRepositoryBuilder("Child", parent)
                 .singleton(PrototypeChildBean.class, PrototypeChildBean::new, PrototypeParentBean.class)
+                .enableLazySingletonBeans(true)
                 .build();
 
         Assert.assertEquals(1, PrototypeParentBean.onPostConstructCounter);

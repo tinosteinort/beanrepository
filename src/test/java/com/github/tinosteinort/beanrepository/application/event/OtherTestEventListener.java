@@ -1,5 +1,7 @@
 package com.github.tinosteinort.beanrepository.application.event;
 
+import com.github.tinosteinort.beanrepository.Executed;
+
 class OtherTestEventListener extends AbstractApplicationEventListener<TestEvent> {
 
     private Executed executed;
