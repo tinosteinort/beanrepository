@@ -3,7 +3,6 @@ package com.github.tinosteinort.beanrepository.application.env;
 import com.github.tinosteinort.beanrepository.BeanRepository;
 import com.github.tinosteinort.beanrepository.BeanRepositoryConfigurator;
 import com.github.tinosteinort.beanrepository.application.event.ApplicationEventBus;
-import com.github.tinosteinort.beanrepository.application.event.ApplicationEventEmitter;
 
 public class DefaultBeanRepositoryConfigurator implements BeanRepositoryConfigurator {
 
@@ -17,6 +16,5 @@ public class DefaultBeanRepositoryConfigurator implements BeanRepositoryConfigur
 
         builder.singleton(ArgsProvider.class, () -> new ArgsProvider(args));
         builder.singleton(ApplicationEventBus.class, ApplicationEventBus::new);
-        builder.singleton(ApplicationEventEmitter.class, ApplicationEventEmitter::new, ApplicationEventBus.class);
     }
 }

@@ -1,16 +1,15 @@
 package com.github.tinosteinort.beanrepository.example;
 
-import com.github.tinosteinort.beanrepository.BeanAccessor;
 import com.github.tinosteinort.beanrepository.BeanRepository;
 import com.github.tinosteinort.beanrepository.BeanRepositoryApplication;
 import com.github.tinosteinort.beanrepository.BeanRepositoryConfigurator;
 import com.github.tinosteinort.beanrepository.PostConstructible;
-import com.github.tinosteinort.beanrepository.application.event.AbstractApplicationEventListener;
 import com.github.tinosteinort.beanrepository.application.event.ApplicationEvent;
 import com.github.tinosteinort.beanrepository.application.event.ApplicationEventBus;
 import com.github.tinosteinort.beanrepository.application.event.ApplicationEventListener;
 import com.github.tinosteinort.beanrepository.application.event.ApplicationShutdownEvent;
-import com.github.tinosteinort.beanrepository.application.event.ApplicationStartedEvent;
+import com.github.tinosteinort.beanrepository.application.event.ApplicationShutdownEventListener;
+import com.github.tinosteinort.beanrepository.application.event.ApplicationStartedEventListener;
 import com.github.tinosteinort.beanrepository.example.services.MailService;
 import com.github.tinosteinort.beanrepository.example.services.PrintService;
 
@@ -28,31 +27,20 @@ public class ExampleApp implements BeanRepositoryConfigurator {
                 .singleton(MailService.class, MailService::new)
                 .singleton(EventListenerService.class, EventListenerService::new, ApplicationEventBus.class)
                 .singleton(StartupListener.class, StartupListener::new)
-                .singleton(ShutdownListener.class, ShutdownListener::new)
-        ;
+                .singleton(ShutdownListener.class, ShutdownListener::new);
     }
 }
 
-class StartupListener extends AbstractApplicationEventListener<ApplicationStartedEvent> {
+class StartupListener extends ApplicationStartedEventListener {
 
-    protected StartupListener(BeanAccessor beans) {
-        super(ApplicationStartedEvent.class);
-    }
-
-    @Override
-    public void onEvent(ApplicationEvent event) {
+    @Override public void onEvent(ApplicationEvent event) {
         System.out.println("Application started");
     }
 }
 
-class ShutdownListener extends AbstractApplicationEventListener<ApplicationShutdownEvent> {
+class ShutdownListener extends ApplicationShutdownEventListener {
 
-    protected ShutdownListener() {
-        super(ApplicationShutdownEvent.class);
-    }
-
-    @Override
-    public void onEvent(ApplicationEvent event) {
+    @Override public void onEvent(ApplicationEvent event) {
         System.out.println("Application shutdown");
     }
 }
