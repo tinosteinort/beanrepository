@@ -9,6 +9,11 @@ public class ArgumentPrinter {
 
     private final ArgsProvider argsProvider;
 
+    /**
+     * The ArgsProvider is responsible for getting the command line arguments,
+     *  so we need it as a dependency. The ArgsProvider bean is provided by
+     *  the BeanRepository.
+     */
     public ArgumentPrinter(final ArgsProvider argsProvider) {
         this.argsProvider = argsProvider;
     }
