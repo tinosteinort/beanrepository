@@ -17,10 +17,10 @@ public class HungryPerson implements PostConstructible {
     public void onPostConstruct(final BeanRepository repository) {
 
         // there is just an anonymous class registered as listener
-        eventBus.register(new AbstractApplicationEventListener<PizzaTimeEvent>(PizzaTimeEvent.class) {
+        eventBus.register(new AbstractApplicationEventListener<PizzaTime>(PizzaTime.class) {
 
             @Override
-            public void onEvent(final PizzaTimeEvent event) {
+            public void onEvent(final PizzaTime event) {
                 System.out.println("Hmmmm, I will eat some " + event.getPizza() + "!");
             }
         });

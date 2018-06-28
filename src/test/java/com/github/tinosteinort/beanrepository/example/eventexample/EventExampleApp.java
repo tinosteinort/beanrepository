@@ -6,7 +6,10 @@ import com.github.tinosteinort.beanrepository.BeanRepositoryConfigurator;
 import com.github.tinosteinort.beanrepository.application.event.ApplicationEventBus;
 
 /**
- * This sample shows how to use an own event and different ways to register listeners.
+ * This sample shows
+ *    * how to use an own event
+ *    * different ways to register listeners
+ *    * how to get notified for an application shutdown
  */
 public class EventExampleApp implements BeanRepositoryConfigurator {
 

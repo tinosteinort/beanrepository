@@ -35,10 +35,10 @@ public class OnStartupListener extends BeansInitialisedEventListener {
         //  to get the event bus on execution time:
         final ApplicationEventBus eventBus = beans.getBean(ApplicationEventBus.class);
 
-        eventBus.fireEvent(new PizzaTimeEvent(salami));
+        eventBus.fireEvent(new PizzaTime(salami));
         System.out.println("-------------------");
 
-        eventBus.fireEvent(new PizzaTimeEvent(hawaii));
+        eventBus.fireEvent(new PizzaTime(hawaii));
         System.out.println("-------------------");
     }
 }
