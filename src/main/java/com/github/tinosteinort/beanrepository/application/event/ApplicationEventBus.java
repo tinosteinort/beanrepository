@@ -13,9 +13,9 @@ public class ApplicationEventBus implements PostConstructible {
         listeners.register(listener);
     }
 
-    public void fireEvent(ApplicationEvent event) {
+    public <T extends ApplicationEvent> void fireEvent(final T event) {
         Objects.requireNonNull(event, "Event must not be null");
-        for (ApplicationEventListener<?> listener : listeners.listenersFor(event.getClass())) {
+        for (ApplicationEventListener listener : listeners.listenersFor(event.getClass())) {
             listener.onEvent(event);
         }
     }

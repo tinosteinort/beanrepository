@@ -19,6 +19,7 @@ This Framework is the Implementation of a mix of the Service Locator Pattern and
 * Aliases for beans
 * Fail Fast on start up
 * Execute Code after Initialisation of the Bean
+* Configurable if singletons are lazy initialised or not
 * Detect Beans of a specific Type
 * Modularity
 
@@ -26,8 +27,6 @@ This Framework is the Implementation of a mix of the Service Locator Pattern and
 ## Limitations ##
 
 * Cyclic References not allowed
-* Only lazy Creation of Beans. Beans are created, when they are needed (in
-   dependence of the scope)
 * No Request or Session Scope
 * No initialisation Code allowed in Constructor
     * Constructor may be called multiple times while Creation of the `BeanRepository`

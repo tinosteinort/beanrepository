@@ -15,7 +15,7 @@ class TestEventListener extends AbstractApplicationEventListener<TestEvent> {
         this.executed = executed;
     }
 
-    @Override public void onEvent(ApplicationEvent event) {
+    @Override public void onEvent(TestEvent event) {
         if (executed == null) {
             return;
         }
