@@ -6,10 +6,8 @@ import com.github.tinosteinort.beanrepository.BeanRepositoryConfigurator;
 import com.github.tinosteinort.beanrepository.PostConstructible;
 import com.github.tinosteinort.beanrepository.application.event.ApplicationEvent;
 import com.github.tinosteinort.beanrepository.application.event.ApplicationEventBus;
-import com.github.tinosteinort.beanrepository.application.event.ApplicationEventListener;
-import com.github.tinosteinort.beanrepository.application.event.ApplicationShutdownEvent;
 import com.github.tinosteinort.beanrepository.application.event.ApplicationShutdownEventListener;
-import com.github.tinosteinort.beanrepository.application.event.ApplicationStartedEventListener;
+import com.github.tinosteinort.beanrepository.application.event.BeansInitialisedEventListener;
 import com.github.tinosteinort.beanrepository.example.services.MailService;
 import com.github.tinosteinort.beanrepository.example.services.PrintService;
 
@@ -31,7 +29,7 @@ public class ExampleApp implements BeanRepositoryConfigurator {
     }
 }
 
-class StartupListener extends ApplicationStartedEventListener {
+class StartupListener extends BeansInitialisedEventListener {
 
     @Override public void onEvent(ApplicationEvent event) {
         System.out.println("Application started");
@@ -56,11 +54,7 @@ class EventListenerService implements PostConstructible {
     @Override public void onPostConstruct(final BeanRepository repository) {
 
         System.out.println("PostConstruct");
-        eventBus.register(new ApplicationEventListener<ApplicationShutdownEvent>() {
-
-            @Override public Class<ApplicationShutdownEvent> getEventClass() {
-                return ApplicationShutdownEvent.class;
-            }
+        eventBus.register(new ApplicationShutdownEventListener() {
 
             @Override public void onEvent(ApplicationEvent event) {
                 System.out.println("Anonymous application shutdown listener triggered");
