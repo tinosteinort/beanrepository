@@ -3,11 +3,16 @@ package com.github.tinosteinort.beanrepository.example.basicexample;
 import com.github.tinosteinort.beanrepository.application.event.ApplicationEvent;
 import com.github.tinosteinort.beanrepository.application.event.BeansInitialisedEventListener;
 
-public class EntryPoint extends BeansInitialisedEventListener {
+/**
+ * Every bean, that implements BeansInitialisedEventListener, is triggered right
+ *  after the BeanRepository is built. This should be used to execute code on
+ *  startup.
+ */
+public class OnStartupListener extends BeansInitialisedEventListener {
 
     private final ArgumentPrinter argumentPrinter;
 
-    public EntryPoint(final ArgumentPrinter argumentPrinter) {
+    public OnStartupListener(final ArgumentPrinter argumentPrinter) {
         this.argumentPrinter = argumentPrinter;
     }
 
@@ -16,6 +21,6 @@ public class EntryPoint extends BeansInitialisedEventListener {
 
         System.out.println("Application started");
 
-        argumentPrinter.printJavaArgs();
+        argumentPrinter.printCommandLineArgs();
     }
 }

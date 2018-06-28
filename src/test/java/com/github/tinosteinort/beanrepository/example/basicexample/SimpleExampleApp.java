@@ -5,15 +5,22 @@ import com.github.tinosteinort.beanrepository.BeanRepositoryApplication;
 import com.github.tinosteinort.beanrepository.BeanRepositoryConfigurator;
 import com.github.tinosteinort.beanrepository.application.env.ArgsProvider;
 
+/**
+ * This is a simple sample application which demonstrates
+ *    * how to start an application with the BeanRepository
+ *    * how to access the command line arguments
+ *    * how to listen to application start up
+ */
 public class SimpleExampleApp implements BeanRepositoryConfigurator {
 
     public static void main(String[] args) {
 
         // set args manually without configuring IDE run configs
+        // -> not needed for real applications
         args = new String[] {"argument 1", "argument 2", "value"};
 
         // start the application with dependency injection support
-        //  1. parameter: Java system String[] args
+        //  1. parameter: commandline args[]
         //  2. parameter: Some class that implements BeanRepositoryConfigurator
         BeanRepositoryApplication.run(args, new SimpleExampleApp());
     }
@@ -21,9 +28,9 @@ public class SimpleExampleApp implements BeanRepositoryConfigurator {
     @Override
     public void configure(final BeanRepository.BeanRepositoryBuilder builder) {
 
-        // Configure all required beans with dependencies
+        // configure all required beans with dependencies in this method
         builder
-                .singleton(EntryPoint.class, EntryPoint::new, ArgumentPrinter.class)
+                .singleton(OnStartupListener.class, OnStartupListener::new, ArgumentPrinter.class)
                 .singleton(ArgumentPrinter.class, ArgumentPrinter::new, ArgsProvider.class);
     }
 }
