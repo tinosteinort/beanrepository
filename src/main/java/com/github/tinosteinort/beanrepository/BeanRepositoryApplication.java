@@ -7,8 +7,19 @@ import com.github.tinosteinort.beanrepository.application.event.BeansInitialised
 
 import java.util.Objects;
 
+/**
+ * This class is used to run an application with dependency injection support by the BeanRepository.
+ */
 public class BeanRepositoryApplication {
 
+    /**
+     * Startup initialisation of the BeanRepository. After the BeanRepository was initialised with
+     *  the given configurator classes, a {@link BeansInitialisedEvent} is thrown. Use this event
+     *  as starting point for the code of your application.
+     *
+     * @param args the program arguments
+     * @param configurators the configurator classes, which provides the beans to the repository.
+     */
     public static void run(final String[] args, final BeanRepositoryConfigurator ...configurators) {
 
         validate(args, configurators);
