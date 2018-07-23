@@ -6,6 +6,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 
 public class GetBeanTest {
@@ -33,7 +34,7 @@ public class GetBeanTest {
         assertNotNull(alias);
 
         assertEquals(service, alias);
-        assertTrue(System.identityHashCode(service) == System.identityHashCode(alias));
+        assertEquals(System.identityHashCode(service), System.identityHashCode(alias));
     }
 
     @Test public void getSingletonBeanWithDependencyByAlias() {
@@ -61,7 +62,7 @@ public class GetBeanTest {
         assertNotNull(alias);
 
         assertNotEquals(service, alias);
-        assertFalse(service == alias);
+        assertNotSame(service, alias);
     }
 
     @Test public void getRegisteredPrototypeOneParamBeanByAlias() {
@@ -79,7 +80,7 @@ public class GetBeanTest {
         assertNotNull(alias);
 
         assertNotEquals(service, alias);
-        assertFalse(service == alias);
+        assertNotSame(service, alias);
     }
 
     @Test public void getUnregisteredPrototypeBean() {

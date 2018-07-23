@@ -2,47 +2,29 @@ package com.github.tinosteinort.beanrepository;
 
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 public class MultipleConfiguratorTest {
 
     @Test public void multipleConfigurators() {
 
-        Executed executed = new Executed();
+        HitCounter counter = new HitCounter();
 
-        BeanRepositoryConfigurator configurator1 = new BeanRepositoryConfigurator() {
-            @Override
-            public void configure(BeanRepository.BeanRepositoryBuilder builder) {
-                builder.singleton(Bean1.class, Bean1::new);
-            }
-        };
-        BeanRepositoryConfigurator configurator2 = new BeanRepositoryConfigurator() {
-            @Override
-            public void configure(BeanRepository.BeanRepositoryBuilder builder) {
-                builder.singleton(Bean2.class, Bean2::new);
-            }
-        };
-        BeanRepositoryConfigurator configurator3 = new BeanRepositoryConfigurator() {
-            @Override
-            public void configure(BeanRepository.BeanRepositoryBuilder builder) {
-                builder.singleton(TestBean.class, () -> new TestBean(executed));
-            }
-        };
+        BeanRepositoryConfigurator configurator1 = builder -> builder.singleton(Apple.class, Apple::new);
+        BeanRepositoryConfigurator configurator2 = builder -> builder.singleton(Pear.class, Pear::new);
+        BeanRepositoryConfigurator configurator3 = builder -> builder.singleton(Basket.class, () -> new Basket(counter));
 
         BeanRepositoryApplication.run(new String[0], configurator1, configurator2, configurator3);
 
-        assertTrue(executed.executed);
+        assertEquals(1, counter.hits());
     }
 
     @Test(expected = NullPointerException.class)
     public void argsRequired() {
 
-        BeanRepositoryApplication.run(null, new BeanRepositoryConfigurator() {
-            @Override
-            public void configure(BeanRepository.BeanRepositoryBuilder builder) {
+        BeanRepositoryApplication.run(null, (BeanRepositoryConfigurator) builder -> {
 
-            }
         });
     }
 
@@ -59,26 +41,26 @@ public class MultipleConfiguratorTest {
     }
 }
 
-class Bean1 {
+class Apple {
 
 }
 
-class Bean2 {
+class Pear {
 
 }
 
-class TestBean implements PostConstructible {
+class Basket implements PostConstructible {
 
-    private final Executed executed;
+    private final HitCounter counter;
 
-    TestBean(Executed executed) {
-        this.executed = executed;
+    Basket(HitCounter counter) {
+        this.counter = counter;
     }
 
     @Override
     public void onPostConstruct(BeanRepository repository) {
-        executed.executed = true;
-        assertNotNull(repository.getBean(Bean1.class));
-        assertNotNull(repository.getBean(Bean2.class));
+        counter.hit();
+        assertNotNull(repository.getBean(Apple.class));
+        assertNotNull(repository.getBean(Pear.class));
     }
 }

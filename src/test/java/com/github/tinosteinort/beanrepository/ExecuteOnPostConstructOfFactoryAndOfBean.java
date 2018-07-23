@@ -2,6 +2,7 @@ package com.github.tinosteinort.beanrepository;
 
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -9,61 +10,56 @@ public class ExecuteOnPostConstructOfFactoryAndOfBean {
 
     @Test public void executeOnPostConstructOfSingletonFactoryAndBean() {
 
-        Executed factoryExecuted = new Executed();
-        Executed beanExecuted = new Executed();
+        HitCounter counter = new HitCounter();
 
         new BeanRepository.BeanRepositoryBuilder()
-                .singletonFactory(Stone.class, () -> new StoneFactory(factoryExecuted, beanExecuted))
+                .singletonFactory(Stone.class, () -> new StoneFactory(counter))
                 .build();
 
-        assertTrue(beanExecuted.executed);
-        assertTrue(factoryExecuted.executed);
+        assertTrue(counter.hasHit("onPostConstruct of Stone executed"));
+        assertTrue(counter.hasHit("onPostConstruct of StoneFactory executed"));
     }
 
     @Test public void executeOnPostConstructOfPrototypeFactoryAndBean() {
 
-        Executed factoryExecuted = new Executed();
-        Executed beanExecuted = new Executed();
+        HitCounter counter = new HitCounter();
 
         BeanRepository repo = new BeanRepository.BeanRepositoryBuilder()
-                .prototypeFactory(Stone.class, () -> new StoneFactory(factoryExecuted, beanExecuted))
+                .prototypeFactory(Stone.class, () -> new StoneFactory(counter))
                 .build();
 
-        assertFalse(beanExecuted.executed);
-        assertFalse(factoryExecuted.executed);
+        assertEquals(0, counter.hits());
 
         repo.getBean(Stone.class);
 
-        assertTrue(beanExecuted.executed);
-        assertTrue(factoryExecuted.executed);
+        assertTrue(counter.hasHit("onPostConstruct of Stone executed"));
+        assertTrue(counter.hasHit("onPostConstruct of StoneFactory executed"));
     }
 }
 
 class Stone implements PostConstructible {
 
-    private final Executed executed;
+    private final HitCounter counter;
 
-    Stone(final Executed executed) {
-        this.executed = executed;
+    Stone(final HitCounter counter) {
+        this.counter = counter;
     }
 
     @Override public void onPostConstruct(BeanRepository repository) {
-        executed.executed = true;
+        counter.hit("onPostConstruct of Stone executed");
     }
 }
 
 class StoneFactory implements Factory<Stone>, PostConstructible {
 
-    private final Executed factoryExecuted;
-    private final Executed beanExecuted;
+    private final HitCounter counter;
 
-    StoneFactory(Executed factoryExecuted, Executed beanExecuted) {
-        this.factoryExecuted = factoryExecuted;
-        this.beanExecuted = beanExecuted;
+    StoneFactory(HitCounter counter) {
+        this.counter = counter;
     }
 
     @Override public Stone createInstance() {
-        return new Stone(beanExecuted);
+        return new Stone(counter);
     }
 
     @Override public Class<Stone> getBeanType() {
@@ -71,6 +67,6 @@ class StoneFactory implements Factory<Stone>, PostConstructible {
     }
 
     @Override public void onPostConstruct(BeanRepository repository) {
-        factoryExecuted.executed = true;
+        counter.hit("onPostConstruct of StoneFactory executed");
     }
 }

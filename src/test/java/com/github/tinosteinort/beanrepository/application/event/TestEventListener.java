@@ -1,24 +1,21 @@
 package com.github.tinosteinort.beanrepository.application.event;
 
-import com.github.tinosteinort.beanrepository.Executed;
+import com.github.tinosteinort.beanrepository.HitCounter;
 
 class TestEventListener extends AbstractApplicationEventListener<TestEvent> {
 
-    private Executed executed;
+    private HitCounter counter;
 
     public TestEventListener() {
         super(TestEvent.class);
     }
 
-    public TestEventListener(final Executed executed) {
+    public TestEventListener(final HitCounter counter) {
         super(TestEvent.class);
-        this.executed = executed;
+        this.counter = counter;
     }
 
     @Override public void onEvent(TestEvent event) {
-        if (executed == null) {
-            return;
-        }
-        executed.executed = true;
+        counter.hit("TestEventListener - TestEvent occurred");
     }
 }

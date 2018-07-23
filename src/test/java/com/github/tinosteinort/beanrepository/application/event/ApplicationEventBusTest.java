@@ -1,11 +1,12 @@
 package com.github.tinosteinort.beanrepository.application.event;
 
 import com.github.tinosteinort.beanrepository.BeanRepository;
-import com.github.tinosteinort.beanrepository.Executed;
+import com.github.tinosteinort.beanrepository.HitCounter;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class ApplicationEventBusTest {
 
@@ -16,25 +17,22 @@ public class ApplicationEventBusTest {
     }
 
     @Test public void listenerNotificatedOnEvent() {
-        Executed executed = new Executed();
-        assertFalse(executed.executed);
+        HitCounter counter = new HitCounter();
 
-        TestEventListener listener = new TestEventListener(executed);
+        TestEventListener listener = new TestEventListener(counter);
         eventBus.register(listener);
         eventBus.fireEvent(new TestEvent());
 
-        assertTrue(executed.executed);
+        assertEquals(1, counter.hits());
+        assertTrue(counter.hasHit("TestEventListener - TestEvent occurred"));
     }
 
     @Test public void collectionListenersAndTestNotification() {
 
-        Executed executed1 = new Executed();
-        TestEventListener listener1 = new TestEventListener(executed1);
-        Executed executed2 = new Executed();
-        OtherTestEventListener listener2 = new OtherTestEventListener(executed2);
+        HitCounter counter = new HitCounter();
 
-        assertFalse(executed1.executed);
-        assertFalse(executed2.executed);
+        TestEventListener listener1 = new TestEventListener(counter);
+        OtherTestEventListener listener2 = new OtherTestEventListener(counter);
 
         BeanRepository repo = new BeanRepository.BeanRepositoryBuilder()
                 .singleton(ApplicationEventBus.class, ApplicationEventBus::new)
@@ -44,7 +42,7 @@ public class ApplicationEventBusTest {
 
         repo.getBean(ApplicationEventBus.class).fireEvent(new TestEvent());
 
-        assertTrue(executed1.executed);
-        assertTrue(executed2.executed);
+        assertTrue(counter.hasHit("TestEventListener - TestEvent occurred"));
+        assertTrue(counter.hasHit("OtherTestEventListener - TestEvent occurred"));
     }
 }

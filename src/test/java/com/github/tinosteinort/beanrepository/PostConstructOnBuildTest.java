@@ -1,6 +1,5 @@
 package com.github.tinosteinort.beanrepository;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import static org.junit.Assert.assertFalse;
@@ -17,66 +16,66 @@ public class PostConstructOnBuildTest {
 
     @Test public void executePostConstructOnBuild() {
 
-        Executed executed = new Executed();
+        HitCounter counter = new HitCounter();
 
         new BeanRepository.BeanRepositoryBuilder()
-                .singleton(PostConstructibleBean.class, () -> new PostConstructibleBean(executed))
+                .singleton(Pen.class, () -> new Pen(counter))
                 .build();
 
-        assertTrue(executed.executed);
+        assertTrue(counter.hasHit("onPostConstruct of pen executed"));
     }
 
     @Test public void executePostConstructOnBuildForFactoryBean() {
 
-        Executed executed = new Executed();
+        HitCounter counter = new HitCounter();
 
         new BeanRepository.BeanRepositoryBuilder()
-                .singletonFactory(PostBean.class, () -> new SomeBeanFactory(executed))
+                .singletonFactory(Card.class, () -> new CardFactory(counter))
                 .build();
 
-        assertTrue(executed.executed);
+        assertTrue(counter.hasHit("onPostConstruct of card, created by factory, executed"));
     }
 }
 
-class PostConstructibleBean implements PostConstructible {
+class Pen implements PostConstructible {
 
-    private final Executed executed;
+    private final HitCounter counter;
 
-    PostConstructibleBean(final Executed executed) {
-        this.executed = executed;
+    Pen(final HitCounter counter) {
+        this.counter = counter;
     }
 
     @Override public void onPostConstruct(BeanRepository repository) {
-        executed.executed = true;
+        counter.hit("onPostConstruct of pen executed");
     }
 }
 
-class SomeBeanFactory implements Factory<PostBean> {
+class CardFactory implements Factory<Card> {
 
-    private final Executed executed;
+    private final HitCounter counter;
 
-    SomeBeanFactory(final Executed executed) {
-        this.executed = executed;
+    CardFactory(final HitCounter counter) {
+        this.counter = counter;
     }
 
-    @Override public PostBean createInstance() {
-        return new PostBean(executed);
+    @Override public Card createInstance() {
+        return new Card(counter);
     }
 
-    @Override public Class<PostBean> getBeanType() {
-        return PostBean.class;
+    @Override public Class<Card> getBeanType() {
+        return Card.class;
     }
 }
 
-class PostBean implements PostConstructible {
+class Card implements PostConstructible {
 
-    private final Executed executed;
+    private final HitCounter counter;
 
-    PostBean(final Executed executed) {
-        this.executed = executed;
+    Card(final HitCounter counter) {
+        this.counter = counter;
     }
 
     @Override public void onPostConstruct(BeanRepository repository) {
-        executed.executed = true;
+        counter.hit("onPostConstruct of card, created by factory, executed");
     }
 }
