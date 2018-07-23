@@ -13,4 +13,8 @@ public class ServiceWithConstructorDependencyFactory implements Factory<ServiceW
     @Override public ServiceWithConstructorDependency createInstance() {
         return new ServiceWithConstructorDependency(printService);
     }
+
+    @Override public Class<ServiceWithConstructorDependency> getBeanType() {
+        return ServiceWithConstructorDependency.class;
+    }
 }

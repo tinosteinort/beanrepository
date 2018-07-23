@@ -14,4 +14,8 @@ public class FactoryWithDependency implements Factory<MailService> {
     @Override public MailService createInstance() {
         return new MailService(beans);
     }
+
+    @Override public Class<MailService> getBeanType() {
+        return MailService.class;
+    }
 }

@@ -20,4 +20,8 @@ class InstanceProvider implements BeanProvider {
     @Override public String getRepositoryId() {
         return repositoryId;
     }
+
+    @Override public Class<?> resolveBeanType(final BeanRepository repository) {
+        return instance.getClass();
+    }
 }

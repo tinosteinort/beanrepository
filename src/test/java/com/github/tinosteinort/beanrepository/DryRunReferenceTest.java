@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Special Test Case for Issue#3
  */
-public class DryRunTest {
+public class DryRunReferenceTest {
 
     @Test public void dryRunWithReferenceCollector() {
 

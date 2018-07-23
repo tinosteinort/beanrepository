@@ -56,12 +56,17 @@
         <version.maven-javadoc-plugin>2.9.1</version.maven-javadoc-plugin>
         <version.maven-gpg-plugin>1.5</version.maven-gpg-plugin>
         <version.junit>4.12</version.junit>
+        <version.slf4j>1.7.21</version.slf4j>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
         </dependency>
     </dependencies>
 
@@ -72,6 +77,11 @@
                 <artifactId>junit</artifactId>
                 <version>${version.junit}</version>
                 <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-simple</artifactId>
+                <version>${version.slf4j}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

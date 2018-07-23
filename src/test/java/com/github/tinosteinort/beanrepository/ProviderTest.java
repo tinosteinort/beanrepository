@@ -146,4 +146,8 @@ class SomeServiceFactory implements Factory<SomeService> {
     @Override public SomeService createInstance() {
         return new SomeService();
     }
+
+    @Override public Class<SomeService> getBeanType() {
+        return SomeService.class;
+    }
 }

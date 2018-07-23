@@ -62,6 +62,10 @@ class SomeBeanFactory implements Factory<PostBean> {
     @Override public PostBean createInstance() {
         return new PostBean(executed);
     }
+
+    @Override public Class<PostBean> getBeanType() {
+        return PostBean.class;
+    }
 }
 
 class PostBean implements PostConstructible {

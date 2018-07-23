@@ -1,7 +1,9 @@
 package com.github.tinosteinort.beanrepository;
 
-import org.junit.Assert;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 public class PrototypeFactoryTest {
 
@@ -13,9 +15,17 @@ public class PrototypeFactoryTest {
 
         // createInstance() must not executed while dryRun
 
-        Assert.assertEquals(0, PrototypeBeanFactory.createCounter);
+        assertEquals(0, PrototypeBeanFactory.createCounter);
         PrototypeBean bean = repo.getBean(PrototypeBean.class);
-        Assert.assertEquals(1, PrototypeBeanFactory.createCounter);
+        assertEquals(1, PrototypeBeanFactory.createCounter);
+    }
+
+    @Test public void returnNullOnDryRun() {
+
+        final PrototypeFactoryProvider factory = new PrototypeFactoryProvider(null, (BeanAccessor beans) -> null);
+
+        BeanRepository dummy = new BeanRepository.BeanRepositoryBuilder().build();
+        assertNull(factory.getBean(dummy, true));
     }
 }
 
@@ -30,5 +40,9 @@ class PrototypeBeanFactory implements Factory<PrototypeBean> {
     @Override public PrototypeBean createInstance() {
         createCounter++;
         return new PrototypeBean();
+    }
+
+    @Override public Class<PrototypeBean> getBeanType() {
+        return PrototypeBean.class;
     }
 }

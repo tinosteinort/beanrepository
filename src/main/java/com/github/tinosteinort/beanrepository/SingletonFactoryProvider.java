@@ -27,11 +27,21 @@ class SingletonFactoryProvider implements BeanProvider {
         lock.lock();
         try {
             if (instance == null) {
-                final Factory factory = creator.apply(repository.accessor());
-                if (!dryRun) {
+                if (dryRun) {
+                    // This call is only needed to detect cyclic dependencies on dryRun.
+                    creator.apply(repository.accessor());
+
+                    // In case of a dry run, whether the postConstruct() method nor the createInstance()
+                    //  method of the factory must not be called. So we can just return NULL.
+                    return null;
+                }
+                else {
+                    final Factory factory = creator.apply(repository.accessor());
                     repository.postConstruct(factory);
+
                     final Object beanInstance = factory.createInstance();
                     repository.postConstruct(beanInstance);
+
                     instance = beanInstance;
                 }
             }
@@ -44,5 +54,10 @@ class SingletonFactoryProvider implements BeanProvider {
 
     @Override public String getRepositoryId() {
         return repositoryId;
+    }
+
+    @Override public Class<?> resolveBeanType(final BeanRepository repository) {
+        final Factory tempFactory = creator.apply(repository.accessor());
+        return tempFactory.getBeanType();
     }
 }

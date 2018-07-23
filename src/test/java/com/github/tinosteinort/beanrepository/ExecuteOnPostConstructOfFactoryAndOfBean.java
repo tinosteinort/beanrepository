@@ -66,6 +66,10 @@ class StoneFactory implements Factory<Stone>, PostConstructible {
         return new Stone(beanExecuted);
     }
 
+    @Override public Class<Stone> getBeanType() {
+        return Stone.class;
+    }
+
     @Override public void onPostConstruct(BeanRepository repository) {
         factoryExecuted.executed = true;
     }

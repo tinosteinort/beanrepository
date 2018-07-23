@@ -45,4 +45,12 @@ class SingletonProvider implements BeanProvider {
     @Override public String getRepositoryId() {
         return repositoryId;
     }
+
+    @Override public Class<?> resolveBeanType(final BeanRepository repository) {
+        if (instance == null) {
+            final Object tempInstance = creator.apply(repository.accessor());
+            return tempInstance.getClass();
+        }
+        return instance.getClass();
+    }
 }

@@ -163,6 +163,10 @@ class SomeServiceImplFactory implements Factory<SomeServiceImpl> {
     @Override public SomeServiceImpl createInstance() {
         return new SomeServiceImpl();
     }
+
+    @Override public Class<SomeServiceImpl> getBeanType() {
+        return SomeServiceImpl.class;
+    }
 }
 
 interface SomeServiceInterface {

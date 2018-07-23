@@ -558,6 +558,10 @@ class ServiceFactoryWith1Dependency implements Factory<ServiceWith1Dependency> {
     @Override public ServiceWith1Dependency createInstance() {
         return new ServiceWith1Dependency(service1);
     }
+
+    @Override public Class<ServiceWith1Dependency> getBeanType() {
+        return ServiceWith1Dependency.class;
+    }
 }
 
 class ServiceFactoryWith2Dependencies implements Factory<ServiceWith2Dependencies> {
@@ -572,6 +576,10 @@ class ServiceFactoryWith2Dependencies implements Factory<ServiceWith2Dependencie
 
     @Override public ServiceWith2Dependencies createInstance() {
         return new ServiceWith2Dependencies(service1, service2);
+    }
+
+    @Override public Class<ServiceWith2Dependencies> getBeanType() {
+        return ServiceWith2Dependencies.class;
     }
 }
 
@@ -589,6 +597,10 @@ class ServiceFactoryWith3Dependencies implements Factory<ServiceWith3Dependencie
 
     @Override public ServiceWith3Dependencies createInstance() {
         return new ServiceWith3Dependencies(service1, service2, service3);
+    }
+
+    @Override public Class<ServiceWith3Dependencies> getBeanType() {
+        return ServiceWith3Dependencies.class;
     }
 }
 
@@ -608,6 +620,10 @@ class ServiceFactoryWith4Dependencies implements Factory<ServiceWith4Dependencie
 
     @Override public ServiceWith4Dependencies createInstance() {
         return new ServiceWith4Dependencies(service1, service2, service3, service4);
+    }
+
+    @Override public Class<ServiceWith4Dependencies> getBeanType() {
+        return ServiceWith4Dependencies.class;
     }
 }
 
@@ -629,6 +645,10 @@ class ServiceFactoryWith5Dependencies implements Factory<ServiceWith5Dependencie
 
     @Override public ServiceWith5Dependencies createInstance() {
         return new ServiceWith5Dependencies(service1, service2, service3, service4, service5);
+    }
+
+    @Override public Class<ServiceWith5Dependencies> getBeanType() {
+        return ServiceWith5Dependencies.class;
     }
 }
 
@@ -704,6 +724,10 @@ class SingletonServiceWithPostConstruct2Factory implements Factory<SingletonServ
     @Override public SingletonServiceWithPostConstruct2 createInstance() {
         return new SingletonServiceWithPostConstruct2(service1);
     }
+
+    @Override public Class<SingletonServiceWithPostConstruct2> getBeanType() {
+        return SingletonServiceWithPostConstruct2.class;
+    }
 }
 
 class PrototypeServiceWithPostConstruct2Factory implements Factory<PrototypeServiceWithPostConstruct2> {
@@ -716,6 +740,10 @@ class PrototypeServiceWithPostConstruct2Factory implements Factory<PrototypeServ
 
     @Override public PrototypeServiceWithPostConstruct2 createInstance() {
         return new PrototypeServiceWithPostConstruct2(service1);
+    }
+
+    @Override public Class<PrototypeServiceWithPostConstruct2> getBeanType() {
+        return PrototypeServiceWithPostConstruct2.class;
     }
 }
 

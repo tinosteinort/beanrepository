@@ -23,4 +23,9 @@ class PrototypeProvider implements BeanProvider {
     @Override public String getRepositoryId() {
         return repositoryId;
     }
+
+    @Override public Class<?> resolveBeanType(final BeanRepository repository) {
+        final Object tempInstance = creator.apply(repository.accessor());
+        return tempInstance.getClass();
+    }
 }
