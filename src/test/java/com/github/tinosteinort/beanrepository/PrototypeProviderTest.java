@@ -18,13 +18,13 @@ public class PrototypeProviderTest {
         final PrototypeProvider provider = new PrototypeProvider(null, creator);
 
 
-        MyPrototypeService bean1 = provider.getBean(repo, false);
+        MyPrototypeService bean1 = provider.getBean(repo, DryRunAwareMock.NO_DRY_RUN);
         Assert.assertNotNull(bean1);
 
-        MyPrototypeService bean2 = provider.getBean(repo, false);
+        MyPrototypeService bean2 = provider.getBean(repo, DryRunAwareMock.NO_DRY_RUN);
         Assert.assertNotNull(bean2);
 
-        Assert.assertFalse(bean1 == bean2);
+        Assert.assertNotSame(bean1, bean2);
     }
 
     @Test public void executePostConstructOnEveryCall() {
@@ -38,9 +38,9 @@ public class PrototypeProviderTest {
 
         final PrototypeProvider provider = new PrototypeProvider(null, creator);
 
-        MyPrototypeServiceWithPostConstruct bean = provider.getBean(repo, false);
+        MyPrototypeServiceWithPostConstruct bean = provider.getBean(repo, DryRunAwareMock.NO_DRY_RUN);
         Assert.assertEquals(1, bean.postConstructCounter);
-        bean = provider.getBean(repo, false);
+        bean = provider.getBean(repo, DryRunAwareMock.NO_DRY_RUN);
         Assert.assertEquals(1, bean.postConstructCounter);
     }
 
@@ -55,9 +55,9 @@ public class PrototypeProviderTest {
 
         final PrototypeProvider provider = new PrototypeProvider(null, creator);
 
-        MyPrototypeServiceWithPostConstruct bean = provider.getBean(repo, true);
+        MyPrototypeServiceWithPostConstruct bean = provider.getBean(repo, DryRunAwareMock.DRY_RUN);
         Assert.assertEquals(0, bean.postConstructCounter);
-        bean = provider.getBean(repo, true);
+        bean = provider.getBean(repo, DryRunAwareMock.DRY_RUN);
         Assert.assertEquals(0, bean.postConstructCounter);
     }
 }

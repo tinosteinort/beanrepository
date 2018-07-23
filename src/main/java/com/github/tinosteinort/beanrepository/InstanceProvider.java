@@ -13,7 +13,7 @@ class InstanceProvider implements BeanProvider {
         this.instance = instance;
     }
 
-    @Override public <T> T getBean(final BeanRepository repository, final boolean dryRun) {
+    @Override public <T> T getBean(final BeanRepository repository, final DryRunAware dryRun) {
         return (T) instance;
     }
 
@@ -21,7 +21,7 @@ class InstanceProvider implements BeanProvider {
         return repositoryId;
     }
 
-    @Override public Class<?> resolveBeanType(final BeanRepository repository) {
+    @Override public Class<?> resolveBeanType(final BeanRepository repository, final DryRunAware dryRun) {
         return instance.getClass();
     }
 }

@@ -45,7 +45,7 @@ public class BeanRepository {
      */
     public <R, T extends R> T getBean(final Class<R> cls) {
         final BeanProvider provider = beanProviderFor(cls);
-        return provider.getBean(this, dryRun.isDryRun());
+        return provider.getBean(this, dryRun);
     }
 
     private BeanProvider beanProviderFor(final Class<?> cls) {
@@ -77,7 +77,7 @@ public class BeanRepository {
      */
     public <T> T getPrototypeBean(final Supplier<T> creator) {
         final PrototypeProvider provider = new PrototypeProvider(name, repository -> creator.get());
-        return provider.getBean(this, dryRun.isDryRun());
+        return provider.getBean(this, dryRun);
     }
 
     /**
@@ -95,7 +95,7 @@ public class BeanRepository {
      */
     public <T> T getPrototypeBean(final Function<BeanAccessor, T> creator) {
         final PrototypeProvider provider = new PrototypeProvider(name, creator);
-        return provider.getBean(this, dryRun.isDryRun());
+        return provider.getBean(this, dryRun);
     }
 
     /**
@@ -114,7 +114,7 @@ public class BeanRepository {
      */
     public <T, P1> T getPrototypeBean(final ConstructorWith1Parameter<T, P1> creator, final P1 param1) {
         final PrototypeProvider provider = new PrototypeProvider(name, beans -> creator.create(param1));
-        return provider.getBean(this, dryRun.isDryRun());
+        return provider.getBean(this, dryRun);
     }
 
     /**
@@ -136,7 +136,7 @@ public class BeanRepository {
     public <T, P1, P2> T getPrototypeBean(final ConstructorWith2Parameters<T, P1, P2> creator, final P1 param1,
             final P2 param2) {
         final PrototypeProvider provider = new PrototypeProvider(name, beans -> creator.create(param1, param2));
-        return provider.getBean(this, dryRun.isDryRun());
+        return provider.getBean(this, dryRun);
     }
 
     /**
@@ -161,7 +161,7 @@ public class BeanRepository {
             final P1 param1, final P2 param2, final P3 param3) {
         final PrototypeProvider provider = new PrototypeProvider(name, beans -> creator.create(param1, param2,
                 param3));
-        return provider.getBean(this, dryRun.isDryRun());
+        return provider.getBean(this, dryRun);
     }
 
     /**
@@ -188,7 +188,7 @@ public class BeanRepository {
             final P1 param1, final P2 param2, final P3 param3, final P4 param4) {
         final PrototypeProvider provider = new PrototypeProvider(name, beans -> creator.create(param1, param2,
                 param3, param4));
-        return provider.getBean(this, dryRun.isDryRun());
+        return provider.getBean(this, dryRun);
     }
 
     /**
@@ -217,7 +217,7 @@ public class BeanRepository {
             final P1 param1, final P2 param2, final P3 param3, final P4 param4, final P5 param5) {
         final PrototypeProvider provider = new PrototypeProvider(name, beans -> creator.create(param1, param2,
                 param3, param4, param5));
-        return provider.getBean(this, dryRun.isDryRun());
+        return provider.getBean(this, dryRun);
     }
 
     /**
@@ -237,7 +237,7 @@ public class BeanRepository {
     public <T, P1> T getPrototypeBean(final ConstructorWithBeansAnd1Parameter<T, P1> creator,
             final P1 param1) {
         final PrototypeProvider provider = new PrototypeProvider(name, beans -> creator.create(beans, param1));
-        return provider.getBean(this, dryRun.isDryRun());
+        return provider.getBean(this, dryRun);
     }
 
     /**
@@ -260,7 +260,7 @@ public class BeanRepository {
             final ConstructorWithBeansAnd2Parameters<T, P1, P2> creator, final P1 param1, final P2 param2) {
         final PrototypeProvider provider = new PrototypeProvider(name, beans -> creator.create(beans, param1,
                 param2));
-        return provider.getBean(this, dryRun.isDryRun());
+        return provider.getBean(this, dryRun);
     }
 
     /**
@@ -286,7 +286,7 @@ public class BeanRepository {
             final P3 param3) {
         final PrototypeProvider provider = new PrototypeProvider(name, beans -> creator.create(beans, param1, param2,
                 param3));
-        return provider.getBean(this, dryRun.isDryRun());
+        return provider.getBean(this, dryRun);
     }
 
     /**
@@ -314,7 +314,7 @@ public class BeanRepository {
             final P3 param3, final P4 param4) {
         final PrototypeProvider provider = new PrototypeProvider(name, beans -> creator.create(beans, param1, param2,
                 param3, param4));
-        return provider.getBean(this, dryRun.isDryRun());
+        return provider.getBean(this, dryRun);
     }
 
     /**
@@ -344,7 +344,7 @@ public class BeanRepository {
             final P3 param3, final P4 param4, final P5 param5) {
         final PrototypeProvider provider = new PrototypeProvider(name, beans -> creator.create(beans, param1, param2,
                 param3, param4, param5));
-        return provider.getBean(this, dryRun.isDryRun());
+        return provider.getBean(this, dryRun);
     }
 
     /**
@@ -361,21 +361,12 @@ public class BeanRepository {
         final Set<T> result = new HashSet<>();
         parent.ifPresent(parent -> result.addAll(parent.getBeansOfType(cls)));
         for (BeanProvider provider : beanCreators.values()) {
-            final Class<?> typeOfBean = getTypeOfBean(provider);
+            final Class<?> typeOfBean = provider.resolveBeanType(this, dryRun);
             if (cls.isAssignableFrom(typeOfBean)) {
-                result.add(provider.getBean(this, dryRun.isDryRun()));
+                result.add(provider.getBean(this, dryRun));
             }
         }
         return result;
-    }
-
-    private Class<?> getTypeOfBean(final BeanProvider provider) {
-        try {
-            return dryRun.execute(() -> provider.resolveBeanType(this));
-        }
-        catch (Exception ex) {
-            throw new RuntimeException("Could not resolve type of bean", ex);
-        }
     }
 
     /**
@@ -392,7 +383,7 @@ public class BeanRepository {
     }
 
     private <T> Provider<T> providerFor(final BeanProvider beanProvider) {
-        return () -> beanProvider.getBean(BeanRepository.this, dryRun.isDryRun());
+        return () -> beanProvider.getBean(BeanRepository.this, dryRun);
     }
 
     /**
@@ -443,7 +434,7 @@ public class BeanRepository {
     private void executeDryRun() {
         dryRun.execute(() -> {
             for (BeanProvider beanProvider : beanCreators.values()) {
-                beanProvider.getBean(this, dryRun.isDryRun());
+                beanProvider.getBean(this, dryRun);
             }
         });
     }

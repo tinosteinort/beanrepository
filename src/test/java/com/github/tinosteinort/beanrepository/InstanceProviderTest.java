@@ -16,7 +16,7 @@ public class InstanceProviderTest {
         final Object object = new Object();
         final InstanceProvider provider = new InstanceProvider(null, object);
 
-        Assert.assertNotNull(provider.getBean(null, false));
+        Assert.assertNotNull(provider.getBean(null, DryRunAwareMock.NO_DRY_RUN));
     }
 
     @Test public void instanceSameObject() {
@@ -24,6 +24,6 @@ public class InstanceProviderTest {
         final Object object = new Object();
         final InstanceProvider provider = new InstanceProvider(null, object);
 
-        Assert.assertTrue(object == provider.getBean(null, false));
+        Assert.assertSame(object, provider.getBean(null, DryRunAwareMock.NO_DRY_RUN));
     }
 }

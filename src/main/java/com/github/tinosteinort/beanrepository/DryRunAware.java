@@ -11,22 +11,29 @@ class DryRunAware {
     }
 
     void execute(final Runnable runnable) {
+        final boolean dryRunBefore = dryRun;
         dryRun = true;
         try {
             runnable.run();
         }
         finally {
-            dryRun = false;
+            dryRun = dryRunBefore;
         }
     }
 
-    <T> T execute(final Callable<T> callable) throws Exception {
+    <T> T execute(final Callable<T> callable) {
+        final boolean dryRunBefore = dryRun;
         dryRun = true;
         try {
-            return callable.call();
+            try {
+                return callable.call();
+            }
+            catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
         }
         finally {
-            dryRun = false;
+            dryRun = dryRunBefore;
         }
     }
 }

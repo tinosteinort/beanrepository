@@ -17,10 +17,10 @@ public class SingletonProviderTest {
 
         final SingletonProvider provider = new SingletonProvider(null, creator);
 
-        MySingletonService bean1 = provider.getBean(repo, false);
+        MySingletonService bean1 = provider.getBean(repo, DryRunAwareMock.NO_DRY_RUN);
         Assert.assertNotNull(bean1);
 
-        MySingletonService bean2 = provider.getBean(repo, false);
+        MySingletonService bean2 = provider.getBean(repo, DryRunAwareMock.NO_DRY_RUN);
         Assert.assertNotNull(bean2);
 
         Assert.assertTrue(bean1 == bean2);
@@ -38,9 +38,9 @@ public class SingletonProviderTest {
         final SingletonProvider provider = new SingletonProvider(null, creator);
 
 
-        MySingletonServiceWithPostConstruct bean = provider.getBean(repo, false);
+        MySingletonServiceWithPostConstruct bean = provider.getBean(repo, DryRunAwareMock.NO_DRY_RUN);
         Assert.assertEquals(1, bean.postConstructCounter);
-        bean = provider.getBean(repo, false);
+        bean = provider.getBean(repo, DryRunAwareMock.NO_DRY_RUN);
         Assert.assertEquals(1, bean.postConstructCounter);
     }
 
@@ -56,9 +56,9 @@ public class SingletonProviderTest {
         final SingletonProvider provider = new SingletonProvider(null, creator);
 
 
-        MySingletonServiceWithPostConstruct bean = provider.getBean(repo, false);
+        MySingletonServiceWithPostConstruct bean = provider.getBean(repo, DryRunAwareMock.NO_DRY_RUN);
         Assert.assertEquals(1, bean.postConstructCounter);
-        bean = provider.getBean(repo, false);
+        bean = provider.getBean(repo, DryRunAwareMock.NO_DRY_RUN);
         Assert.assertEquals(1, bean.postConstructCounter);
     }
 }

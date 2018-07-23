@@ -16,9 +16,9 @@ class SingletonFactoryProvider implements BeanProvider {
         this.creator = creator;
     }
 
-    @Override public <T> T getBean(final BeanRepository repository, final boolean dryRun) {
+    @Override public <T> T getBean(final BeanRepository repository, final DryRunAware dryRun) {
         if (instance == null) {
-            return createAndGetBean(repository, dryRun);
+            return createAndGetBean(repository, dryRun.isDryRun());
         }
         return (T) instance;
     }
@@ -56,8 +56,10 @@ class SingletonFactoryProvider implements BeanProvider {
         return repositoryId;
     }
 
-    @Override public Class<?> resolveBeanType(final BeanRepository repository) {
-        final Factory tempFactory = creator.apply(repository.accessor());
-        return tempFactory.getBeanType();
+    @Override public Class<?> resolveBeanType(final BeanRepository repository, final DryRunAware dryRun) {
+        return dryRun.execute(() -> {
+            final Factory tempFactory = creator.apply(repository.accessor());
+            return tempFactory.getBeanType();
+        });
     }
 }

@@ -25,7 +25,7 @@ public class PrototypeFactoryTest {
         final PrototypeFactoryProvider factory = new PrototypeFactoryProvider(null, (BeanAccessor beans) -> null);
 
         BeanRepository dummy = new BeanRepository.BeanRepositoryBuilder().build();
-        assertNull(factory.getBean(dummy, true));
+        assertNull(factory.getBean(dummy, DryRunAwareMock.DRY_RUN));
     }
 }
 
