@@ -3,7 +3,6 @@ package com.github.tinosteinort.beanrepository.example;
 import com.github.tinosteinort.beanrepository.BeanDefinition;
 import com.github.tinosteinort.beanrepository.BeanRepository;
 import com.github.tinosteinort.beanrepository.Scope;
-import com.github.tinosteinort.beanrepository.example.services.CollectorServiceOnPostConstruct;
 import com.github.tinosteinort.beanrepository.example.services.FactoryWithDependency;
 import com.github.tinosteinort.beanrepository.example.services.FactoryWithoutDependency;
 import com.github.tinosteinort.beanrepository.example.services.MailService;
@@ -11,14 +10,11 @@ import com.github.tinosteinort.beanrepository.example.services.MyInterface;
 import com.github.tinosteinort.beanrepository.example.services.MyInterfaceImpl1;
 import com.github.tinosteinort.beanrepository.example.services.MyInterfaceImpl2;
 import com.github.tinosteinort.beanrepository.example.services.PrintService;
-import com.github.tinosteinort.beanrepository.example.services.ServiceA;
-import com.github.tinosteinort.beanrepository.example.services.ServiceB;
 import com.github.tinosteinort.beanrepository.example.services.ServiceWithBeanDependenciesAndParameter;
 import com.github.tinosteinort.beanrepository.example.services.ServiceWithConstructorDependency;
 import com.github.tinosteinort.beanrepository.example.services.ServiceWithConstructorDependencyFactory;
 import com.github.tinosteinort.beanrepository.example.services.ServiceWithParameter;
 import com.github.tinosteinort.beanrepository.example.services.ServiceWithParameterPostConstructible;
-import com.github.tinosteinort.beanrepository.example.services.ServiceWithPostConstruct;
 import com.github.tinosteinort.beanrepository.example.services.ServiceWithPostConstructCounter;
 import com.github.tinosteinort.beanrepository.example.services.ServiceWithoutPostConstruct;
 import com.github.tinosteinort.beanrepository.example.services.SomeService;
@@ -29,24 +25,12 @@ import org.junit.Test;
 
 import java.util.Set;
 
+import static org.junit.Assert.assertSame;
+
 /**
  * No valid Tests, but it shows the Functionality of the BeanRepository.
  */
 public class ExampleTest {
-
-    /**
-     * MailService depends on PrintService
-     */
-    @Test public void singletonDependency() {
-
-        final BeanRepository repo = new BeanRepository.BeanRepositoryBuilder()
-                .singleton(MailService.class, MailService::new)
-                .singleton(PrintService.class, PrintService::new)
-                .build();
-
-        final MailService mailService = repo.getBean(MailService.class);
-        mailService.sendMail("You", "Hi!");
-    }
 
     @Test public void instanceHandling() {
 
@@ -56,84 +40,7 @@ public class ExampleTest {
                 .instance(values)
                 .build();
 
-        for (String value : repo.getBean(String[].class)) {
-            System.out.println(value);
-        }
-    }
-
-    /**
-     * For a Singleton the onPostConstruct Method must be called only once.
-     */
-    @Test public void singletonOnlyOnePostConstruct() {
-
-        final BeanRepository repo = new BeanRepository.BeanRepositoryBuilder()
-                .singleton(ServiceWithPostConstruct.class, ServiceWithPostConstruct::new)
-                .build();
-
-        repo.getBean(ServiceWithPostConstruct.class);
-        repo.getBean(ServiceWithPostConstruct.class);
-        repo.getBean(ServiceWithPostConstruct.class);
-        // see System.out: only one output has to appear for this test
-    }
-
-    /**
-     * For a Prototype the onPostConstruct Method must be called every time, the Prototype is needed.
-     */
-    @Test public void prototypeWithMultiplePostConstruct() {
-
-        final BeanRepository repo = new BeanRepository.BeanRepositoryBuilder()
-                .prototype(ServiceWithPostConstruct.class, ServiceWithPostConstruct::new)
-                .build();
-
-        repo.getBean(ServiceWithPostConstruct.class);
-        repo.getBean(ServiceWithPostConstruct.class);
-        repo.getBean(ServiceWithPostConstruct.class);
-        // see System.out: three outputs has to appear for this test
-    }
-
-    /**
-     * ServiceA depends on ServiceB and ServiceB depends on ServiceA.
-     *  This cyclic Reference should lead to an Error on start up, not
-     *  until a Bean is requested by repo.getBean(...)
-     */
-    @Test(expected = StackOverflowError.class)
-    public void cyclicReferenceCheckOnBeanRepositoryInitialisation() {
-
-        final BeanRepository repo = new BeanRepository.BeanRepositoryBuilder()
-                .singleton(ServiceA.class, ServiceA::new)
-                .singleton(ServiceB.class, ServiceB::new)
-                .build();
-
-        throw new RuntimeException("Should never reach");
-    }
-
-    @Test public void getAllBeansOfType() {
-
-        final BeanRepository repo = new BeanRepository.BeanRepositoryBuilder()
-                .singleton(MyInterfaceImpl1.class, MyInterfaceImpl1::new)
-                .singleton(MyInterfaceImpl2.class, MyInterfaceImpl2::new)
-                .build();
-
-        final Set<MyInterface> beansOfType = repo.getBeansOfType(MyInterface.class);
-        Assert.assertNotNull(beansOfType);
-        Assert.assertEquals(2, beansOfType.size());
-    }
-
-    /**
-     * To collect beans of a specific Type, the onPostConstruct Method has to be used. It is not
-     *  possible to collect those beans from the Constructor.
-     */
-    @Test public void collectBeansOfSpecificType() {
-
-        final BeanRepository repo = new BeanRepository.BeanRepositoryBuilder()
-                .singleton(CollectorServiceOnPostConstruct.class, CollectorServiceOnPostConstruct::new)
-                .singleton(MyInterfaceImpl1.class, MyInterfaceImpl1::new)
-                .singleton(MyInterfaceImpl2.class, MyInterfaceImpl2::new)
-                .build();
-
-        final CollectorServiceOnPostConstruct collector = repo.getBean(CollectorServiceOnPostConstruct.class);
-        Assert.assertNotNull(collector);
-        Assert.assertEquals(2, collector.getImplementations().size());
+        assertSame(values, repo.getBean(String[].class));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -143,20 +50,6 @@ public class ExampleTest {
                 .singleton(MyInterface.class, MyInterfaceImpl1::new)
                 .singleton(MyInterface.class, MyInterfaceImpl2::new)
                 .build();
-    }
-
-    @Test public void registerBeansWithDifferentClassMultipleTimes() {
-
-        final BeanRepository repo = new BeanRepository.BeanRepositoryBuilder()
-                .singleton(MyInterfaceImpl1.class, MyInterfaceImpl1::new)
-                .singleton(MyInterfaceImpl2.class, MyInterfaceImpl2::new)
-                .build();
-
-        Assert.assertNotNull(repo.getBeansOfType(MyInterface.class));
-        Assert.assertEquals(2, repo.getBeansOfType(MyInterface.class).size());
-        Assert.assertNotNull(repo.getBean(MyInterfaceImpl1.class));
-        Assert.assertNotNull(repo.getBean(MyInterfaceImpl2.class));
-        Assert.assertNotEquals(repo.getBean(MyInterfaceImpl1.class), repo.getBean(MyInterfaceImpl2.class));
     }
 
     @Test public void modularisation() {
