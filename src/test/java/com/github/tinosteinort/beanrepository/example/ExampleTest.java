@@ -1,8 +1,7 @@
 package com.github.tinosteinort.beanrepository.example;
 
-import com.github.tinosteinort.beanrepository.BeanAccessor;
-import com.github.tinosteinort.beanrepository.BeanRepository;
 import com.github.tinosteinort.beanrepository.BeanDefinition;
+import com.github.tinosteinort.beanrepository.BeanRepository;
 import com.github.tinosteinort.beanrepository.Scope;
 import com.github.tinosteinort.beanrepository.example.services.CollectorServiceOnPostConstruct;
 import com.github.tinosteinort.beanrepository.example.services.FactoryWithDependency;
@@ -17,7 +16,6 @@ import com.github.tinosteinort.beanrepository.example.services.ServiceB;
 import com.github.tinosteinort.beanrepository.example.services.ServiceWithBeanDependenciesAndParameter;
 import com.github.tinosteinort.beanrepository.example.services.ServiceWithConstructorDependency;
 import com.github.tinosteinort.beanrepository.example.services.ServiceWithConstructorDependencyFactory;
-import com.github.tinosteinort.beanrepository.example.services.ServiceWithForbiddenCast;
 import com.github.tinosteinort.beanrepository.example.services.ServiceWithParameter;
 import com.github.tinosteinort.beanrepository.example.services.ServiceWithParameterPostConstructible;
 import com.github.tinosteinort.beanrepository.example.services.ServiceWithPostConstruct;
@@ -136,14 +134,6 @@ public class ExampleTest {
         final CollectorServiceOnPostConstruct collector = repo.getBean(CollectorServiceOnPostConstruct.class);
         Assert.assertNotNull(collector);
         Assert.assertEquals(2, collector.getImplementations().size());
-    }
-
-    @Test(expected = ClassCastException.class)
-    public void denyCastToBeanRepository() {
-
-        final BeanRepository repo = new BeanRepository.BeanRepositoryBuilder()
-                .singleton(ServiceWithForbiddenCast.class, ServiceWithForbiddenCast::new)
-                .build();
     }
 
     @Test(expected = IllegalArgumentException.class)
