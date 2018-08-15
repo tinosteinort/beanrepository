@@ -13,7 +13,7 @@ import java.util.Set;
 
 public class ModularizationTest {
 
-    @Test public void collectBeansInlcudingParentModule() {
+    @Test public void collectBeansIncludingParentModule() {
 
         final BeanRepository parent = new BeanRepository.BeanRepositoryBuilder("LogicModule")
                 .singleton(MyInterfaceImpl1.class, MyInterfaceImpl1::new)

@@ -17,10 +17,11 @@ public class ProviderTest {
 
         final BeanRepository repo = new BeanRepository.BeanRepositoryBuilder()
                 .singleton(BeanWithPostConstructSingleton.class, BeanWithPostConstructSingleton::new)
+                .enableLazySingletonBeans(true)
                 .build();
 
         final Provider<BeanWithPostConstructSingleton> provider = repo.getProvider(BeanWithPostConstructSingleton.class);
-        Assert.assertEquals(1, BeanWithPostConstructSingleton.postConstructCounter);
+        Assert.assertEquals(0, BeanWithPostConstructSingleton.postConstructCounter);
 
         provider.get();
         Assert.assertEquals(1, BeanWithPostConstructSingleton.postConstructCounter);
@@ -30,6 +31,7 @@ public class ProviderTest {
 
         final BeanRepository repo = new BeanRepository.BeanRepositoryBuilder()
                 .prototype(BeanWithPostConstructPrototype.class, BeanWithPostConstructPrototype::new)
+                .enableLazySingletonBeans(true)
                 .build();
 
         repo.getBean(BeanWithPostConstructPrototype.class);

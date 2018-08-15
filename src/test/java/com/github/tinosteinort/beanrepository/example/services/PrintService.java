@@ -1,8 +1,8 @@
 package com.github.tinosteinort.beanrepository.example.services;
 
-public class PrintService implements WriterService {
+public class PrintService {
 
-    @Override public void print(final String value) {
+    public void print(final String value) {
         System.out.println(value);
     }
 }
