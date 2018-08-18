@@ -8,12 +8,12 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class ApplicationEventBusTest {
+public class ApplicationEventBusImplTest {
 
-    private ApplicationEventBus eventBus;
+    private ApplicationEventBusImpl eventBus;
 
     @Before public void setup() {
-        eventBus = new ApplicationEventBus();
+        eventBus = new ApplicationEventBusImpl();
     }
 
     @Test public void listenerNotificatedOnEvent() {
@@ -35,12 +35,12 @@ public class ApplicationEventBusTest {
         OtherTestEventListener listener2 = new OtherTestEventListener(counter);
 
         BeanRepository repo = new BeanRepository.BeanRepositoryBuilder()
-                .singleton(ApplicationEventBus.class, ApplicationEventBus::new)
+                .singleton(ApplicationEventBusImpl.class, ApplicationEventBusImpl::new)
                 .singleton(TestEventListener.class, () -> listener1)
                 .singleton(OtherTestEventListener.class, () -> listener2)
                 .build();
 
-        repo.getBean(ApplicationEventBus.class).fireEvent(new TestEvent());
+        repo.getBean(ApplicationEventBusImpl.class).fireEvent(new TestEvent());
 
         assertTrue(counter.hasHit("TestEventListener - TestEvent occurred"));
         assertTrue(counter.hasHit("OtherTestEventListener - TestEvent occurred"));

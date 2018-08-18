@@ -7,6 +7,6 @@ public class ShutdownListener extends ApplicationShutdownEventListener {
 
     @Override
     public void onEvent(final ApplicationShutdownEvent event) {
-        System.out.println("No Pizza - application shutdown!");
+        System.out.println("No more Pizza - application shutdown!");
     }
 }

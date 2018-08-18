@@ -2,6 +2,7 @@ package com.github.tinosteinort.beanrepository;
 
 import com.github.tinosteinort.beanrepository.application.env.DefaultBeanRepositoryConfigurator;
 import com.github.tinosteinort.beanrepository.application.event.ApplicationEventBus;
+import com.github.tinosteinort.beanrepository.application.event.ApplicationEventBusConfigurator;
 import com.github.tinosteinort.beanrepository.application.event.ApplicationShutdownEvent;
 import com.github.tinosteinort.beanrepository.application.event.BeansInitialisedEvent;
 
@@ -34,7 +35,7 @@ public class BeanRepositoryApplication {
         }));
     }
 
-    private static void validate(String[] args, BeanRepositoryConfigurator[] configurators) {
+    private static void validate(final String[] args, final BeanRepositoryConfigurator[] configurators) {
         Objects.requireNonNull(args, "args must not be null");
         Objects.requireNonNull(configurators, "configurator required");
         if (configurators.length == 0) {
@@ -42,9 +43,11 @@ public class BeanRepositoryApplication {
         }
     }
 
-    private static BeanRepository buildAndConfigureBeanRepository(String[] args, BeanRepositoryConfigurator[] configurators) {
+    private static BeanRepository buildAndConfigureBeanRepository(final String[] args,
+                                                                  final BeanRepositoryConfigurator[] configurators) {
         final BeanRepository.BeanRepositoryBuilder builder = new BeanRepository.BeanRepositoryBuilder();
         new DefaultBeanRepositoryConfigurator(args).configure(builder);
+        new ApplicationEventBusConfigurator().configure(builder);
 
         for (BeanRepositoryConfigurator configurator : configurators) {
             configurator.configure(builder);

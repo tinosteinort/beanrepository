@@ -22,7 +22,7 @@ public class EventExampleApp implements BeanRepositoryConfigurator {
     public void configure(BeanRepository.BeanRepositoryBuilder builder) {
 
         builder
-                .singleton(OnStartupListener.class, OnStartupListener::new)
+                .singleton(OnStartupListener.class, OnStartupListener::new, ApplicationEventBus.class)
                 .singleton(ShutdownListener.class, ShutdownListener::new)
 
                 // Concrete listener
