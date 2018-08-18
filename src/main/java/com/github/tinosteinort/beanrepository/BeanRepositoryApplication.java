@@ -4,7 +4,7 @@ import com.github.tinosteinort.beanrepository.application.env.DefaultBeanReposit
 import com.github.tinosteinort.beanrepository.application.event.ApplicationEventBus;
 import com.github.tinosteinort.beanrepository.application.event.ApplicationEventBusConfigurator;
 import com.github.tinosteinort.beanrepository.application.event.ApplicationShutdownEvent;
-import com.github.tinosteinort.beanrepository.application.event.BeansInitialisedEvent;
+import com.github.tinosteinort.beanrepository.application.event.ApplicationStartedEvent;
 
 import java.util.Objects;
 
@@ -15,7 +15,7 @@ public class BeanRepositoryApplication {
 
     /**
      * Startup initialisation of the BeanRepository. After the BeanRepository was initialised with
-     *  the given configurator classes, a {@link BeansInitialisedEvent} is thrown. Use this event
+     *  the given configurator classes, a {@link ApplicationStartedEvent} is thrown. Use this event
      *  as starting point for the code of your application.
      *
      * @param args the program arguments
@@ -28,7 +28,7 @@ public class BeanRepositoryApplication {
         final BeanRepository beanRepository = buildAndConfigureBeanRepository(args, configurators);
 
         final ApplicationEventBus eventBus = beanRepository.getBean(ApplicationEventBus.class);
-        eventBus.fireEvent(new BeansInitialisedEvent());
+        eventBus.fireEvent(new ApplicationStartedEvent());
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             eventBus.fireEvent(new ApplicationShutdownEvent());

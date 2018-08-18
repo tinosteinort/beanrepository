@@ -1,15 +1,14 @@
 package com.github.tinosteinort.beanrepository.example.basicexample;
 
-import com.github.tinosteinort.beanrepository.application.event.ApplicationEvent;
-import com.github.tinosteinort.beanrepository.application.event.BeansInitialisedEvent;
-import com.github.tinosteinort.beanrepository.application.event.BeansInitialisedEventListener;
+import com.github.tinosteinort.beanrepository.application.event.ApplicationStartedEvent;
+import com.github.tinosteinort.beanrepository.application.event.ApplicationStartedListener;
 
 /**
- * Every bean, that implements BeansInitialisedEventListener, will be triggered
+ * Every bean, that implements ApplicationStartedListener, will be triggered
  *  right after the BeanRepository is built. This should be used to execute code
  *  on startup.
  */
-public class OnStartupListener extends BeansInitialisedEventListener {
+public class OnStartupListener extends ApplicationStartedListener {
 
     private final ArgumentPrinter argumentPrinter;
 
@@ -18,7 +17,7 @@ public class OnStartupListener extends BeansInitialisedEventListener {
     }
 
     @Override
-    public void onEvent(final BeansInitialisedEvent event) {
+    public void onEvent(final ApplicationStartedEvent event) {
 
         System.out.println("Application started");
 

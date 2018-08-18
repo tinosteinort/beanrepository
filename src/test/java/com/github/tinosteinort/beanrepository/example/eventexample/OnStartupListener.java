@@ -1,10 +1,10 @@
 package com.github.tinosteinort.beanrepository.example.eventexample;
 
 import com.github.tinosteinort.beanrepository.application.event.ApplicationEventBus;
-import com.github.tinosteinort.beanrepository.application.event.BeansInitialisedEvent;
-import com.github.tinosteinort.beanrepository.application.event.BeansInitialisedEventListener;
+import com.github.tinosteinort.beanrepository.application.event.ApplicationStartedEvent;
+import com.github.tinosteinort.beanrepository.application.event.ApplicationStartedListener;
 
-public class OnStartupListener extends BeansInitialisedEventListener {
+public class OnStartupListener extends ApplicationStartedListener {
 
     private final ApplicationEventBus eventBus;
 
@@ -13,7 +13,7 @@ public class OnStartupListener extends BeansInitialisedEventListener {
     }
 
     @Override
-    public void onEvent(final BeansInitialisedEvent event) {
+    public void onEvent(final ApplicationStartedEvent event) {
 
         System.out.println("Application started");
         System.out.println("-------------------");
