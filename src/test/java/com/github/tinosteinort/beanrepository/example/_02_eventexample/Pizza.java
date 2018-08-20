@@ -1,4 +1,4 @@
-package com.github.tinosteinort.beanrepository.example.eventexample;
+package com.github.tinosteinort.beanrepository.example._02_eventexample;
 
 import java.util.stream.Collectors;
 import java.util.stream.Stream;

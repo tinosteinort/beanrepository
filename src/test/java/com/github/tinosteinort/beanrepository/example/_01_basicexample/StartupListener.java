@@ -1,4 +1,4 @@
-package com.github.tinosteinort.beanrepository.example.basicexample;
+package com.github.tinosteinort.beanrepository.example._01_basicexample;
 
 import com.github.tinosteinort.beanrepository.application.event.ApplicationStartedEvent;
 import com.github.tinosteinort.beanrepository.application.event.ApplicationStartedListener;

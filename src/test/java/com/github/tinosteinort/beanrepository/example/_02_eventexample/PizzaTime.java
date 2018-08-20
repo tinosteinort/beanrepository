@@ -1,4 +1,4 @@
-package com.github.tinosteinort.beanrepository.example.eventexample;
+package com.github.tinosteinort.beanrepository.example._02_eventexample;
 
 import com.github.tinosteinort.beanrepository.application.event.ApplicationEvent;
 
