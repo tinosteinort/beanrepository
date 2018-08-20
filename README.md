@@ -53,8 +53,15 @@ See [EventExampleApp](src\test\java\com\github\tinosteinort\beanrepository\examp
 # Version History #
 
 ## v1.6.1 ##
-Enhancments:
+Enhancements:
 * Introduce `BeanRepositoryApplication`
+* Add examples
+
+Fixes:
+* [Issue#4](https://github.com/tinosteinort/beanrepository/issues/4):
+  onPostConstruct of singleton beans is executed if the bean is requested, not when the BeanRepository is build
+* [Issue#5](https://github.com/tinosteinort/beanrepository/issues/5):
+  onPostConstruct of a Factory Bean is not triggered
 
 ## v1.6.0 ##
 Enhancements:
