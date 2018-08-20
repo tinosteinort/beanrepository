@@ -40,7 +40,7 @@ Include the following Artifact to use the `BeanRepository`:
 <dependency>
     <groupId>com.github.tinosteinort</groupId>
     <artifactId>beanrepository</artifactId>
-    <version>1.6.0</version>
+    <version>1.7.0</version>
 </dependency>
 ```
 
@@ -52,7 +52,7 @@ See [EventExampleApp](src\test\java\com\github\tinosteinort\beanrepository\examp
 
 # Version History #
 
-## v1.6.1 ##
+## v1.7.0 ##
 Enhancements:
 * Introduce `BeanRepositoryApplication`
 * Add examples
