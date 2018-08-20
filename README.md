@@ -46,8 +46,8 @@ Include the following Artifact to use the `BeanRepository`:
 
 ## Examples
 
-See [SimpleExampleApp](src\test\java\com\github\tinosteinort\beanrepository\example\basicexample) for ar very basic example
-See [EventExampleApp](src\test\java\com\github\tinosteinort\beanrepository\example\eventexample) for an example with listeners
+See [SimpleExampleApp](/src/test/java/com/github/tinosteinort/beanrepository/example/_01_basicexample) for ar very basic example
+See [EventExampleApp](/src/test/java/com/github/tinosteinort/beanrepository/example/_02_eventexample) for an example with listeners
 
 
 # Version History #
