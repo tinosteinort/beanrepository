@@ -4,11 +4,11 @@ import com.github.tinosteinort.beanrepository.application.event.ApplicationEvent
 import com.github.tinosteinort.beanrepository.application.event.ApplicationStartedEvent;
 import com.github.tinosteinort.beanrepository.application.event.ApplicationStartedListener;
 
-public class OnStartupListener extends ApplicationStartedListener {
+public class StartupListener extends ApplicationStartedListener {
 
     private final ApplicationEventBus eventBus;
 
-    public OnStartupListener(final ApplicationEventBus eventBus) {
+    public StartupListener(final ApplicationEventBus eventBus) {
         this.eventBus = eventBus;
     }
 

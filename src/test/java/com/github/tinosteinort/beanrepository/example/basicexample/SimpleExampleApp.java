@@ -30,7 +30,8 @@ public class SimpleExampleApp implements BeanRepositoryConfigurator {
 
         // configure all required beans with dependencies in this method
         builder
-                .singleton(OnStartupListener.class, OnStartupListener::new, ArgumentPrinter.class)
+                .singleton(StartupListener.class, StartupListener::new, ArgumentPrinter.class)
+                // the ArgsProvider is a bean which is provided by the BeanRepository
                 .singleton(ArgumentPrinter.class, ArgumentPrinter::new, ArgsProvider.class);
     }
 }

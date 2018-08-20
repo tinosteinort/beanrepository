@@ -8,11 +8,11 @@ import com.github.tinosteinort.beanrepository.application.event.ApplicationStart
  *  right after the BeanRepository is built. This should be used to execute code
  *  on startup.
  */
-public class OnStartupListener extends ApplicationStartedListener {
+public class StartupListener extends ApplicationStartedListener {
 
     private final ArgumentPrinter argumentPrinter;
 
-    public OnStartupListener(final ArgumentPrinter argumentPrinter) {
+    public StartupListener(final ArgumentPrinter argumentPrinter) {
         this.argumentPrinter = argumentPrinter;
     }
 

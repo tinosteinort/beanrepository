@@ -7,7 +7,7 @@ import com.github.tinosteinort.beanrepository.application.event.ApplicationEvent
 
 /**
  * This sample shows
- *    * how to use an own event
+ *    * how to use an own event (listen to and fire)
  *    * different ways to register listeners
  *    * how to get notified for an application shutdown
  */
@@ -22,7 +22,7 @@ public class EventExampleApp implements BeanRepositoryConfigurator {
     public void configure(BeanRepository.BeanRepositoryBuilder builder) {
 
         builder
-                .singleton(OnStartupListener.class, OnStartupListener::new, ApplicationEventBus.class)
+                .singleton(StartupListener.class, StartupListener::new, ApplicationEventBus.class)
                 .singleton(ShutdownListener.class, ShutdownListener::new)
 
                 // Concrete listener
