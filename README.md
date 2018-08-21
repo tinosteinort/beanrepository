@@ -1,41 +1,43 @@
-BeanRepository - Dependency Injection / Service Locator Mix
-===========================================================
+BeanRepository - Dependency Injection / Service Locator
+=======================================================
 
-This Framework is the Implementation of a mix of the Service Locator Pattern and a
- the Dependency Injection Pattern. These Patterns are described by Martin Fowler in
- [this Article](http://martinfowler.com/articles/injection.html). The `BeanRepository`
- does not use Reflection for injecting Beans. Because of that Fact, it can be used in
- the Java Sandbox, where Reflection is not allowed.
+This framework is the implementation of a mix of the Service Locator Pattern and a
+ the Dependency Injection Pattern. These patterns are described by Martin Fowler in
+ [this article](http://martinfowler.com/articles/injection.html). The `BeanRepository`
+ does not use reflection for injecting beans. Because of that fact, it can be used in
+ the Java sandbox, where reflection is not allowed.
 
 
 ## Features ##
 
-* Simple, self-explanatory and failsafe Configuration in Java Code
-* No use of Reflection or Annotations
-* Constructor Injection
-* Support for Singletons, Prototypes (also with Parameters) and Instances
-* Provider
-* Factories
-* Aliases for beans
-* Fail Fast on start up
-* Execute Code after Initialisation of the Bean
-* Configurable if singletons are lazy initialised or not
-* Detect Beans of a specific Type
-* Modularity
+* simple, self-explanatory and failsafe configuration in Java code
+* no use of reflection or annotations
+* constructor injection
+* support for singletons, prototypes and instances
+* provider
+* factories
+* aliases for beans
+* fail fast on start up
+* execute code after initialisation of the bean (post construct)
+* configurable if singletons are lazy initialised or not
+* detect beans of a specific type
+* modularity possible
 
 
 ## Limitations ##
 
-* Cyclic References not allowed
-* No Request or Session Scope
-* No initialisation Code allowed in Constructor
-    * Constructor may be called multiple times while Creation of the `BeanRepository`
-* A Bean can only be accessed by a Class
+* cyclic references not supported directly. But if needed, see
+   [CyclicReferenceExampleApp](/src/test/java/com/github/tinosteinort/beanrepository/example/_03_cyclicreferenceexample)
+   for a solution
+* no request or session scope
+* no initialisation code allowed in constructor
+    * constructor may be called multiple times while working with the `BeanRepository`
+* a bean can only be accessed by a class
 
 
 ## Maven ##
 
-Include the following Artifact to use the `BeanRepository`:
+Include the following artifact to use the `BeanRepository`:
 ```xml
 <dependency>
     <groupId>com.github.tinosteinort</groupId>
@@ -47,13 +49,13 @@ Include the following Artifact to use the `BeanRepository`:
 ## Examples
 
 See [SimpleExampleApp](/src/test/java/com/github/tinosteinort/beanrepository/example/_01_basicexample) for ar very
- basic example
+ basic example.
 
 See [EventExampleApp](/src/test/java/com/github/tinosteinort/beanrepository/example/_02_eventexample) for an example
- with listeners
+ with events and listeners.
 
 See [CyclicReferenceExampleApp](/src/test/java/com/github/tinosteinort/beanrepository/example/_03_cyclicreferenceexample)
- for an example with cyclic references
+ for an example with cyclic references.
 
 
 
