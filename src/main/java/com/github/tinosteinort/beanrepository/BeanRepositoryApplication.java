@@ -5,13 +5,21 @@ import com.github.tinosteinort.beanrepository.application.event.ApplicationEvent
 import com.github.tinosteinort.beanrepository.application.event.ApplicationEventBusConfigurator;
 import com.github.tinosteinort.beanrepository.application.event.ApplicationShutdownEvent;
 import com.github.tinosteinort.beanrepository.application.event.ApplicationStartedEvent;
+import com.github.tinosteinort.beanrepository.application.spi.BeanRepositoryConfiguratorSpi;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
+import java.util.ServiceLoader;
 
 /**
  * This class is used to run an application with dependency injection support by the BeanRepository.
  */
 public class BeanRepositoryApplication {
+
+    private static final Logger LOG = LogManager.getLogger(BeanRepositoryApplication.class);
 
     /**
      * Startup initialisation of the BeanRepository. After the BeanRepository was initialised with
@@ -46,13 +54,29 @@ public class BeanRepositoryApplication {
     private static BeanRepository buildAndConfigureBeanRepository(final String[] args,
                                                                   final BeanRepositoryConfigurator[] configurators) {
         final BeanRepository.BeanRepositoryBuilder builder = new BeanRepository.BeanRepositoryBuilder();
+
         new DefaultBeanRepositoryConfigurator(args).configure(builder);
         new ApplicationEventBusConfigurator().configure(builder);
 
         for (BeanRepositoryConfigurator configurator : configurators) {
+            LOG.debug("configure: " + configurator.getClass().getName());
+            configurator.configure(builder);
+        }
+
+        for (BeanRepositoryConfiguratorSpi configurator : findAdditionalConfigurators()) {
+            LOG.debug("configure additional: " + configurator.getClass().getName());
             configurator.configure(builder);
         }
 
         return builder.build();
+    }
+
+    private static List<BeanRepositoryConfiguratorSpi> findAdditionalConfigurators() {
+        final List<BeanRepositoryConfiguratorSpi> configurators = new ArrayList<>();
+
+        ServiceLoader.load(BeanRepositoryConfiguratorSpi.class)
+                .forEach(configurators::add);
+
+        return configurators;
     }
 }
